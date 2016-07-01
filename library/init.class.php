@@ -19,7 +19,7 @@ class init
     final public static function start()
     {
         // 注册AUTOLOAD方法
-        spl_autoload_register('init::autoload');
+        spl_autoload_register('\library\init::autoload');
         //异常处理
 
     }
@@ -31,6 +31,14 @@ class init
      */
     final public static function autoload($class)
     {
-
+        if (strpos($class, '\\') !== false) {
+            $name = strstr($class, '\\', true);
+            if (!$name) {
+                //命名空间
+            }
+        }
+        if (file_exists($class)) {
+            require $class;
+        }
     }
 }
