@@ -35,10 +35,12 @@ class init
             $name = strstr($class, '\\', true);
             if (!$name) {
                 //命名空间
+                $name = strstr(substr($class,1), '\\', true);
+                var_dump($name);
             }
         }
         if (file_exists($class)) {
-            require $class;
+            //require $class;
         }
     }
 }

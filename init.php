@@ -13,8 +13,8 @@
 const DAOGE_VERSION = '1.0.0';
 
 //系统常量设置
-defined('DAOGE_VERSION') or define('DAOGE_VERSION', __dir__ . '/'); //框架根目录
-defined('LIB_PATH') or define('LIB_PATH', DAOGE_VERSION . 'library' . '/'); //核心类库目录
+defined('DAOGE_PATH') or define('DAOGE_PATH', __dir__ . '/'); //框架根目录
+defined('LIB_PATH') or define('LIB_PATH', DAOGE_PATH . 'library' . '/'); //核心类库目录
 
 //加载应用初始化类文件
 require_once LIB_PATH . 'init.class.php';
