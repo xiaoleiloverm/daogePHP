@@ -33,14 +33,14 @@ class init
     {
         if (strpos($class, '\\') !== false) {
             $name = strstr($class, '\\', true);
-            if (!$name) {
+            if ($name == '') {
                 //命名空间
-                $name = strstr(substr($class,1), '\\', true);
-                var_dump($name);
+                $name = strstr(substr($class, 1), '\\', true);
+                //var_dump($name);
             }
         }
-        if (file_exists($class)) {
-            //require $class;
+        if (file_exists($name)) {
+            require $name;
         }
     }
 }
