@@ -3,7 +3,7 @@
  *入口文件
  */
 
-/ 应用入口文件
+// 应用入口文件
 
 // 设置页面输出编码
 header('Content-Type:text/html;charset=utf-8');
