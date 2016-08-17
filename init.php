@@ -9,12 +9,41 @@
 // 初始化文件
 //----------------------------------
 
+// 记录开始运行时间
+$GLOBALS['_beginTime'] = microtime(true);
+// 记录内存初始使用
+define('MEMORY_LIMIT_ON', function_exists('memory_get_usage'));
+if (MEMORY_LIMIT_ON) {
+    $GLOBALS['_startUseMems'] = memory_get_usage();
+}
+
 //版本
 const DAOGE_VERSION = '1.0.0';
+
+// 类文件后缀
+const EXT = '.class.php';
 
 //系统常量设置
 defined('DAOGE_PATH') or define('DAOGE_PATH', __dir__ . '/'); //框架根目录
 defined('LIB_PATH') or define('LIB_PATH', DAOGE_PATH . 'library' . '/'); //核心类库目录
+defined('APP_DEBUG') or define('APP_DEBUG', false); //是否开启调试模式
+//cgi模式常量
+define('IS_CGI', (0 === strpos(PHP_SAPI, 'cgi') || false !== strpos(PHP_SAPI, 'fcgi')) ? 1 : 0);
+//win环境常量
+define('IS_WIN', strstr(PHP_OS, 'WIN') ? 1 : 0);
+//cli命令行模式常量
+define('IS_CLI', PHP_SAPI == 'cli' ? 1 : 0);
 
-//加载应用初始化类文件
-require_once LIB_PATH . 'init.class.php';
+//请求时间常量
+define('NOW_TIME', $_SERVER['REQUEST_TIME']);
+//http参数常量
+define('REQUEST_METHOD', strtolower($_REQUISE['REQUEST_METHOD']));
+define('IS_GET', (REQUEST_METHOD === 'get') ? true : false);
+define('IS_POST', (REQUEST_METHOD === 'post') ? true : false);
+define('IS_PUT', (REQUEST_METHOD === 'put') ? true : false);
+define('IS_DELETE', (REQUEST_METHOD === 'delete') ? true : false);
+
+//加载应用核心类文件
+require_once LIB_PATH . 'core.class.php';
+// 应用初始化
+\library\core::start();
