@@ -8,6 +8,8 @@
  * |Copyright (c) 2016-2018 All rights reserved.
  * +------------------------------------------------------------------
  */
+namespace library\Controller;
+
 class Controller
 {
 
@@ -23,4 +25,8 @@ class Controller
     /**
      *
      */
+    public function test()
+    {
+        echo 'this is test';
+    }
 }

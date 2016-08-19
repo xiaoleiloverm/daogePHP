@@ -24,6 +24,13 @@ class core
         register_shutdown_function('\library\core::fatalError');
         // 设置自定义的错误处理
         set_error_handler('\library\core::customError');
+        //设置异常处理
+        set_exception_handler('\library\core::customException');
+        //加载composer 依赖
+        if (file_exists(VENDOR_PATH . 'autoload.php')) {
+            require_once VENDOR_PATH . 'autoload.php';
+        }
+        //加载核心方法
     }
 
     /**
@@ -43,6 +50,7 @@ class core
         \library\core::init();
         //加载配置
         \library\core::loadConfig();
+        \library\Controller\Controller::test();
     }
 
     /**
@@ -52,16 +60,18 @@ class core
      */
     public static function autoload($class)
     {
+        var_dump($class);
         if (strpos($class, '\\') !== false) {
             $name = strstr($class, '\\', true);
             if ($name == '') {
                 //命名空间
-                $name = strstr(substr($class, 1), '\\', true);
+                $name = substr($class, 1);
                 //var_dump($name);
             }
+            $name = str_replace('\\', '/', $name);
         }
-        if (file_exists($name)) {
-            require $name;
+        if (file_exists(daogePHP . $name . EXT)) {
+            require daogePHP . $name . EXT;
         }
     }
 
@@ -101,12 +111,9 @@ class core
                 //自定义输出参数
                 $trace        = $debug_backtrace();
                 $e['message'] = $error;
-                $e['file']    = $trace['file'];
-                $e['line']    = $trace['line'];
-                //缓存区控制
-                ob_start();
-                debug_print_backtrace();
-                $e['trace'] = ob_get_clean();
+                $e['file']    = $trace[0]['file'];
+                $e['line']    = $trace[0]['line'];
+
             } else {
                 $e = $error;
             }
@@ -120,11 +127,22 @@ class core
                 //普通输出
                 exit(iconv('UTF-8', 'gbk', $e['message']) . PHP_EOL . 'file:' . $e['file'] . PHP_EOL . 'line:' . $e['line']);
             }
+            //缓存区控制
+            ob_start();
+            debug_print_backtrace();
+            $e['trace'] = ob_get_clean();
+            //报错
+            echo '<strong>Error:</strong> ' . $e['message'] . PHP_EOL . 'file:' . $e['file'] . PHP_EOL . 'line:' . $e['line'];
+            if ($e['trace']) {
+                echo "<br />" . '<strong>trace:</strong> ' . $e['trace'];
+            }
+            return (true); //And prevent the PHP error handler from continuing
         }
         //非调试模式 一般是正式环境
         else {
-
+            exit('页面错误，请重试!');
         }
+
     }
 
     /**
@@ -138,17 +156,74 @@ class core
      */
     public static function customError($errno, $errstr, $errfile, $errline)
     {
+        //var_dump($errno, $errstr, $errfile, $errline);
         switch ($errno) {
             case E_ERROR: //1 致命的运行时错误
             case E_PARSE: //4 编译时语法解析错误。解析错误仅仅由分析器产生。
             case E_CORE_ERROR: //16 在PHP初始化启动过程中发生的致命错误。该错误类似 E_ERROR，但是是由PHP引擎核心产生的。
             case E_COMPILE_ERROR: //64 致命编译时错误。类似E_ERROR, 但是是由Zend脚本引擎产生的。
             case E_USER_ERROR: //256 用户产生的错误信息。类似 E_ERROR, 但是是由用户自己在代码中使用PHP函数 trigger_error()来产生的。
-                self::halt();
+                self::halt($errstr);
                 break;
             default:
                 break;
         }
+    }
+
+    /**
+     * 自定义异常处理
+     * @access public
+     * @param string $exception 异常信息
+     * @return void
+     */
+    public static function customException($exception)
+    {
+
+        // these are our templates
+        $traceline = "#%s %s(%s): %s(%s)";
+        $msg       = "PHP Fatal error:  Uncaught exception '%s' with message '%s' in %s:%s\nStack trace:\n%s\n  thrown in %s on line %s";
+
+        // alter your trace as you please, here
+        $trace = $exception->getTrace();
+        foreach ($trace as $key => $stackPoint) {
+            // I'm converting arguments to their type
+            // (prevents passwords from ever getting logged as anything other than 'string')
+            $trace[$key]['args'] = array_map('gettype', $trace[$key]['args']);
+        }
+
+        // build your tracelines
+        $result = array();
+        foreach ($trace as $key => $stackPoint) {
+            $result[] = sprintf(
+                $traceline,
+                $key,
+                $stackPoint['file'],
+                $stackPoint['line'],
+                $stackPoint['function'],
+                implode(', ', $stackPoint['args'])
+            );
+        }
+        // trace always ends with {main}
+        $result[] = '#' . ++$key . ' {main}';
+
+        // write tracelines into main template
+        $msg = sprintf(
+            $msg,
+            get_class($exception),
+            $exception->getMessage(),
+            $exception->getFile(),
+            $exception->getLine(),
+            implode("\n", $result),
+            $exception->getFile(),
+            $exception->getLine()
+        );
+
+        // log or echo as you please
+        //error_log($msg);
+        // 发送404信息
+        header('HTTP/1.1 404 Not Found');
+        header('Status:404 Not Found');
+        self::halt($msg);
     }
 
 }
