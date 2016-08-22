@@ -23,9 +23,9 @@ class core
         //定义PHP程序执行完成后发生的错误
         register_shutdown_function('\library\core::fatalError');
         // 设置自定义的错误处理
-        set_error_handler('\library\core::customError');
+        //set_error_handler('\library\core::customError');
         //设置异常处理
-        set_exception_handler('\library\core::customException');
+        //set_exception_handler('\library\core::customException');
         //加载composer 依赖
         if (file_exists(VENDOR_PATH . 'autoload.php')) {
             require_once VENDOR_PATH . 'autoload.php';
@@ -50,7 +50,10 @@ class core
         \library\core::init();
         //加载配置
         \library\core::loadConfig();
-        \library\Controller\Controller::test();
+        //实例化核心控制器C
+        $controller = new \library\controller\Controller;
+        //实例化核心模型M
+        //实例化核心视图V
     }
 
     /**
@@ -60,18 +63,9 @@ class core
      */
     public static function autoload($class)
     {
-        var_dump($class);
-        if (strpos($class, '\\') !== false) {
-            $name = strstr($class, '\\', true);
-            if ($name == '') {
-                //命名空间
-                $name = substr($class, 1);
-                //var_dump($name);
-            }
-            $name = str_replace('\\', '/', $name);
-        }
-        if (file_exists(daogePHP . $name . EXT)) {
-            require daogePHP . $name . EXT;
+        $class = str_replace('\\', '/', $class);
+        if (file_exists(DAOGE_PATH . $class . EXT)) {
+            require DAOGE_PATH . $class . EXT;
         }
     }
 
@@ -120,12 +114,11 @@ class core
             //CLI下输出
             if (IS_CLI) {
                 //加载climate 库
-                //file_exists(VENDOR_PATH.'climate-3.2.1/src');
-                //require_once VENDOR_PATH.'climate-3.2.1/src';
+                $climate = new League\CLImate\CLImate;
                 //友好输出
-                //if(class_exists(\))
+                $climate->out(iconv('UTF-8', 'gbk', $e['message']) . PHP_EOL . 'file:' . $e['file'] . PHP_EOL . 'line:' . $e['line']);
                 //普通输出
-                exit(iconv('UTF-8', 'gbk', $e['message']) . PHP_EOL . 'file:' . $e['file'] . PHP_EOL . 'line:' . $e['line']);
+                //exit(iconv('UTF-8', 'gbk', $e['message']) . PHP_EOL . 'file:' . $e['file'] . PHP_EOL . 'line:' . $e['line']);
             }
             //缓存区控制
             ob_start();
@@ -134,7 +127,7 @@ class core
             //报错
             echo '<strong>Error:</strong> ' . $e['message'] . PHP_EOL . 'file:' . $e['file'] . PHP_EOL . 'line:' . $e['line'];
             if ($e['trace']) {
-                echo "<br />" . '<strong>trace:</strong> ' . $e['trace'];
+                echo "<br />" . '<strong>trace:</strong> '.'<br />' . nl2br($e['trace']);
             }
             return (true); //And prevent the PHP error handler from continuing
         }

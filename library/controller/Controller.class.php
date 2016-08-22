@@ -8,7 +8,7 @@
  * |Copyright (c) 2016-2018 All rights reserved.
  * +------------------------------------------------------------------
  */
-namespace library\Controller;
+namespace library\controller;
 
 class Controller
 {
