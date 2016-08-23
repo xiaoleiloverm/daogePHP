@@ -22,10 +22,14 @@ const DAOGE_VERSION = '1.0.0';
 
 // 类文件后缀
 const EXT = '.class.php';
+//配置文件后缀
+const CONFIG_EXT = '.php';
 
 //系统常量设置
 defined('DAOGE_PATH') or define('DAOGE_PATH', __dir__ . '/'); //框架根目录
 defined('LIB_PATH') or define('LIB_PATH', DAOGE_PATH . 'library' . '/'); //核心类库目录
+defined('COMMON_PATH') or define('COMMON_PATH', LIB_PATH . 'common' . '/'); //核心文件（函数）目录
+defined('CONFIG_PATH') or define('CONFIG_PATH', LIB_PATH . 'config' . '/'); //核心配置目录
 defined('VENDOR_PATH') or define('VENDOR_PATH', LIB_PATH . 'vendor' . '/'); //第三方库目录
 defined('APP_DEBUG') or define('APP_DEBUG', false); //是否开启调试模式
 //cgi模式常量
