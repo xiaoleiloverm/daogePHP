@@ -28,6 +28,5 @@ class Controller
     public function test()
     {
         echo 'this is test';
-        x;
     }
 }

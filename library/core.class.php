@@ -74,7 +74,6 @@ class core
         $controller = new \library\controller\Controller;
         //实例化核心模型M
         //实例化核心视图V
-        xxx;
     }
 
     /**
@@ -128,9 +127,16 @@ class core
                 $e['message'] = $error;
                 $e['file']    = $trace[0]['file'];
                 $e['line']    = $trace[0]['line'];
-
             } else {
                 $e = $error;
+            }
+            if (!isset($e['trace'])) {
+                $e['trace'] = '';
+                //缓存区控制
+                ob_start();
+                debug_print_backtrace();
+                $e['trace'] = ob_get_clean();
+                $e['trace'] .= '#' . (count($e['trace']) + 1) . ' {main}';
             }
             //CLI下输出
             if (IS_CLI) {
@@ -141,13 +147,9 @@ class core
                 //普通输出
                 //exit(iconv('UTF-8', 'gbk', $e['message']) . PHP_EOL . 'file:' . $e['file'] . PHP_EOL . 'line:' . $e['line']);
             }
-            //缓存区控制
-            ob_start();
-            debug_print_backtrace();
-            $e['trace'] = ob_get_clean();
             //报错
             echo '<strong>Error:</strong> ' . $e['message'] . PHP_EOL . 'file:' . $e['file'] . PHP_EOL . 'line:' . $e['line'];
-            if ($e['trace']) {
+            if (APP_DEBUG) {
                 echo "<br />" . '<strong>trace:</strong> ' . '<br />' . nl2br($e['trace']);
             }
             return (true); //And prevent the PHP error handler from continuing
@@ -171,8 +173,7 @@ class core
      */
     public static function customError($errno, $errstr, $errfile, $errline)
     {
-        //var_dump($errno, $errstr, $errfile, $errline);exit;
-        throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+        //throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
         switch ($errno) {
             case E_ERROR: //1 致命的运行时错误
             case E_PARSE: //4 编译时语法解析错误。解析错误仅仅由分析器产生。
@@ -195,57 +196,21 @@ class core
      */
     public static function customException($exception)
     {
+        //异常信息
+        $e            = [];
+        $e['trace']   = $exception->getTraceAsString(); //获取字符串类型异常追踪信息
+        $e['message'] = $exception->getMessage(); //获取异常消息内容
+        $e['code']    = $exception->getCode(); //异常代码
+        $e['file']    = $exception->getFile(); //获取发生异常的程序文件名称
+        $e['line']    = $exception->getLine(); //获取发生异常的代码在文件中的行号
 
-        $e = [];
-        //
-        // these are our templates
-        $traceline = "#%s %s(%s): %s(%s)";
-        var_dump($exception);exit;
-        $msg = "PHP Fatal error:  Uncaught exception '%s' with message '%s' in %s:%s\nStack trace:\n%s\n  thrown in %s on line %s";
-
-        // alter your trace as you please, here
-        $trace = $exception->getTrace();
-
-        foreach ($trace as $key => $stackPoint) {
-            // I'm converting arguments to their type
-            // (prevents passwords from ever getting logged as anything other than 'string')
-            $trace[$key]['args'] = array_map('gettype', $trace[$key]['args']);
-        }
-
-        // build your tracelines
-        $result = array();
-        foreach ($trace as $key => $stackPoint) {
-            $result[] = sprintf(
-                $traceline,
-                $key,
-                $stackPoint['file'],
-                $stackPoint['line'],
-                $stackPoint['function'],
-                implode(', ', $stackPoint['args'])
-            );
-        }
-        // trace always ends with {main}
-        $result[] = '#' . ++$key . ' {main}';
-
-        // write tracelines into main template
-        $msg = sprintf(
-            $msg,
-            get_class($exception),
-            $exception->getMessage(),
-            $exception->getFile(),
-            $exception->getLine(),
-            implode("\n", $result),
-            $exception->getFile(),
-            $exception->getLine()
-        );
-
-        // log or echo as you please
+        //记录日志
         //error_log($msg);
         // 发送404信息
         header('HTTP/1.1 404 Not Found');
         header('Status:404 Not Found');
-        //self::halt($msg);
-        var_dump($msg);
+        self::halt($e);
+        //var_dump($msg);
     }
 
 }

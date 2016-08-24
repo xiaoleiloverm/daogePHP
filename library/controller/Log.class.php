@@ -10,6 +10,9 @@
  */
 namespace library\controller;
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+
 class Log
 {
 
@@ -51,6 +54,6 @@ class Log
 
         // create a log channel
         $log = new Logger('name');
-        $log->pushHandler(new StreamHandler('path/to/your.log', Logger::WARNING));
+        $log->pushHandler(new StreamHandler($dir . $name, Logger::WARNING));
     }
 }

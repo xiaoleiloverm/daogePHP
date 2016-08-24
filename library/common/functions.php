@@ -22,6 +22,6 @@ function C()
  */
 function E()
 {
-    throw new Exception("Error Processing Request", 1);
+    throw new errorException("Error Processing Request", 1);
 
 }
