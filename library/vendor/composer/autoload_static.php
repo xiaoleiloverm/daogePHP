@@ -29,6 +29,13 @@ class ComposerStaticInit0f5d0eb39830408418e02ec7fa321641
     );
 
     public static $prefixesPsr0 = array (
+        'P' => 
+        array (
+            'Psr\\Log\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/psr/log',
+            ),
+        ),
         'M' => 
         array (
             'Monolog' => 
