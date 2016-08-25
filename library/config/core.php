@@ -11,7 +11,7 @@
 return [
     //配置文件
     'config' => [
-        CONFIG_PATH . 'config/tradition' . CONFIG_EXT, //惯例配置
+        CONFIG_PATH . 'Config/tradition' . CONFIG_EXT, //惯例配置
     ],
     //核心配置文件
     'core'   => [

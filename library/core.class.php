@@ -8,9 +8,9 @@
 //----------------------------------
 // 初始化类文件
 //----------------------------------
-namespace library;
+namespace Library;
 
-class core
+class Core
 {
 
     /**
@@ -19,19 +19,19 @@ class core
     public static function init()
     {
         // 注册AUTOLOAD方法
-        spl_autoload_register('\library\core::autoload');
+        spl_autoload_register('\Library\Core::autoload');
         //定义PHP程序执行完成后发生的错误
-        register_shutdown_function('\library\core::fatalError');
+        register_shutdown_function('\Library\Core::fatalError');
         // 设置自定义的错误处理：函数会捕获用户自定义的和非致命类错误
-        set_error_handler('\library\core::customError'); //过程中用户自定义错误trigger_error触发
+        set_error_handler('\Library\Core::customError'); //过程中用户自定义错误trigger_error触发
         //捕获未处理的异常
-        set_exception_handler('\library\core::customException');
+        set_exception_handler('\Library\Core::customException');
         //加载composer 依赖
         if (file_exists(VENDOR_PATH . 'autoload.php')) {
             require_once VENDOR_PATH . 'autoload.php';
         }
         //加载核心配置
-        \library\core::coreConfig();
+        \Library\Core::coreConfig();
     }
 
     /**
@@ -39,7 +39,7 @@ class core
      */
     public static function coreConfig()
     {
-        $mode = include CONFIG_PATH . 'core' . CONFIG_EXT;
+        $mode = include CONFIG_PATH . 'Core' . CONFIG_EXT;
         // 加载核心文件
         foreach ($mode['core'] as $file) {
             if (is_file($file)) {
@@ -49,6 +49,7 @@ class core
         //加载核心配置文件
         foreach ($mode['config'] as $file) {
             //
+
         }
     }
 
@@ -66,12 +67,13 @@ class core
     public static function start()
     {
         //初始化
-        \library\core::init();
+        \Library\Core::init();
 
         //加载应用配置文件
-        \library\core::appConfig();
+        \Library\Core::appConfig();
         //实例化核心控制器C
-        $controller = new \library\controller\Controller;
+        $controller = new \Library\controller\Controller;
+        $controller->test();
         //实例化核心模型M
         //实例化核心视图V
     }
