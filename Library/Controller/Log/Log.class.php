@@ -10,11 +10,25 @@
  */
 namespace library\controller;
 
+use Monolog\Logger as MonoLogger;
 use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
+use Library\Interface\Controller\Log as LogInterface;
 
-class Log
+class Log implements LogInterface
 {
+
+    /*
+     *日志等级
+     */
+    protected $levers = [
+        'DEBUG'     => MonoLogger::DEBUG, //DEBUG (100): 详细的debug信息。
+        'INFO'      => MonoLogger::INFO, //INFO (200): 关键事件。
+        'NOTICE'    => MonoLogger::NOTICE, //NOTICE (250): 普通但是重要的事件。
+        'WARNING'   => MonoLogger::WARNING, //WARNING (300): 出现非错误的异常。
+        'ERROR'     => MonoLogger::ERROR, //ERROR (400): 运行时错误，但是不需要立刻处理。
+        'CRITICA'   => MonoLogger::CRITICA, //CRITICA (500): 严重错误。
+        'EMERGENCY' => MonoLogger::EMERGENCY, // EMERGENCY (600): 系统不可用。
+    ];
 
     public $msg   = ''; //错误信息
     public $error = 0; //错误码
