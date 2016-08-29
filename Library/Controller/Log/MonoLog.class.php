@@ -1,20 +1,20 @@
 <?php
 /**
  * +------------------------------------------------------------------
- * |daogePHP： 框架核心控制器 -> Monolog 1.1.* 日志类
+ * |daogePHP： 框架核心日志类 -> Monolog 1.1.* 日志类
  * +------------------------------------------------------------------
  * |athor：leilu<xiaoleiloverm@gmail.com>
  * +------------------------------------------------------------------
  * |Copyright (c) 2016-2018 All rights reserved.
  * +------------------------------------------------------------------
  */
-namespace library\controller;
+namespace library\Controller\Log;
 
 use Monolog\Logger as MonoLogger;
 use Monolog\Handler\StreamHandler;
 use Library\Interface\Controller\Log as LogInterface;
 
-class Log implements LogInterface
+class MonoLog implements LogInterface
 {
 
     /*
