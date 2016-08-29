@@ -1,7 +1,7 @@
     <?php
 /**
  * +------------------------------------------------------------------
- * |daogePHP： 框架核心日志类 -> seasLog日志类,必须安装并开启seaslog扩展
+ * |daogePHP： 框架核心日志类 -> seasLog日志伪代码类;seaslog需要seaslog扩展支持
  * +------------------------------------------------------------------
  * |athor：leilu<xiaoleiloverm@gmail.com>
  * +------------------------------------------------------------------
@@ -25,31 +25,18 @@ class SeasLog
      * SEASLOG_ALERT                       "alert"
      * SEASLOG_EMERGENCY                   "emergency"
      */
-    protected $handler = null;
 
-    public function __construct()
+    //---------------------------- 伪代码 ----------------------------//
+
+     public function __construct()
     {
         #SeasLog init
-        if (!class_exists('seaslog')) {
-            throw new ErrorException("do not find php extend: seaslog");
-            return;
-        }
-        //初始化
-        $this->handler = new \SeasLog();
-    }
-
-    public function __call($name,$param_arr){
-        return call_user_func_array([$this->handler, $name], $param_arr);
     }
 
     public function __destruct()
     {
         #SeasLog distroy
-        unset($this->handler);
     }
-
-
-    //---------------------------- 伪代码 ----------------------------//
 
      /**
      * 设置basePath
