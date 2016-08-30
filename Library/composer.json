@@ -1,6 +1,6 @@
 {
     "require": {
-        "monolog/monolog": "1.0.*",
+        "monolog/monolog": "1.21.*",
         "league/climate": "^3.2",
         "psr/log": "^1.0"
     }

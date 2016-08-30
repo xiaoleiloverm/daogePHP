@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__.'/Monolog/TestCase.php';
+namespace Monolog\Handler;
 
-spl_autoload_register(function($class)
+/**
+ * Exception can be thrown if an extension for an handler is missing
+ *
+ * @author  Christian Bergau <cbergau86@gmail.com>
+ */
+class MissingExtensionException extends \Exception
 {
-    $file = __DIR__.'/../src/'.strtr($class, '\\', '/').'.php';
-    if (file_exists($file)) {
-        require $file;
-        return true;
-    }
-});
+}

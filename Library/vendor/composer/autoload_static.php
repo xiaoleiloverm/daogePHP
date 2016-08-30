@@ -11,6 +11,10 @@ class ComposerStaticInit0f5d0eb39830408418e02ec7fa321641
         array (
             'Seld\\CliPrompt\\' => 15,
         ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
+        ),
         'L' => 
         array (
             'League\\CLImate\\' => 15,
@@ -21,6 +25,10 @@ class ComposerStaticInit0f5d0eb39830408418e02ec7fa321641
         'Seld\\CliPrompt\\' => 
         array (
             0 => __DIR__ . '/..' . '/seld/cli-prompt/src',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
         'League\\CLImate\\' => 
         array (
@@ -34,13 +42,6 @@ class ComposerStaticInit0f5d0eb39830408418e02ec7fa321641
             'Psr\\Log\\' => 
             array (
                 0 => __DIR__ . '/..' . '/psr/log',
-            ),
-        ),
-        'M' => 
-        array (
-            'Monolog' => 
-            array (
-                0 => __DIR__ . '/..' . '/monolog/monolog/src',
             ),
         ),
     );

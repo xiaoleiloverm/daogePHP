@@ -7,5 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Seld\\CliPrompt\\' => array($vendorDir . '/seld/cli-prompt/src'),
+    'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'League\\CLImate\\' => array($vendorDir . '/league/climate/src'),
 );
