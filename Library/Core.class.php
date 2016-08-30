@@ -71,7 +71,7 @@ class Core
         //加载应用配置文件
         \Library\Core::appConfig();
         //实例化核心控制器C
-        $controller = new \Library\controller\Controller;
+        $controller = new \Library\Controller\Controller;
         $controller->test();
         //实例化核心模型M
         //实例化核心视图V
@@ -95,8 +95,6 @@ class Core
      */
     public static function fatalError()
     {
-        //记录日志
-        //Log::save();
         //获取最后发生的错误,php>5.2
         if ($e = error_get_last()) {
             switch ($e['type']) {
@@ -109,6 +107,10 @@ class Core
                     self::halt($e);
                     break;
             }
+            //记录日志
+            $log = new \Library\Controller\Log\MonoLog();
+            $log->createLogFile();
+            $log->emergency('fatalError function' . __FUNCTION__, $e);
         }
     }
 
