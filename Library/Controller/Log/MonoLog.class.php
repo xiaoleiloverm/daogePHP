@@ -30,23 +30,23 @@ class MonoLog
         'NOTICE'    => MonoLogger::NOTICE, //NOTICE (250): 普通但是重要的事件。
         'WARNING'   => MonoLogger::WARNING, //WARNING (300): 出现非错误的异常。
         'ERROR'     => MonoLogger::ERROR, //ERROR (400): 运行时错误，但是不需要立刻处理。
-        'CRITICAL'  => MonoLogger::CRITICAL, //CRITICA (500): 严重错误。
+        'CRITICAL'  => MonoLogger::CRITICAL, //CRITICAL (500): 严重错误。
         'ALERT'     => MonoLogger::ALERT, //ALERT (550): 严重错误。
         'EMERGENCY' => MonoLogger::EMERGENCY, // EMERGENCY (600): 系统不可用。
     ];
 
     //初始化
-    public function __construct($channel)
+    public function __construct($channel = 'daogePHP')
     {
         //初始化
-        $this->logger = new MonoLogger($channel = 'daogePHP');
+        $this->logger = new MonoLogger($channel);
     }
 
     /**
      * EMERGENCY (600): 系统不可用。
      *
-     * @param  string  $message 消息
-     * @param  array  $context 上下文
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
      * @return void
      */
     public function emergency($message, array $context = [])
@@ -57,8 +57,8 @@ class MonoLog
     /**
      * 警告
      *
-     * @param  string  $message 消息
-     * @param  array  $context 上下文
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
      * @return void
      */
     public function alert($message, array $context = [])
@@ -67,10 +67,10 @@ class MonoLog
     }
 
     /**
-     * CRITICA (500): 严重错误。
+     * CRITICAL (500): 严重错误。
      *
-     * @param  string  $message 消息
-     * @param  array  $context 上下文
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
      * @return void
      */
     public function critical($message, array $context = [])
@@ -81,13 +81,87 @@ class MonoLog
     /**
      * ERROR (400): 运行时错误，但是不需要立刻处理。
      *
-     * @param  string  $message 消息
-     * @param  array  $context 上下文
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
      * @return void
      */
     public function error($message, array $context = [])
     {
         return $this->record(__FUNCTION__, $message, $context);
+    }
+
+    /**
+     * WARNING (300): 出现非错误的异常。
+     *
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function warning($message, array $context = [])
+    {
+        return $this->record(__FUNCTION__, $message, $context);
+    }
+
+    /**
+     * NOTICE (250): 普通但是重要的事件。
+     *
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function notice($message, array $context = [])
+    {
+        return $this->record(__FUNCTION__, $message, $context);
+    }
+
+    /**
+     * INFO (200): 关键事件。
+     *
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function info($message, array $context = [])
+    {
+        return $this->record(__FUNCTION__, $message, $context);
+    }
+
+    /**
+     * DEBUG (100): 详细的debug信息。
+     *
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function debug($message, array $context = [])
+    {
+        return $this->record(__FUNCTION__, $message, $context);
+    }
+
+    /**
+     * 任意级别
+     *
+     * @param  string  $level 级别
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function log($level, $message, array $context = [])
+    {
+        return $this->record($level, $message, $context);
+    }
+
+    /**
+     * 任意级别
+     *
+     * @param  string  $level 级别
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function write($level, $message, array $context = [])
+    {
+        return $this->record($level, $message, $context);
     }
 
     /**

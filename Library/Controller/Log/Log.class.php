@@ -38,4 +38,139 @@ class Log
         #SeasLog distroy
         unset($this->handler);
     }
+
+    /**
+     * EMERGENCY (600): 系统不可用。
+     *
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function emergency($message, array $context = [])
+    {
+
+    }
+
+    /**
+     * 警告
+     *
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function alert($message, array $context = [])
+    {
+
+    }
+
+    /**
+     * CRITICAL (500): 严重错误。
+     *
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function critical($message, array $context = [])
+    {
+
+    }
+
+    /**
+     * ERROR (400): 运行时错误，但是不需要立刻处理。
+     *
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function error($message, array $context = [])
+    {
+
+    }
+
+    /**
+     * WARNING (300): 出现非错误的异常。
+     *
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function warning($message, array $context = [])
+    {
+
+    }
+
+    /**
+     * NOTICE (250): 普通但是重要的事件。
+     *
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function notice($message, array $context = [])
+    {
+
+    }
+
+    /**
+     * INFO (200): 关键事件。
+     *
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function info($message, array $context = [])
+    {
+
+    }
+
+    /**
+     * DEBUG (100): 详细的debug信息。
+     *
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function debug($message, array $context = [])
+    {
+
+    }
+
+    /**
+     * 任意级别
+     *
+     * @param  string  $level 级别
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function log($level, $message, array $context = [])
+    {
+
+    }
+
+    /**
+     * 任意级别
+     *
+     * @param  string  $level 级别
+     * @param  string  $message 消息(日志抬头)
+     * @param  array  $context 内容
+     * @return void
+     */
+    public function write($level, $message, array $context = [])
+    {
+
+    }
+
+    /**
+     * 记录日志
+     * @param string $level 日志级别
+     * @param string $level 通知消息
+     * @param array $level 上下文
+     * @return void
+     */
+    public function record($level, $message, $context)
+    {
+
+    }
+
 }

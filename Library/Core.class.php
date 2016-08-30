@@ -71,7 +71,7 @@ class Core
         //加载应用配置文件
         \Library\Core::appConfig();
         //实例化核心控制器C
-        $controller = new \Library\Controller\Controller;
+        $controller = new \Library\Controller\Controller();
         $controller->test();
         //实例化核心模型M
         //实例化核心视图V
@@ -108,9 +108,9 @@ class Core
                     break;
             }
             //记录日志
-            $log = new \Library\Controller\Log\MonoLog();
-            $log->createLogFile();
-            $log->emergency('fatalError function' . __FUNCTION__, $e);
+            $log = new \Library\Controller\Log\MonoLog('error');
+            $log->createLogFile(APP_PATH . 'Log/app.log'); //记录文件
+            $log->emergency('fatalError', $e);
         }
     }
 
