@@ -19,7 +19,7 @@ class Controller
     public function display()
     {
         //框架控制器根目录
-        include APP_PATH . 'Viem' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . 'Index' . DIRECTORY_SEPARATOR . 'index.html'
+        include APP_PATH . 'Viem' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . 'Index' . DIRECTORY_SEPARATOR . 'index.html';
     }
 
     /**

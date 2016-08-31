@@ -75,6 +75,7 @@ class Core
         $controller->test();
         //实例化核心模型M
         //实例化核心视图V
+        $_c = C(['a' => ['aa' => 1, 'bb' => ['bbb' => 1]], 'b' => 2, 'c' => 3]);
     }
 
     /**
@@ -155,6 +156,7 @@ class Core
             if (APP_DEBUG) {
                 echo "<br />" . '<strong>trace:</strong> ' . '<br />' . nl2br($e['trace']);
             }
+            //throw new \ErrorException($e['message'], 0, $e['type'], $e['file'], $e['line']); //抛出错误异常
             return (true); //And prevent the PHP error handler from continuing
         }
         //非调试模式 一般是正式环境
