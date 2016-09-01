@@ -28,11 +28,16 @@ const CONFIG_EXT = '.php';
 //系统常量设置
 defined('DAOGE_PATH') or define('DAOGE_PATH', __dir__ . '/'); //框架根目录
 defined('LIB_PATH') or define('LIB_PATH', DAOGE_PATH . 'Library' . '/'); //核心类库目录
-defined('COMMON_PATH') or define('COMMON_PATH', LIB_PATH . 'Common' . '/'); //核心文件（函数）目录
+defined('COMM_PATH') or define('COMM_PATH', LIB_PATH . 'Common' . '/'); //核心文件（函数）目录
 defined('CONFIG_PATH') or define('CONFIG_PATH', LIB_PATH . 'Config' . '/'); //核心配置目录
 defined('VENDOR_PATH') or define('VENDOR_PATH', LIB_PATH . 'vendor' . '/'); //第三方库目录
+//应用常量
+defined('APP_PATH') or define('APP_PATH', dirname($_SERVER['SCRIPT_FILENAME']) . '/'); //应用目录
+defined('APP_COMMON_PATH') or define('APP_COMMON_PATH', APP_PATH . 'Common' . '/'); //应用公共文件目录
+defined('APP_COMM_PATH') or define('APP_COMM_PATH', APP_COMMON_PATH . 'Common' . '/'); //核心文件（函数）目录
+defined('APP_CONFIG_PATH') or define('APP_CONFIG_PATH', APP_PATH . 'Config' . '/'); //应用配置文件目录
+defined('APP_VENDOR_PATH') or define('APP_VENDOR_PATH', APP_PATH . 'vendor' . '/'); //应用第三方库目录
 
-defined('APP_PATH') or define('APP_PATH', dirname($_SERVER['SCRIPT_FILENAME']) . '/');
 defined('APP_DEBUG') or define('APP_DEBUG', false); //是否开启调试模式
 //cgi模式常量
 define('IS_CGI', (0 === strpos(PHP_SAPI, 'cgi') || false !== strpos(PHP_SAPI, 'fcgi')) ? 1 : 0);

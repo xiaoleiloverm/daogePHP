@@ -24,14 +24,18 @@ class Core
         register_shutdown_function('\Library\Core::fatalError');
         // 设置自定义的错误处理：函数会捕获用户自定义的和非致命类错误
         set_error_handler('\Library\Core::customError'); //过程中用户自定义错误trigger_error触发
-        //捕获未处理的异常
+        // 捕获未处理的异常
         set_exception_handler('\Library\Core::customException');
-        //加载composer 依赖
+        // 加载composer 依赖
         if (file_exists(VENDOR_PATH . 'autoload.php')) {
             require_once VENDOR_PATH . 'autoload.php';
         }
         //加载核心配置
         \Library\Core::coreConfig();
+        //加载框架底层语言包
+        L(include LIB_PATH . 'Lang/' . strtolower(C('DEFAULT_LANG')) . '.php');
+        // 系统设置
+        date_default_timezone_set(C('DEFAULT_TIMEZONE')); //设置系统时区
     }
 
     /**
@@ -39,16 +43,18 @@ class Core
      */
     public static function coreConfig()
     {
-        $mode = include CONFIG_PATH . 'Core' . CONFIG_EXT;
+        $mode = include CONFIG_PATH . 'core' . CONFIG_EXT;
         // 加载核心文件
         foreach ($mode['core'] as $file) {
             if (is_file($file)) {
                 include $file;
             }
         }
-        //加载核心配置文件
+        //加载核心通用配置文件
         foreach ($mode['config'] as $file) {
-            //
+            if (is_file($file)) {
+                C(include $file);
+            }
         }
     }
 
@@ -57,6 +63,9 @@ class Core
      */
     public static function appConfig()
     {
+        if (is_file(APP_PATH . 'Config/config' . CONF_EXT)) {
+            C(include APP_PATH . 'Config/config' . CONF_EXT);
+        }
 
     }
 
@@ -75,7 +84,8 @@ class Core
         $controller->test();
         //实例化核心模型M
         //实例化核心视图V
-        $_c = C(['a' => ['aa' => 1, 'bb' => ['bbb' => 1]], 'b' => 2, 'c' => 3]);
+        var_dump(C());
+        //redirect('daoge.com', 3);
     }
 
     /**
@@ -161,7 +171,8 @@ class Core
         }
         //非调试模式 一般是正式环境
         else {
-            ////config 的 ERROR_MESSAGE 配置
+
+            //C('SHOW_ERROR_MESSAGE')?:C('ERROR_MESSAGE')
             exit('页面错误，请重试!');
         }
 

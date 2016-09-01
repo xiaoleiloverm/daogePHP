@@ -19,6 +19,15 @@ function A()
 }
 
 /**
+ * 行为函数
+ *
+ */
+function B()
+{
+
+}
+
+/**
  * 配置函数,获取配置/(批量)配置
  *
  * @param  array|string  $key  配置键名
@@ -67,6 +76,15 @@ function C($key = null, $value = null)
         }
     }
     return null;
+}
+
+/**
+ * 数据库模型实例化函数
+ *
+ */
+function D()
+{
+
 }
 
 /**
@@ -152,11 +170,30 @@ function L($key = null, $value = null)
             return isset($_lang[$key]) ? $_lang[$key] : null;
         } else if (is_array($value)) {
             //替换变量
-            //$search = array_key($value);//['a'=>'apple']
+            $search = array_key($value);
+            foreach ($search as &$v) {
+                $v = '{$' . $v . '}';
+            }
             //若不存在,直接返回全大写$key
-            //return str_replace($search, $value, isset($_lang[$key]) ? $_lang[$key] : $key);
+            return str_replace($search, $value, isset($_lang[$key]) ? $_lang[$key] : $key);
         }
         $_lang[$key] = $value;
     }
     return null;
+}
+
+/**
+ * URL重定向
+ * @param string $url 重定向的URL地址
+ * @param integer $time 重定向的等待时间（秒）
+ * @param string $msg 重定向前的提示信息
+ * @return void
+ */
+function redirect($url, $time = 0, $msg = '')
+{
+    $url = str_replace(["\r", "\n"], '', $url);
+    if ($msg == '') {
+        $msg = L('_SYS_REDIRECT_MSG_');
+    }
+    var_dump($msg);
 }
