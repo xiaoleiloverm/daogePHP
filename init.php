@@ -35,8 +35,8 @@ defined('VENDOR_PATH') or define('VENDOR_PATH', LIB_PATH . 'vendor' . '/'); //�
 defined('APP_PATH') or define('APP_PATH', dirname($_SERVER['SCRIPT_FILENAME']) . '/'); //应用目录
 defined('APP_COMMON_PATH') or define('APP_COMMON_PATH', APP_PATH . 'Common' . '/'); //应用公共文件目录
 defined('APP_COMM_PATH') or define('APP_COMM_PATH', APP_COMMON_PATH . 'Common' . '/'); //核心文件（函数）目录
-defined('APP_CONFIG_PATH') or define('APP_CONFIG_PATH', APP_PATH . 'Config' . '/'); //应用配置文件目录
-defined('APP_VENDOR_PATH') or define('APP_VENDOR_PATH', APP_PATH . 'vendor' . '/'); //应用第三方库目录
+defined('APP_CONFIG_PATH') or define('APP_CONFIG_PATH', APP_COMMON_PATH . 'Config' . '/'); //应用配置文件目录
+defined('APP_VENDOR_PATH') or define('APP_VENDOR_PATH', APP_COMMON_PATH . 'vendor' . '/'); //应用第三方库目录
 
 defined('APP_DEBUG') or define('APP_DEBUG', false); //是否开启调试模式
 //cgi模式常量

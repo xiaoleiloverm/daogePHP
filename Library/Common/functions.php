@@ -32,9 +32,10 @@ function B()
  *
  * @param  array|string  $key  配置键名
  * @param  mixed  $value 配置值
+ * @param  mixed  $default 默认值,用于读取
  * @return mixed
  */
-function C($key = null, $value = null)
+function C($key = null, $value = null, $default = null)
 {
     static $_config = [];
     //获取所有
@@ -62,7 +63,7 @@ function C($key = null, $value = null)
             $key = strtoupper($key);
             //读取
             if ($value === null) {
-                return isset($_config[$key]) ? $_config[$key] : null;
+                return isset($_config[$key]) ? $_config[$key] : $default;
             }
             $_config[$key] = $value;
         } else {
@@ -70,7 +71,7 @@ function C($key = null, $value = null)
             $key[0] = strtoupper($key[0]);
             //读取
             if ($value === null) {
-                return isset($_config[$key[0]][$key[1]]) ? $_config[$key[0]][$key[1]] : null;
+                return isset($_config[$key[0]][$key[1]]) ? $_config[$key[0]][$key[1]] : $default;
             }
             $_config[$key[0]][$key[1]] = $value;
         }
@@ -167,6 +168,8 @@ function L($key = null, $value = null)
         $key = strtoupper($key);
         //读取
         if ($value === null) {
+            //替换变量
+            //var_dump(preg_replace('/\{\$([\w]+)\}/', "$1", $_lang[$key]));
             return isset($_lang[$key]) ? $_lang[$key] : null;
         } else if (is_array($value)) {
             //替换变量
@@ -195,5 +198,94 @@ function redirect($url, $time = 0, $msg = '')
     if ($msg == '') {
         $msg = L('_SYS_REDIRECT_MSG_');
     }
-    var_dump($msg);
+    eval("\$msg = \"$msg\";"); //解析字符串变量
+    if (!headers_sent()) {
+        if ($time === 0) {
+            header("Location:" . $url);
+        } else {
+            header("refresh:{$time};url={$url}");
+            exit($msg);
+        }
+    } else {
+        $str = "<meta http-equiv='Refresh' content='{$time};URL={$url}'>";
+        ($time != 0) && $str .= $msg;
+        exit($str);
+    }
+}
+
+/**
+ * 发送HTTP状态
+ * @param integer $code 状态码
+ * @return void
+ */
+function send_http_status($code)
+{
+    static $_status = array(
+        // Informational 1xx
+        100 => 'Continue',
+        101 => 'Switching Protocols',
+        // Success 2xx
+        200 => 'OK',
+        201 => 'Created',
+        202 => 'Accepted',
+        203 => 'Non-Authoritative Information',
+        204 => 'No Content',
+        205 => 'Reset Content',
+        206 => 'Partial Content',
+        // Redirection 3xx
+        300 => 'Multiple Choices',
+        301 => 'Moved Permanently',
+        302 => 'Moved Temporarily ', // 1.1
+        303 => 'See Other',
+        304 => 'Not Modified',
+        305 => 'Use Proxy',
+        // 306 is deprecated but reserved
+        307 => 'Temporary Redirect',
+        // Client Error 4xx
+        400 => 'Bad Request',
+        401 => 'Unauthorized',
+        402 => 'Payment Required',
+        403 => 'Forbidden',
+        404 => 'Not Found',
+        405 => 'Method Not Allowed',
+        406 => 'Not Acceptable',
+        407 => 'Proxy Authentication Required',
+        408 => 'Request Timeout',
+        409 => 'Conflict',
+        410 => 'Gone',
+        411 => 'Length Required',
+        412 => 'Precondition Failed',
+        413 => 'Request Entity Too Large',
+        414 => 'Request-URI Too Long',
+        415 => 'Unsupported Media Type',
+        416 => 'Requested Range Not Satisfiable',
+        417 => 'Expectation Failed',
+        // Server Error 5xx
+        500 => 'Internal Server Error',
+        501 => 'Not Implemented',
+        502 => 'Bad Gateway',
+        503 => 'Service Unavailable',
+        504 => 'Gateway Timeout',
+        505 => 'HTTP Version Not Supported',
+        509 => 'Bandwidth Limit Exceeded',
+    );
+    if (isset($_status[$code])) {
+        header('HTTP/1.1 ' . $code . ' ' . $_status[$code]);
+        // 确保FastCGI模式下正常
+        header('Status:' . $code . ' ' . $_status[$code]);
+    }
+}
+
+/**
+ * 判断是否SSL协议
+ * @return boolean
+ */
+function is_ssl()
+{
+    if (isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS']))) {
+        return true;
+    } elseif (isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'])) {
+        return true;
+    }
+    return false;
 }

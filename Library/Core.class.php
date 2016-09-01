@@ -63,9 +63,45 @@ class Core
      */
     public static function appConfig()
     {
-        if (is_file(APP_PATH . 'Config/config' . CONF_EXT)) {
-            C(include APP_PATH . 'Config/config' . CONF_EXT);
+        //加载应用公共配置
+        if (is_file(APP_CONFIG_PATH . 'config' . CONFIG_EXT)) {
+            C(include APP_CONFIG_PATH . 'config' . CONFIG_EXT);
         }
+        ////加载应用项目配置,可覆盖公共配置
+        // if (is_file(APP_PATH . 'Config/config' . CONFIG_EXT)) {
+        //     C(include APP_PATH . 'Config/config' . CONFIG_EXT);
+        // }
+    }
+
+    /**
+     *加载http 控制器 C层
+     */
+    public static function http_C()
+    {
+        //实例化核心控制器C
+        $controller = new \Library\Controller\Controller();
+        $controller->test();
+    }
+
+    /**
+     *加载http 模型 M层
+     */
+    public static function http_M()
+    {
+        //实例化核心模型M
+        $Model = new \Library\Model\Model();
+        $Model->test();
+
+    }
+
+    /**
+     *加载http 视图 V层
+     */
+    public static function http_V()
+    {
+        //实例化核心视图V
+        $View = new \Library\View\View();
+        $View->test();
 
     }
 
@@ -79,13 +115,17 @@ class Core
 
         //加载应用配置文件
         \Library\Core::appConfig();
-        //实例化核心控制器C
-        $controller = new \Library\Controller\Controller();
-        $controller->test();
-        //实例化核心模型M
-        //实例化核心视图V
-        var_dump(C());
-        //redirect('daoge.com', 3);
+
+        //路由调度
+
+        //加载http C层
+        \Library\Core::http_C();
+
+        //加载http M层
+        //\Library\Core::http_M();
+
+        //加载http V层
+        //\Library\Core::http_V();
     }
 
     /**
@@ -171,9 +211,14 @@ class Core
         }
         //非调试模式 一般是正式环境
         else {
-
-            //C('SHOW_ERROR_MESSAGE')?:C('ERROR_MESSAGE')
-            exit('页面错误，请重试!');
+            if (!C('ERROR_PAGE')) {
+                redirect(C('ERROR_PAGE'));
+            } else {
+                $message      = is_array($error) ? $error['message'] : $error;
+                $e['message'] = C('SHOW_ERROR_MESSAGE') ? $message : C('ERROR_MESSAGE');
+            }
+            //输出错误信息
+            exit($e['message']);
         }
 
     }
