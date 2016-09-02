@@ -114,6 +114,7 @@ var_dump($handler->getBasePath());
 var_dump(SEASLOG_DEBUG);*/
 $testSeas = new \testSeas();
 $res      = $testSeas->getBasePath();
+var_dump(SEASLOG_DEBUG);
 //$res      = $testSeas->warning();
 var_dump($res);
 /*
