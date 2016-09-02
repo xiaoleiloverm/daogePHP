@@ -8,21 +8,25 @@
  * |Copyright (c) 2016-2018 All rights reserved.
  * +------------------------------------------------------------------
  */
-namespace library\Controller\Log;
+namespace Library\Controller\Log;
 
 class Log
 {
     protected $handler = null;
 
-    public function __construct()
+    public function __construct($channel = null)
     {
-        //SeasLog 需要php_SeasLog 扩展支持
-        if (!class_exists('seaslog')) {
-            throw new ErrorException("do not find php extend: seaslog");
-            return;
+        if (strtolower(C('LOG_TYPE', null, 'MonoLog')) == 'monolog') {
+            $this->handler = new MonoLog($channel);
         }
-        //初始化
-        $this->handler = new \SeasLog();
+        if (strtolower(C('LOG_TYPE')) == 'seaslog') {
+            //SeasLog 需要php_SeasLog 扩展支持
+            if (!class_exists('SeasLog')) {
+                throw new ErrorException(L('_NOT_FIND_SEASLOG_'));
+                return;
+            }
+            $this->handler = new SeasLog($channel);
+        }
     }
 
     /**
@@ -46,7 +50,7 @@ class Log
      * @param  array  $context 内容
      * @return void
      */
-    public function emergency($message, array $context = [])
+    private function emergency($message, array $context = [])
     {
 
     }
@@ -58,7 +62,7 @@ class Log
      * @param  array  $context 内容
      * @return void
      */
-    public function alert($message, array $context = [])
+    private function alert($message, array $context = [])
     {
 
     }
@@ -70,7 +74,7 @@ class Log
      * @param  array  $context 内容
      * @return void
      */
-    public function critical($message, array $context = [])
+    private function critical($message, array $context = [])
     {
 
     }
@@ -82,7 +86,7 @@ class Log
      * @param  array  $context 内容
      * @return void
      */
-    public function error($message, array $context = [])
+    private function error($message, array $context = [])
     {
 
     }
@@ -94,7 +98,7 @@ class Log
      * @param  array  $context 内容
      * @return void
      */
-    public function warning($message, array $context = [])
+    private function warning($message, array $context = [])
     {
 
     }
@@ -106,7 +110,7 @@ class Log
      * @param  array  $context 内容
      * @return void
      */
-    public function notice($message, array $context = [])
+    private function notice($message, array $context = [])
     {
 
     }
@@ -118,7 +122,7 @@ class Log
      * @param  array  $context 内容
      * @return void
      */
-    public function info($message, array $context = [])
+    private function info($message, array $context = [])
     {
 
     }
@@ -130,7 +134,7 @@ class Log
      * @param  array  $context 内容
      * @return void
      */
-    public function debug($message, array $context = [])
+    private function debug($message, array $context = [])
     {
 
     }
@@ -143,7 +147,7 @@ class Log
      * @param  array  $context 内容
      * @return void
      */
-    public function log($level, $message, array $context = [])
+    private function log($level, $message, array $context = [])
     {
 
     }
@@ -156,7 +160,7 @@ class Log
      * @param  array  $context 内容
      * @return void
      */
-    public function write($level, $message, array $context = [])
+    private function write($level, $message, array $context = [])
     {
 
     }
@@ -168,7 +172,7 @@ class Log
      * @param array $level 上下文
      * @return void
      */
-    public function record($level, $message, $context)
+    private function record($level, $message, $context)
     {
 
     }

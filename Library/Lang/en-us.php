@@ -10,9 +10,9 @@
  */
 
 /**
- * DaogePHP 简体中文语言包
+ * DaogePHP 英文 语言包
  */
 return [
-    '_SYS_REDIRECT_MSG_' => '系统将在{$time}秒之后自动跳转到{$url}！', //系统跳转提示 redirect函数中
-    '_NOT_FIND_SEASLOG_' => 'php扩展seasLog没找到',
+    '_SYS_REDIRECT_MSG_' => 'System will be in {$time} seconds after automatically jump to {$url}！', // redirect function
+    '_NOT_FIND_SEASLOG_' => 'php extend seasLog not found',
 ];

@@ -13,13 +13,12 @@ namespace Library\Controller\Log;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger as MonoLogger;
 
-//use Library\Interface\Controller\Log\Log as LogInterface;
-
-class MonoLog
+class MonoLog implements \Library\Interface\Controller\Log\Log
+//class MonoLog
 {
-    protected $logger;
-    protected $handler;
-    protected $channel;
+    protected $logger; //日志对象
+    protected $handler; //处理器
+    protected $level; //日志等级
 
     /*
      *日志等级
@@ -35,11 +34,45 @@ class MonoLog
         'EMERGENCY' => MonoLogger::EMERGENCY, // EMERGENCY (600): 系统不可用。
     ];
 
-    //初始化
-    public function __construct($channel = 'daogePHP')
+    /**
+     * 初始化
+     *
+     * @param  string  $channel 频道(日志处理器) 默认 daogePHP
+     * @param  string  $level 日志等级 默认debug
+     * @param  string  $createLogFile 创建日志文件 默认不创建
+     * @return object 日志对象
+     */
+    public function __construct($channel = 'daogePHP', $level = 'debug', $handler = null)
     {
-        //初始化
+        //创建日志频道
         $this->logger = new MonoLogger($channel);
+        //日志等级
+        $level || $level = 'debug';
+        $this->level     = $level;
+        //设置日志操作者
+        if ($handler != '') {
+            //创建日志文件
+            $this->createLogFile($createLogFile, $this->level);
+        }
+    }
+
+    public function __destruct()
+    {
+        unset($logger, $handler, $level);
+    }
+
+    /*
+     *
+     * StreamHandler ：把记录写进PHP流，主要用于日志文件。
+     * SyslogHandler ：把记录写进syslog。
+     * ErrorLogHandler ：把记录写进PHP错误日志。
+     * NativeMailerHandler ：使用PHP的 mail() 函数发送日志记录。
+     * SocketHandler ：通过socket写日志。
+     */
+    //设置日志操作者
+    private function setHander($handlerObj)
+    {
+
     }
 
     /**
@@ -173,6 +206,7 @@ class MonoLog
      */
     public function record($level, $message, $context)
     {
+        $level || $level = $this->level;
         $this->logger->{$level}($message, $context);
     }
 

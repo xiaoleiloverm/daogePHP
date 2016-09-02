@@ -34,6 +34,10 @@ class Core
         \Library\Core::coreConfig();
         //加载框架底层语言包
         L(include LIB_PATH . 'Lang/' . strtolower(C('DEFAULT_LANG')) . '.php');
+        //加载系统日志抽象类接口
+        if (file_exists(INTERFACE_PATH . 'Controller/Log/Log.php')) {
+            require_once INTERFACE_PATH . 'Controller/Log/Log.php';
+        }
         // 系统设置
         date_default_timezone_set(C('DEFAULT_TIMEZONE')); //设置系统时区
     }
@@ -116,6 +120,9 @@ class Core
         //加载应用配置文件
         \Library\Core::appConfig();
 
+        //var_dump(C());
+        $log = new \Library\Controller\Log\MonoLog('error', 'emergency', APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
+
         //路由调度
 
         //加载http C层
@@ -136,8 +143,13 @@ class Core
     public static function autoload($class)
     {
         $class = str_replace('\\', '/', $class);
+        //类文件自动加载
         if (file_exists(DAOGE_PATH . $class . EXT)) {
             require DAOGE_PATH . $class . EXT;
+        }
+        //普通文件自动加载
+        elseif (file_exists(DAOGE_PATH . $class . '.php')) {
+            require DAOGE_PATH . $class . '.php';
         }
     }
 
@@ -159,9 +171,10 @@ class Core
                     break;
             }
             //记录日志
-            $log = new \Library\Controller\Log\MonoLog('error');
-            $log->createLogFile(APP_PATH . 'Log/app.log'); //记录文件
-            $log->emergency('fatalError', $e);
+            $log = new \Library\Controller\Log\MonoLog('error', 'emergency', APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
+            //$log->createLogFile(APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log', 'emergency'); //记录文件
+            $log->addInfo('fatalError', $e);
+            //$log->record('', 'fatalError', $e);
         }
     }
 
@@ -195,7 +208,7 @@ class Core
             //CLI下输出
             if (IS_CLI) {
                 //加载climate 库
-                $climate = new League\CLImate\CLImate;
+                $climate = new \League\CLImate\CLImate;
                 //友好输出
                 $climate->out(iconv('UTF-8', 'gbk', $e['message']) . PHP_EOL . 'file:' . $e['file'] . PHP_EOL . 'line:' . $e['line']);
                 //普通输出

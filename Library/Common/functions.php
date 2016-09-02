@@ -54,7 +54,7 @@ function C($key = null, $value = null, $default = null)
             }, array_change_key_case($key, CASE_UPPER));
         };
         $key     = $array_change_key_case_recursive($key);
-        $_config = array_merge_recursive($_config, $key);
+        $_config = array_merge($_config, $key);
         return null;
     }
     //赋值
@@ -140,6 +140,25 @@ function E($error, $handler = 'ErrorException')
  * @param  array|string  $key  键名
  * @param  mixed  $value 值
  * @return mixed
+ */
+/*
+ * zh-cn 简体中文
+ * zh-tw 繁体中文
+ * da-dk 丹麦语
+ * nl-nl 荷兰语
+ * en-us 英语
+ * fi-fi 芬兰语
+ * fr-fr 法语
+ * de-de 德语
+ * it-it 意大利语
+ * ja-jp 日语
+ * ko-kr 朝鲜语
+ * nb-no 挪威语
+ * pt-br 葡萄牙语
+ * es-es 西班牙语
+ * es-us 西班牙语（美国）
+ * sv-se 瑞典语
+ * ......
  */
 function L($key = null, $value = null)
 {

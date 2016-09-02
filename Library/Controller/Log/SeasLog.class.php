@@ -1,4 +1,4 @@
-    <?php
+<?php
 /**
  * +------------------------------------------------------------------
  * |daogePHP： 框架核心日志类 -> seasLog日志伪代码类;seaslog需要seaslog扩展支持
@@ -11,9 +11,7 @@
 
 namespace Library\Controller\Log;
 
-use Library\Interface\Controller\Log as LogInterface;
-
-class SeasLog
+class SeasLog extends \SeasLog
 {
     //常量列表
     /* SEASLOG_DEBUG                       "debug"
@@ -26,19 +24,53 @@ class SeasLog
      * SEASLOG_EMERGENCY                   "emergency"
      */
 
-    //---------------------------- 伪代码 ----------------------------//
+    protected $logger; //日志对象
+    protected $channel;
+    protected $level; //日志等级
 
-     public function __construct()
+    /*
+     *日志等级 php系统常量
+     */
+    protected $levers = [
+        'DEBUG'     => SEASLOG_DEBUG, //DEBUG (100): 详细的debug信息。
+        'INFO'      => SEASLOG_INFO, //INFO (200): 关键事件。
+        'NOTICE'    => SEASLOG_NOTICE, //NOTICE (250): 普通但是重要的事件。
+        'WARNING'   => SEASLOG_WARNING, //WARNING (300): 出现非错误的异常。
+        'ERROR'     => SEASLOG_ERROR, //ERROR (400): 运行时错误，但是不需要立刻处理。
+        'CRITICAL'  => SEASLOG_CRITICAL, //CRITICAL (500): 严重错误。
+        'ALERT'     => SEASLOG_ALERT, //ALERT (550): 严重错误。
+        'EMERGENCY' => SEASLOG_EMERGENCY, // EMERGENCY (600): 系统不可用。
+    ];
+
+    /**
+     * 初始化
+     *
+     * @param  string  $channel 频道(日志处理器) 默认 daogePHP
+     * @param  string  $level 日志等级 默认debug
+     * @param  string  $createLogFile 创建日志文件 默认不创建
+     * @return object 日志对象
+     */
+    public function __construct($channel = 'daogePHP', $level = 'debug', $createLogFile = null)
     {
-        #SeasLog init
+        //创建日志频道
+        $this->logger = new SeasLog($channel);
+        //日志等级
+        $level || $level = 'debug';
+        $this->level     = $level;
+        //创建文件
+        if ($createLogFile != '') {
+            $this->createLogFile($createLogFile, $this->level);
+        }
     }
 
     public function __destruct()
     {
-        #SeasLog distroy
+        unset($logger, $channel, $level);
     }
 
-     /**
+    //---------------------------- 伪代码 ----------------------------//
+
+    /**
      * 设置basePath
      *
      * @param $basePath
@@ -47,7 +79,7 @@ class SeasLog
      */
     private function setBasePath($basePath)
     {
-        return TRUE;
+        return true;
     }
 
     /**
@@ -68,7 +100,7 @@ class SeasLog
      */
     private function setLogger($module)
     {
-        return TRUE;
+        return true;
     }
 
     /**
@@ -88,7 +120,7 @@ class SeasLog
      */
     private function setDatetimeFormat($format)
     {
-        return TRUE;
+        return true;
     }
 
     /**
@@ -108,7 +140,7 @@ class SeasLog
      *
      * @return array | long
      */
-    private function analyzerCount($level = 'all', $log_path = '*', $key_word = NULL)
+    private function analyzerCount($level = 'all', $log_path = '*', $key_word = null)
     {
         return array();
     }
@@ -125,7 +157,7 @@ class SeasLog
      *
      * @return array
      */
-    private function analyzerDetail($level = SEASLOG_INFO, $log_path = '*', $key_word = NULL, $start = 1, $limit = 20, $order = SEASLOG_DETIAL_ORDER_ASC)
+    private function analyzerDetail($level = SEASLOG_INFO, $log_path = '*', $key_word = null, $start = 1, $limit = 20, $order = SEASLOG_DETIAL_ORDER_ASC)
     {
         return array();
     }
@@ -147,7 +179,7 @@ class SeasLog
      */
     private function flushBuffer()
     {
-        return TRUE;
+        return true;
     }
 
     /**
