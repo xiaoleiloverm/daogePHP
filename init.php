@@ -28,7 +28,7 @@ const CONFIG_EXT = '.php';
 //系统常量设置
 defined('DAOGE_PATH') or define('DAOGE_PATH', __dir__ . '/'); //框架根目录
 defined('LIB_PATH') or define('LIB_PATH', DAOGE_PATH . 'Library' . '/'); //核心类库目录
-defined('INTERFACE_PATH') or define('INTERFACE_PATH', LIB_PATH . 'Interface' . '/'); //抽象类、接口目录
+defined('CONSTRUCT_PATH') or define('CONSTRUCT_PATH', LIB_PATH . 'Construct' . '/'); //抽象类、接口目录
 defined('COMM_PATH') or define('COMM_PATH', LIB_PATH . 'Common' . '/'); //核心文件（函数）目录
 defined('CONFIG_PATH') or define('CONFIG_PATH', LIB_PATH . 'Config' . '/'); //核心配置目录
 defined('VENDOR_PATH') or define('VENDOR_PATH', LIB_PATH . 'vendor' . '/'); //第三方库目录

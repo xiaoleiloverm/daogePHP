@@ -35,8 +35,8 @@ class Core
         //加载框架底层语言包
         L(include LIB_PATH . 'Lang/' . strtolower(C('DEFAULT_LANG')) . '.php');
         //加载系统日志抽象类接口
-        if (file_exists(INTERFACE_PATH . 'Controller/Log/Log.php')) {
-            require_once INTERFACE_PATH . 'Controller/Log/Log.php';
+        if (file_exists(CONSTRUCT_PATH . 'Controller/Log/Log.php')) {
+            require_once CONSTRUCT_PATH . 'Controller/Log/Log.php';
         }
         // 系统设置
         date_default_timezone_set(C('DEFAULT_TIMEZONE')); //设置系统时区

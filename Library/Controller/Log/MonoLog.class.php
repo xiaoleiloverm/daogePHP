@@ -1,7 +1,7 @@
 <?php
 /**
  * +------------------------------------------------------------------
- * |daogePHP： 框架核心日志类 -> Monolog 1.1.* 日志类
+ * |daogePHP： 框架核心日志类 -> Monolog 1.21.* 日志类
  * +------------------------------------------------------------------
  * |athor：leilu<xiaoleiloverm@gmail.com>
  * +------------------------------------------------------------------
@@ -13,8 +13,7 @@ namespace Library\Controller\Log;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger as MonoLogger;
 
-class MonoLog implements \Library\Interface\Controller\Log\Log
-//class MonoLog
+class MonoLog extends \Library\Construct\Controller\Log\Log
 {
     protected $logger; //日志对象
     protected $handler; //处理器
