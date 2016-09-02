@@ -5,6 +5,9 @@ use Psr\Log\LoggerInterface as PsrLoggerInterface;
 
 abstract class Log implements PsrLoggerInterface
 {
+    //写任意日志抽象方法
+    abstract public function write($level, $message, array $context = []);
+
     /**
      * 记录debug日志
      *
