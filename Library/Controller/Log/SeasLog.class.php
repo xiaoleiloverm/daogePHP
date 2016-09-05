@@ -25,7 +25,6 @@ class SeasLog extends \SeasLog
      */
 
     protected $logger; //日志对象
-    protected $channel;
     protected $level; //日志等级
 
     /*
@@ -50,25 +49,23 @@ class SeasLog extends \SeasLog
      * @param  string  $createLogFile 创建日志文件 默认不创建
      * @return object 日志对象
      */
-    public function __construct($channel = 'daogePHP', $level = 'debug', $createLogFile = null)
+    public function __construct($level = 'debug', $channel = 'local', \SeasLog $handler = null)
     {
         //创建日志频道
-        $this->logger = new SeasLog($channel);
+        //$this->logger = new SeasLog($channel);
         //日志等级
         $level || $level = 'debug';
         $this->level     = $level;
         //创建文件
         if ($createLogFile != '') {
-            $this->createLogFile($createLogFile, $this->level);
+            //$this->createLogFile($createLogFile, $this->level);
         }
     }
 
     public function __destruct()
     {
-        unset($logger, $channel, $level);
+        unset($logger, $level);
     }
-
-    //---------------------------- 伪代码 ----------------------------//
 
     /**
      * 设置basePath
@@ -77,9 +74,9 @@ class SeasLog extends \SeasLog
      *
      * @return bool
      */
-    private function setBasePath($basePath)
+    public static function setBasePath($basePath)
     {
-        return true;
+        return parent::setBasePath($basePath);
     }
 
     /**
@@ -87,9 +84,10 @@ class SeasLog extends \SeasLog
      *
      * @return string
      */
-    private function getBasePath()
+    public static function getBasePath()
     {
-        return 'the base_path';
+        //return call_user_func_array([parent, __FUNCTION__], []);
+        return parent::getBasePath();
     }
 
     /**
@@ -98,18 +96,18 @@ class SeasLog extends \SeasLog
      *
      * @return bool
      */
-    private function setLogger($module)
+    public static function setLogger($module)
     {
-        return true;
+        return parent::setLogger($module);
     }
 
     /**
      * 获取最后一次设置的模块目录
      * @return string
      */
-    private function getLastLogger()
+    public static function getLastLogger()
     {
-        return 'the lastLogger';
+        return parent::getLastLogger();
     }
 
     /**
@@ -118,18 +116,18 @@ class SeasLog extends \SeasLog
      *
      * @return bool
      */
-    private function setDatetimeFormat($format)
+    public static function setDatetimeFormat($format)
     {
-        return true;
+        return parent::setDatetimeFormat($format);
     }
 
     /**
      * 返回当前DatetimeFormat配置格式
      * @return string
      */
-    private function getDatetimeFormat()
+    public static function getDatetimeFormat()
     {
-        return 'the datetimeFormat';
+        return parent::getDatetimeFormat();
     }
 
     /**
@@ -140,9 +138,9 @@ class SeasLog extends \SeasLog
      *
      * @return array | long
      */
-    private function analyzerCount($level = 'all', $log_path = '*', $key_word = null)
+    public static function analyzerCount($level = 'all', $log_path = '*', $key_word = null)
     {
-        return array();
+        return parent::analyzerCount($level, $log_path, $key_word);
     }
 
     /**
@@ -157,9 +155,9 @@ class SeasLog extends \SeasLog
      *
      * @return array
      */
-    private function analyzerDetail($level = SEASLOG_INFO, $log_path = '*', $key_word = null, $start = 1, $limit = 20, $order = SEASLOG_DETIAL_ORDER_ASC)
+    public static function analyzerDetail($level = SEASLOG_INFO, $log_path = '*', $key_word = null, $start = 1, $limit = 20, $order = SEASLOG_DETIAL_ORDER_ASC)
     {
-        return array();
+        return parent::analyzerDetail($level, $log_path, $key_word, $start, $limit, $order);
     }
 
     /**
@@ -167,9 +165,9 @@ class SeasLog extends \SeasLog
      *
      * @return array
      */
-    private function getBuffer()
+    public static function getBuffer()
     {
-        return array();
+        return parent::getBuffer();
     }
 
     /**
@@ -177,9 +175,9 @@ class SeasLog extends \SeasLog
      *
      * @return bool
      */
-    private function flushBuffer()
+    public static function flushBuffer()
     {
-        return true;
+        return parent::flushBuffer();
     }
 
     /**
@@ -189,9 +187,9 @@ class SeasLog extends \SeasLog
      * @param array  $content
      * @param string $module
      */
-    private function debug($message, array $content = array(), $module = '')
+    public static function debug($message, array $content = array(), $module = '')
     {
-        #$level = SEASLOG_DEBUG
+        parent::debug($message, $content, $module);
     }
 
     /**
@@ -201,9 +199,9 @@ class SeasLog extends \SeasLog
      * @param array  $content
      * @param string $module
      */
-    private function info($message, array $content = array(), $module = '')
+    public static function info($message, array $content = array(), $module = '')
     {
-        #$level = SEASLOG_INFO
+        parent::info($message, $content, $module);
     }
 
     /**
@@ -213,9 +211,9 @@ class SeasLog extends \SeasLog
      * @param array  $content
      * @param string $module
      */
-    private function notice($message, array $content = array(), $module = '')
+    public static function notice($message, array $content = array(), $module = '')
     {
-        #$level = SEASLOG_NOTICE
+        parent::notice($message, $content, $module);
     }
 
     /**
@@ -225,9 +223,9 @@ class SeasLog extends \SeasLog
      * @param array  $content
      * @param string $module
      */
-    private function warning($message, array $content = array(), $module = '')
+    public static function warning($message, array $content = array(), $module = '')
     {
-        #$level = SEASLOG_WARNING
+        parent::warning($message, $content, $module);
     }
 
     /**
@@ -237,9 +235,9 @@ class SeasLog extends \SeasLog
      * @param array  $content
      * @param string $module
      */
-    private function error($message, array $content = array(), $module = '')
+    public static function error($message, array $content = array(), $module = '')
     {
-        #$level = SEASLOG_ERROR
+        parent::error($message, $content, $module);
     }
 
     /**
@@ -249,9 +247,9 @@ class SeasLog extends \SeasLog
      * @param array  $content
      * @param string $module
      */
-    private function critical($message, array $content = array(), $module = '')
+    public static function critical($message, array $content = array(), $module = '')
     {
-        #$level = SEASLOG_CRITICAL
+        parent::critical($message, $content, $module);
     }
 
     /**
@@ -261,9 +259,9 @@ class SeasLog extends \SeasLog
      * @param array  $content
      * @param string $module
      */
-    private function alert($message, array $content = array(), $module = '')
+    public static function alert($message, array $content = array(), $module = '')
     {
-        #$level = SEASLOG_ALERT
+        parent::alert($message, $content, $module);
     }
 
     /**
@@ -273,9 +271,9 @@ class SeasLog extends \SeasLog
      * @param array  $content
      * @param string $module
      */
-    private function emergency($message, array $content = array(), $module = '')
+    public static function emergency($message, array $content = array(), $module = '')
     {
-        #$level = SEASLOG_EMERGENCY
+        parent::emergency($message, $content, $module);
     }
 
     /**
@@ -285,8 +283,8 @@ class SeasLog extends \SeasLog
      * @param array  $content
      * @param string $module
      */
-    private function log($level, $message, array $content = array(), $module = '')
+    public static function log($level, $message, array $content = array(), $module = '')
     {
-
+        ///
     }
 }

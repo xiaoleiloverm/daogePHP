@@ -10,22 +10,45 @@
  */
 namespace Library\Controller\Log;
 
-class Log
-{
-    protected $handler = null;
+use Library\Construct\Controller\Log\Log as LogConstruct;
+use Library\Controller\Log\SeasLog;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
+use \Library\Controller\Log\MonoLog;
 
-    public function __construct($channel = null)
+class Log extends LogConstruct
+{
+    protected $LogHandler = null;
+
+    public function __construct($level = 'debug', $channel = 'local', LogConstruct $handler)
     {
-        if (strtolower(C('LOG_TYPE', null, 'MonoLog')) == 'monolog') {
-            $this->handler = new MonoLog($channel);
-        }
-        if (strtolower(C('LOG_TYPE')) == 'seaslog') {
+        $logType = strtolower(C('LOG_TYPE')) ? strtolower(C('LOG_TYPE')) : 'monolog'; //记录日志类型
+        if ($logType == 'monolog') {
+            $this->LogHandler = new MonoLog($channel);
+            //PDO handler
+            //$logger->pushHandler(new PDOHandler(new PDO('sqlite:logs.sqlite'));
+            //默认设置
+            if ($handler != '' && is_object($handler)) {
+                $handler = new StreamHandler(C('LOG_HANDLER') ? C('LOG_HANDLER') : APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
+            }
+            if ($handler != '' && !is_object($handler)) {
+                throw new \InvalidArgumentException("handler不是一个对象"); //不是预期的类型异常
+            }
+            if ($handler instanceof StreamHandler) {
+                $handler->setFormatter(new LineFormatter(null, null, true, true)); //格式化消息,格式化时间,允许消息内有换行,忽略空白的消息(去掉[])
+            }
+            $log = new MonoLog('local', $level, $handler);
+        } else if ($logType == 'seaslog') {
             //SeasLog 需要php_SeasLog 扩展支持
             if (!class_exists('SeasLog')) {
                 throw new ErrorException(L('_NOT_FIND_SEASLOG_'));
                 return;
             }
-            $this->handler = new SeasLog($channel);
+            $this->LogHandler = new SeasLog($channel, $level, $handler);
+        } else {
+            $logType          = ucwords($logType);
+            $obj              = '\Library\\Controller\\Log\\' . $logType;
+            $this->LogHandler = new $obj($channel, $level, $handler);
         }
     }
 
@@ -34,109 +57,13 @@ class Log
      */
     public function __call($name, $param_arr)
     {
-        return call_user_func_array([$this->handler, $name], $param_arr);
+        return call_user_func_array([$this->LogHandler, $name], $param_arr);
     }
 
     public function __destruct()
     {
         #SeasLog distroy
-        unset($this->handler);
-    }
-
-    /**
-     * EMERGENCY (600): 系统不可用。
-     *
-     * @param  string  $message 消息(日志抬头)
-     * @param  array  $context 内容
-     * @return void
-     */
-    private function emergency($message, array $context = [])
-    {
-
-    }
-
-    /**
-     * 警告
-     *
-     * @param  string  $message 消息(日志抬头)
-     * @param  array  $context 内容
-     * @return void
-     */
-    private function alert($message, array $context = [])
-    {
-
-    }
-
-    /**
-     * CRITICAL (500): 严重错误。
-     *
-     * @param  string  $message 消息(日志抬头)
-     * @param  array  $context 内容
-     * @return void
-     */
-    private function critical($message, array $context = [])
-    {
-
-    }
-
-    /**
-     * ERROR (400): 运行时错误，但是不需要立刻处理。
-     *
-     * @param  string  $message 消息(日志抬头)
-     * @param  array  $context 内容
-     * @return void
-     */
-    private function error($message, array $context = [])
-    {
-
-    }
-
-    /**
-     * WARNING (300): 出现非错误的异常。
-     *
-     * @param  string  $message 消息(日志抬头)
-     * @param  array  $context 内容
-     * @return void
-     */
-    private function warning($message, array $context = [])
-    {
-
-    }
-
-    /**
-     * NOTICE (250): 普通但是重要的事件。
-     *
-     * @param  string  $message 消息(日志抬头)
-     * @param  array  $context 内容
-     * @return void
-     */
-    private function notice($message, array $context = [])
-    {
-
-    }
-
-    /**
-     * INFO (200): 关键事件。
-     *
-     * @param  string  $message 消息(日志抬头)
-     * @param  array  $context 内容
-     * @return void
-     */
-    private function info($message, array $context = [])
-    {
-
-    }
-
-    /**
-     * DEBUG (100): 详细的debug信息。
-     *
-     * @param  string  $message 消息(日志抬头)
-     * @param  array  $context 内容
-     * @return void
-     */
-    private function debug($message, array $context = [])
-    {
-
+        unset($this->LogHandler);
     }
 
     /**
@@ -147,32 +74,7 @@ class Log
      * @param  array  $context 内容
      * @return void
      */
-    private function log($level, $message, array $context = [])
-    {
-
-    }
-
-    /**
-     * 任意级别
-     *
-     * @param  string  $level 级别
-     * @param  string  $message 消息(日志抬头)
-     * @param  array  $context 内容
-     * @return void
-     */
-    private function write($level, $message, array $context = [])
-    {
-
-    }
-
-    /**
-     * 记录日志
-     * @param string $level 日志级别
-     * @param string $level 通知消息
-     * @param array $level 上下文
-     * @return void
-     */
-    private function record($level, $message, $context)
+    public function write($level, $message, array $context = [])
     {
 
     }

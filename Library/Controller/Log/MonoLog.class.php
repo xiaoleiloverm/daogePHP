@@ -10,13 +10,14 @@
  */
 namespace Library\Controller\Log;
 
+use Library\Construct\Controller\Log\Log as LogConstruct;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger as MonoLogger;
 
-class MonoLog extends \Library\Construct\Controller\Log\Log
+class MonoLog extends LogConstruct
 {
     protected $logger; //日志对象
-    protected $handler; //处理器
     protected $level; //日志等级
 
     /*
@@ -36,12 +37,12 @@ class MonoLog extends \Library\Construct\Controller\Log\Log
     /**
      * 初始化
      *
-     * @param  string  $channel 频道(日志处理器) 默认 daogePHP
+     * @param  string  $channel 频道(日志处理器) 默认 local
      * @param  string  $level 日志等级 默认debug
      * @param  string  $createLogFile 创建日志文件 默认不创建
      * @return object 日志对象
      */
-    public function __construct($channel = 'daogePHP', $level = 'debug', $handler = null)
+    public function __construct($channel = 'local', $level = 'debug', LogConstruct $handler = null)
     {
         //创建日志频道
         $this->logger = new MonoLogger($channel);
@@ -49,18 +50,19 @@ class MonoLog extends \Library\Construct\Controller\Log\Log
         $level || $level = 'debug';
         $this->level     = $level;
         //设置日志操作者
-        if ($handler != '') {
-            //创建日志文件
-            $this->createLogFile($createLogFile, $this->level);
+        if ($handler != '' && is_object($handler)) {
+            //StreamHandler创建日志文件 new StreamHandler($path, $this->parseLevel(strtoupper($level)))
+            $this->logger->pushHandler($handler);
         }
     }
 
     public function __destruct()
     {
-        unset($logger, $handler, $level);
+        unset($logger, $level);
     }
 
     /*
+     *设置日志操作者
      *
      * StreamHandler ：把记录写进PHP流，主要用于日志文件。
      * SyslogHandler ：把记录写进syslog。
@@ -69,9 +71,12 @@ class MonoLog extends \Library\Construct\Controller\Log\Log
      * SocketHandler ：通过socket写日志。
      */
     //设置日志操作者
-    private function setHander($handlerObj)
+    private function setHander(LogConstruct $handler = null)
     {
-
+        //设置日志操作者
+        if ($handler != '' && is_object($handler)) {
+            $this->logger->pushHandler($handler);
+        }
     }
 
     /**
@@ -206,6 +211,7 @@ class MonoLog extends \Library\Construct\Controller\Log\Log
     public function record($level, $message, $context)
     {
         $level || $level = $this->level;
+        $level           = strtolower($level);
         $this->logger->{$level}($message, $context);
     }
 
@@ -233,11 +239,26 @@ class MonoLog extends \Library\Construct\Controller\Log\Log
     }
 
     //level置换
-    protected function parseLevel(string $level)
+    public function parseLevel(string $level)
     {
         if (isset($this->levers[$level])) {
             return $this->levers[$level];
         }
         throw new \InvalidArgumentException("log level 未定义" . $level); //不是预期的类型异常
     }
+
+    /**
+     *默认文本格式化
+     *
+     * LineFormatter ：把日志记录格式化成一行字符串。
+     * HtmlFormatter ：把日志记录格式化成HTML表格，主要用于邮件。
+     * JsonFormatter ：把日志记录编码成JSON格式。
+     * LogstashFormatter ：把日志记录格式化成logstash的事件JSON格式。
+     * ElasticaFormatter ：把日志记录格式化成ElasticSearch使用的数据格式。
+     */
+    protected function getDefaultFormatter()
+    {
+        return new LineFormatter(null, null, true, true);
+    }
+
 }

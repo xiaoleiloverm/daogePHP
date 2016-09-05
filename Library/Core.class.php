@@ -10,6 +10,11 @@
 //----------------------------------
 namespace Library;
 
+use Library\Controller\Log\Log;
+use Library\Controller\Log\MonoLog;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
+
 class Core
 {
 
@@ -121,7 +126,14 @@ class Core
         \Library\Core::appConfig();
 
         //var_dump(C());
-        $log = new \Library\Controller\Log\MonoLog('error', 'emergency', APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
+
+        // $handler = new StreamHandler(APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
+        // $log     = new MonoLog('local', 'emergency', $handler);
+        // $log->record('', 'testError');
+
+        $log = new Log();
+        var_dump($log->getBasePath());exit;
+        var_dump($log);exit;
 
         //路由调度
 
@@ -171,10 +183,11 @@ class Core
                     break;
             }
             //记录日志
-            $log = new \Library\Controller\Log\MonoLog('error', 'emergency', APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
-            //$log->createLogFile(APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log', 'emergency'); //记录文件
-            $log->addInfo('fatalError', $e);
-            //$log->record('', 'fatalError', $e);
+            //$log = new \Library\Controller\Log\MonoLog('error', 'emergency', APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
+            $handler = new StreamHandler(APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
+            $handler->setFormatter(new LineFormatter(null, null, true, true)); //格式化消息,格式化时间,允许消息内有换行,忽略空白的消息(去掉[])
+            $log = new MonoLog('local', 'emergency', $handler);
+            $log->record('', 'fatalError', $e);
         }
     }
 
