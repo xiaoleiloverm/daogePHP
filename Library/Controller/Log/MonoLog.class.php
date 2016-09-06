@@ -42,7 +42,7 @@ class MonoLog extends LogConstruct
      * @param  string  $createLogFile 创建日志文件 默认不创建
      * @return object 日志对象
      */
-    public function __construct($channel = 'local', $level = 'debug', LogConstruct $handler = null)
+    public function __construct($level = 'debug', $channel = 'local', LogConstruct $handler = null)
     {
         //创建日志频道
         $this->logger = new MonoLogger($channel);
@@ -202,7 +202,7 @@ class MonoLog extends LogConstruct
     }
 
     /**
-     * 记录日志
+     * 记录日志 通用日志记录方法
      * @param string $level 日志级别
      * @param string $level 通知消息
      * @param array $level 上下文

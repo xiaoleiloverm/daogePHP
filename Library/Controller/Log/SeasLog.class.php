@@ -24,7 +24,6 @@ class SeasLog extends \SeasLog
      * SEASLOG_EMERGENCY                   "emergency"
      */
 
-    protected $logger; //日志对象
     protected $level; //日志等级
 
     /*
@@ -49,22 +48,29 @@ class SeasLog extends \SeasLog
      * @param  string  $createLogFile 创建日志文件 默认不创建
      * @return object 日志对象
      */
-    public function __construct($level = 'debug', $channel = 'local', \SeasLog $handler = null)
+    public function __construct($level = 'debug', $channel = 'local', $handler)
     {
-        //创建日志频道
-        //$this->logger = new SeasLog($channel);
+        //创建日志模块
+        $this->setLogger($channel);
         //日志等级
         $level || $level = 'debug';
         $this->level     = $level;
-        //创建文件
-        if ($createLogFile != '') {
-            //$this->createLogFile($createLogFile, $this->level);
+        $handler = object ['path'=>'a'];
+        if ($handler != '' && is_object($handler)) {
+            $this->pushHandler($handler);
         }
     }
 
     public function __destruct()
     {
-        unset($logger, $level);
+        unset($level);
+    }
+
+    //增加处理者
+    public function pushHandler($handler)
+    {
+        $path = $handler->path ? $handler->path : APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log';
+        $this->setBasePath($path);
     }
 
     /**
@@ -285,6 +291,31 @@ class SeasLog extends \SeasLog
      */
     public static function log($level, $message, array $content = array(), $module = '')
     {
-        ///
+        parent::{$level}($message, $content, $module);
+    }
+
+    /**
+     * 自定义日志方法
+     * @param        $level
+     * @param        $message
+     * @param array  $content
+     */
+    public static function write($level, $message, array $content = [], $module = '')
+    {
+        parent::{$level}($message, $content);
+    }
+
+    /**
+     * 记录日志 通用日志记录方法
+     * @param string $level 日志级别
+     * @param string $level 通知消息
+     * @param array $level 上下文
+     * @return void
+     */
+    public function record($level, $message, $context, $module = '')
+    {
+        $level || $level = $this->level;
+        $level           = strtolower($level);
+        $this->{$level}($message, $context, $module);
     }
 }

@@ -37,18 +37,18 @@ class Log extends LogConstruct
             if ($handler instanceof StreamHandler) {
                 $handler->setFormatter(new LineFormatter(null, null, true, true)); //格式化消息,格式化时间,允许消息内有换行,忽略空白的消息(去掉[])
             }
-            $log = new MonoLog('local', $level, $handler);
+            $log = new MonoLog($level, 'local', $handler);
         } else if ($logType == 'seaslog') {
             //SeasLog 需要php_SeasLog 扩展支持
             if (!class_exists('SeasLog')) {
                 throw new ErrorException(L('_NOT_FIND_SEASLOG_'));
                 return;
             }
-            $this->LogHandler = new SeasLog($channel, $level, $handler);
+            $this->LogHandler = new SeasLog($level, $channel, $handler);
         } else {
             $logType          = ucwords($logType);
-            $obj              = '\Library\\Controller\\Log\\' . $logType;
-            $this->LogHandler = new $obj($channel, $level, $handler);
+            $obj              = '\\Library\\Controller\\Log\\' . $logType;
+            $this->LogHandler = new $obj($level, $channel, $handler);
         }
     }
 

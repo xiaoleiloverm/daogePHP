@@ -132,8 +132,8 @@ class Core
         // $log->record('', 'testError');
 
         $log = new Log();
-        var_dump($log->getBasePath());exit;
-        var_dump($log);exit;
+        $log->record('', 'test');
+        var_dump($log->getBasePath());
 
         //路由调度
 
