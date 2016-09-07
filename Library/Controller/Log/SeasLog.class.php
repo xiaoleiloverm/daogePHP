@@ -50,15 +50,17 @@ class SeasLog extends \SeasLog
      */
     public function __construct($level = 'debug', $channel = 'local', $handler)
     {
-        //创建日志模块
-        $this->setLogger($channel);
         //日志等级
         $level || $level = 'debug';
         $this->level     = $level;
-        $handler = object ['path'=>'a'];
+        if ($handler == '') {
+            $handler = (object) ['path' => APP_LOG_PATH];
+        }
         if ($handler != '' && is_object($handler)) {
             $this->pushHandler($handler);
         }
+        //创建日志模块
+        $this->setLogger($channel);
     }
 
     public function __destruct()
@@ -69,7 +71,7 @@ class SeasLog extends \SeasLog
     //增加处理者
     public function pushHandler($handler)
     {
-        $path = $handler->path ? $handler->path : APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log';
+        $path = $handler->path ? $handler->path : 'testModule/app1' . date('Y-m-d', time()) . '.log';
         $this->setBasePath($path);
     }
 
@@ -92,6 +94,7 @@ class SeasLog extends \SeasLog
      */
     public static function getBasePath()
     {
+        echo 'getBasePath function run . ';
         //return call_user_func_array([parent, __FUNCTION__], []);
         return parent::getBasePath();
     }
@@ -193,10 +196,11 @@ class SeasLog extends \SeasLog
      * @param array  $content
      * @param string $module
      */
-    public static function debug($message, array $content = array(), $module = '')
-    {
-        parent::debug($message, $content, $module);
-    }
+    // public static function debug($message, array $content = array(), $module = '')
+    // {
+    //     echo 'debug function run . ';
+    //     return parent::debug($message, $content, $module);
+    // }
 
     /**
      * 记录info日志
@@ -316,6 +320,7 @@ class SeasLog extends \SeasLog
     {
         $level || $level = $this->level;
         $level           = strtolower($level);
+        var_dump($level, $message, $context, $module);
         $this->{$level}($message, $context, $module);
     }
 }

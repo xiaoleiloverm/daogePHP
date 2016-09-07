@@ -131,9 +131,15 @@ class Core
         // $log     = new MonoLog('local', 'emergency', $handler);
         // $log->record('', 'testError');
 
-        $log = new Log();
-        $log->record('', 'test');
-        var_dump($log->getBasePath());
+        $log = new Log('debug', 'local');
+        //$log->record('debug', 'test', 'local');
+        //$log->getBasePath();
+        $log->info('this is a info log');
+        //Log::getBasePath('a');
+        //Log::debug('sxasxaxsaxsa');
+        //$res = $log->debug('this is a {userName} debug', array('{userName}' => 'neeke'));
+        //$log::info('this is a info log');
+        //var_dump($log->getBasePath(), $log->getLastLogger(), $res);
 
         //路由调度
 

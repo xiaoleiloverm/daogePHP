@@ -11,10 +11,10 @@
 namespace Library\Controller\Log;
 
 use Library\Construct\Controller\Log\Log as LogConstruct;
+use Library\Controller\Log\MonoLog;
 use Library\Controller\Log\SeasLog;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
-use \Library\Controller\Log\MonoLog;
 
 class Log extends LogConstruct
 {
@@ -37,7 +37,7 @@ class Log extends LogConstruct
             if ($handler instanceof StreamHandler) {
                 $handler->setFormatter(new LineFormatter(null, null, true, true)); //格式化消息,格式化时间,允许消息内有换行,忽略空白的消息(去掉[])
             }
-            $log = new MonoLog($level, 'local', $handler);
+            $this->LogHandler = new MonoLog($level, 'local', $handler);
         } else if ($logType == 'seaslog') {
             //SeasLog 需要php_SeasLog 扩展支持
             if (!class_exists('SeasLog')) {
@@ -60,10 +60,31 @@ class Log extends LogConstruct
         return call_user_func_array([$this->LogHandler, $name], $param_arr);
     }
 
+    /**
+     *处理本类未定义静态函数,对接扩展函数库
+     */
+    public function __callStatic($name, $param_arr)
+    {
+        //静态方法调用$this的成员 需要 实例化获得
+        return call_user_func_array([(new self)->LogHandler, $name], $param_arr);
+    }
+
     public function __destruct()
     {
         #SeasLog distroy
         unset($this->LogHandler);
+    }
+
+    /**
+     * 记录info日志
+     *
+     * @param        $message
+     * @param array  $content
+     * @param string $module
+     */
+    public function info($message, array $content = array(), $module = '')
+    {
+        $this->LogHandler->info($message, $content, $module);
     }
 
     /**
