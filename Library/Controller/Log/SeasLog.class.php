@@ -23,8 +23,9 @@ class SeasLog extends \SeasLog
      * SEASLOG_ALERT                       "alert"
      * SEASLOG_EMERGENCY                   "emergency"
      */
+    //日志记录格式： {type} | {pid} | {timeStamp} |{dateTime} | {logInfo}
 
-    protected $level; //日志等级
+    public $level; //日志等级
 
     /*
      *日志等级 php系统常量
@@ -48,13 +49,13 @@ class SeasLog extends \SeasLog
      * @param  string  $createLogFile 创建日志文件 默认不创建
      * @return object 日志对象
      */
-    public function __construct($level = 'debug', $channel = 'local', $handler)
+    public function __construct($level = 'debug', $channel = '', $handler)
     {
         //日志等级
         $level || $level = 'debug';
         $this->level     = $level;
         if ($handler == '') {
-            $handler = (object) ['path' => APP_LOG_PATH];
+            $handler = (object) ['path' => (C('LOG_PATH') ? C('LOG_PATH') : APP_LOG_PATH)];
         }
         if ($handler != '' && is_object($handler)) {
             $this->pushHandler($handler);
@@ -71,7 +72,7 @@ class SeasLog extends \SeasLog
     //增加处理者
     public function pushHandler($handler)
     {
-        $path = $handler->path ? $handler->path : 'testModule/app1' . date('Y-m-d', time()) . '.log';
+        $path = $handler->path ? $handler->path : (C('LOG_PATH') ? C('LOG_PATH') : APP_LOG_PATH);
         $this->setBasePath($path);
     }
 
@@ -94,7 +95,6 @@ class SeasLog extends \SeasLog
      */
     public static function getBasePath()
     {
-        echo 'getBasePath function run . ';
         //return call_user_func_array([parent, __FUNCTION__], []);
         return parent::getBasePath();
     }
@@ -196,11 +196,10 @@ class SeasLog extends \SeasLog
      * @param array  $content
      * @param string $module
      */
-    // public static function debug($message, array $content = array(), $module = '')
-    // {
-    //     echo 'debug function run . ';
-    //     return parent::debug($message, $content, $module);
-    // }
+    public static function debug($message, array $content = array(), $module = '')
+    {
+        return parent::debug($message, $content, $module);
+    }
 
     /**
      * 记录info日志
@@ -299,7 +298,7 @@ class SeasLog extends \SeasLog
     }
 
     /**
-     * 自定义日志方法
+     * 自定义 任意级别
      * @param        $level
      * @param        $message
      * @param array  $content
@@ -313,14 +312,14 @@ class SeasLog extends \SeasLog
      * 记录日志 通用日志记录方法
      * @param string $level 日志级别
      * @param string $level 通知消息
-     * @param array $level 上下文
+     * @param array $context 替换规则
+     * @param array $module 模块目录
      * @return void
      */
     public function record($level, $message, $context, $module = '')
     {
         $level || $level = $this->level;
         $level           = strtolower($level);
-        var_dump($level, $message, $context, $module);
         $this->{$level}($message, $context, $module);
     }
 }

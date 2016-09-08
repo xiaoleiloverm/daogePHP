@@ -11,9 +11,6 @@
 namespace Library;
 
 use Library\Controller\Log\Log;
-use Library\Controller\Log\MonoLog;
-use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\StreamHandler;
 
 class Core
 {
@@ -127,19 +124,8 @@ class Core
 
         //var_dump(C());
 
-        // $handler = new StreamHandler(APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
-        // $log     = new MonoLog('local', 'emergency', $handler);
-        // $log->record('', 'testError');
-
-        $log = new Log('debug', 'local');
-        //$log->record('debug', 'test', 'local');
-        //$log->getBasePath();
-        $log->info('this is a info log');
-        //Log::getBasePath('a');
-        //Log::debug('sxasxaxsaxsa');
-        //$res = $log->debug('this is a {userName} debug', array('{userName}' => 'neeke'));
-        //$log::info('this is a info log');
-        //var_dump($log->getBasePath(), $log->getLastLogger(), $res);
+        //$log = new Log('info', 'local');
+        //Log::record('debug', ['this is a {userName} info', 'framwork:{userName}'], ['extend' => ['function' => 'start', 'method' => 'public static'], 'replace' => ['{userName}' => 'daogePHP']]);
 
         //路由调度
 
@@ -189,11 +175,11 @@ class Core
                     break;
             }
             //记录日志
-            //$log = new \Library\Controller\Log\MonoLog('error', 'emergency', APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
-            $handler = new StreamHandler(APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
-            $handler->setFormatter(new LineFormatter(null, null, true, true)); //格式化消息,格式化时间,允许消息内有换行,忽略空白的消息(去掉[])
-            $log = new MonoLog('local', 'emergency', $handler);
-            $log->record('', 'fatalError', $e);
+            // $handler = new StreamHandler(APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
+            // $handler->setFormatter(new LineFormatter(null, null, true, true)); //格式化消息,格式化时间,允许消息内有换行,忽略空白的消息(去掉[])
+            // $log = new MonoLog('local', 'emergency', $handler);
+            // $log->record('', 'fatalError', $e);
+            Log::record('emergency', $e);
         }
     }
 

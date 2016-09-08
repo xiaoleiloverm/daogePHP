@@ -18,7 +18,7 @@ use Monolog\Logger as MonoLogger;
 class MonoLog extends LogConstruct
 {
     protected $logger; //日志对象
-    protected $level; //日志等级
+    public $level; //日志等级
 
     /*
      *日志等级
@@ -189,7 +189,7 @@ class MonoLog extends LogConstruct
     }
 
     /**
-     * 任意级别
+     * 自定义 任意级别
      *
      * @param  string  $level 级别
      * @param  string  $message 消息(日志抬头)

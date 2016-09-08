@@ -16,20 +16,24 @@ use Library\Controller\Log\SeasLog;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 
-class Log extends LogConstruct
+class Log
 {
     protected $LogHandler = null;
 
-    public function __construct($level = 'debug', $channel = 'local', LogConstruct $handler)
+    public function __construct($level = 'debug', $channel = 'local', LogConstruct $handler, $logType = null)
     {
-        $logType = strtolower(C('LOG_TYPE')) ? strtolower(C('LOG_TYPE')) : 'monolog'; //记录日志类型
+        if ($logType == '') {
+            $logType = strtolower(C('LOG_TYPE')) ? strtolower(C('LOG_TYPE')) : 'monolog'; //记录日志类型
+        } else {
+            $logType = strtolower($logType);
+        }
         if ($logType == 'monolog') {
             $this->LogHandler = new MonoLog($channel);
             //PDO handler
             //$logger->pushHandler(new PDOHandler(new PDO('sqlite:logs.sqlite'));
             //默认设置
-            if ($handler != '' && is_object($handler)) {
-                $handler = new StreamHandler(C('LOG_HANDLER') ? C('LOG_HANDLER') : APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
+            if ($handler == '') {
+                $handler = new StreamHandler((C('LOG_PATH') ? C('LOG_PATH') : APP_LOG_PATH) . 'app_' . date('Y-m-d', time()) . '.log');
             }
             if ($handler != '' && !is_object($handler)) {
                 throw new \InvalidArgumentException("handler不是一个对象"); //不是预期的类型异常
@@ -69,35 +73,50 @@ class Log extends LogConstruct
         return call_user_func_array([(new self)->LogHandler, $name], $param_arr);
     }
 
-    public function __destruct()
-    {
-        #SeasLog distroy
-        unset($this->LogHandler);
-    }
-
     /**
-     * 记录info日志
-     *
-     * @param        $message
-     * @param array  $content
-     * @param string $module
-     */
-    public function info($message, array $content = array(), $module = '')
-    {
-        $this->LogHandler->info($message, $content, $module);
-    }
-
-    /**
-     * 任意级别
-     *
-     * @param  string  $level 级别
-     * @param  string  $message 消息(日志抬头)
-     * @param  array  $context 内容
+     * 记录日志 通用日志记录方法
+     * SeasLog 和 MonoLog 的$message,$context 参数有区别
+     * @param string $level 日志级别
+     * @param string $level 通知消息
+     * @param array $context ['extend'=>['扩展字符'],'replace'=>['{expample1}'=>'expample1']]
+     * @param array $module 模块目录
      * @return void
      */
-    public function write($level, $message, array $context = [])
+    public static function record($level, $message, $context, $module = '')
     {
+        $_this           = (new self);
+        $level || $level = $_this->LogHandler->level;
+        $level           = strtolower($level);
+        $extend          = ''; //扩展字符
+        $replace         = []; //替换规则
+        if (is_string($context)) {
+            $extend = $context;
+        } else if (is_array($context)) {
+            isset($context['extend']) && $extend = $context['extend'];
+            is_array($extend) && $extend         = json_encode($extend);
+            if (isset($context['replace']) && is_array($context['replace'])) {
+                $replace = $context['replace'];
+            }
+        }
+        if (is_string($message)) {
+            empty($replace) || $message = str_replace(array_keys($replace), array_values($replace), $message);
+        }
+        if (is_array($message)) {
+            $tmp = '';
+            foreach ($message as $key => &$value) {
+                empty($replace) || $value = str_replace(array_keys($replace), array_values($replace), $value);
+                $tmp .= (is_string($key) ? $key . ':' : '') . "{$value},";
+            }
+            $message = substr($tmp, 0, -1);
+        }
+        $extend && $message = $message . ' ' . $extend;
+        $_this->LogHandler->{$level}($message, [], $module);
+    }
 
+    public function __destruct()
+    {
+        #Log distroy
+        unset($this->LogHandler);
     }
 
 }
