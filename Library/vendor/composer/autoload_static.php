@@ -9,6 +9,7 @@ class ComposerStaticInit0f5d0eb39830408418e02ec7fa321641
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
+            'Simplon\\Mysql\\' => 14,
             'Seld\\CliPrompt\\' => 15,
         ),
         'M' => 
@@ -19,9 +20,18 @@ class ComposerStaticInit0f5d0eb39830408418e02ec7fa321641
         array (
             'League\\CLImate\\' => 15,
         ),
+        'D' => 
+        array (
+            'Desarrolla2\\Test\\Cache\\' => 23,
+            'Desarrolla2\\Cache\\' => 18,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'Simplon\\Mysql\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/simplon/mysql/src',
+        ),
         'Seld\\CliPrompt\\' => 
         array (
             0 => __DIR__ . '/..' . '/seld/cli-prompt/src',
@@ -33,6 +43,14 @@ class ComposerStaticInit0f5d0eb39830408418e02ec7fa321641
         'League\\CLImate\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/climate/src',
+        ),
+        'Desarrolla2\\Test\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/desarrolla2/cache/test',
+        ),
+        'Desarrolla2\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/desarrolla2/cache/src',
         ),
     );
 
