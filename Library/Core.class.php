@@ -80,13 +80,36 @@ class Core
     }
 
     /**
+     *路由调度
+     */
+    public static function urlDispatch()
+    {
+        //路由参数
+        $router = [
+            'URL_MODE'       => C('URL_MODE') ?: 0,
+            'VAR_CONTROLLER' => C('VAR_CONTROLLER') ?: 'c',
+            'VAR_ACTION'     => C('VAR_ACTION') ?: 'a',
+            'VAR_MODULE'     => C('VAR_MODULE') ?: 'm',
+        ];
+        //初始化
+        \Library\Controller\Route\Route::init($router); //传入参数进行初始化
+        //url参数打包
+        $makeUrl = \Library\Controller\Route\Route::makeUrl();
+        define('MODULE_NAME', $makeUrl['module']); //模块名常量
+        define('CONTROLLER_NAME', $makeUrl['controller']); //控制器名常量
+        define('ACTION_NAME', $makeUrl['action']); //方法名常量
+        $GLOBALS['_urlParam'] = $makeUrl['makeUrl']; //url 参数
+        var_dump($makeUrl);
+    }
+
+    /**
      *加载http 控制器 C层
      */
     public static function http_C()
     {
         //实例化核心控制器C
         $controller = new \Library\Controller\Controller();
-        $controller->test();
+        //$controller->test();
     }
 
     /**
@@ -128,6 +151,7 @@ class Core
         //Log::record('debug', ['this is a {userName} info', 'framwork:{userName}'], ['extend' => ['function' => 'start', 'method' => 'public static'], 'replace' => ['{userName}' => 'daogePHP']]);
 
         //路由调度
+        \Library\Core::urlDispatch();
 
         //加载http C层
         \Library\Core::http_C();
