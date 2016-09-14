@@ -95,11 +95,18 @@ class Core
         \Library\Controller\Route\Route::init($router); //传入参数进行初始化
         //url参数打包
         $makeUrl = \Library\Controller\Route\Route::makeUrl();
-        define('MODULE_NAME', $makeUrl['module']); //模块名常量
-        define('CONTROLLER_NAME', $makeUrl['controller']); //控制器名常量
-        define('ACTION_NAME', $makeUrl['action']); //方法名常量
-        $GLOBALS['_urlParam'] = $makeUrl['makeUrl']; //url 参数
-        var_dump($makeUrl);
+        //子域名映射
+        if (C('SUB_DOMAIN_MAP_DEPLOY')) {
+            if (!empty(C('SUB_DOMAIN_MAP')) && is_array(C('SUB_DOMAIN_MAP'))) {
+                $SUB_DOMAIN_MAP = C('SUB_DOMAIN_MAP');
+                foreach ($SUB_DOMAIN_MAP as $key => $value) {
+                    if (strpos($_SERVER['HTTP_HOST'], strtolower($key)) !== false) {
+                        $makeUrl['module'] = !empty($value) ? $value : C('DEFAULT_MODULE');
+                    }
+                }
+            }
+        }
+        return $makeUrl;
     }
 
     /**
@@ -107,7 +114,29 @@ class Core
      */
     public static function http_C()
     {
-        //实例化核心控制器C
+        //路由调度
+        $makeUrl = self::urlDispatch();
+        //控制器定义
+        define('MODULE_NAME', $makeUrl['module'] ?: C('DEFAULT_MODULE')); //模块名常量
+        define('CONTROLLER_NAME', $makeUrl['controller'] ?: C('DEFAULT_CONTROLLER')); //控制器名常量
+        define('ACTION_NAME', $makeUrl['action'] ?: C('DEFAULT_ACTION')); //方法名常量
+        $GLOBALS['_urlParam'] = $makeUrl['param']; //url 参数
+        var_dump($makeUrl, $_SERVER);
+        // 默认路由
+        $df_module     = C('DEFAULT_MODULE') ? C('DEFAULT_MODULE') : 'Default'; // 默认模块名
+        $df_controller = C('DEFAULT_CONTROLLER') ? C('DEFAULT_CONTROLLER') : 'Index'; // 默认控制器
+        $df_action     = C('DEFAULT_ACTION') ? C('DEFAULT_ACTION') : 'index'; // 默认方法
+        //根据路由加载控制器
+        $class  = '\\' . MODULE_NAME . '\\' . CONTROLLER_NAME . C('CONTROLLER_SUFFIX');
+        $exe    = new $class;
+        $action = ACTION_NAME . C('ACTION_SUFFIX');
+        if (!preg_match('/^[A-Za-z](\w)*$/', $action)) {
+            // 非法操作
+            throw new \ReflectionException();
+        }
+        //执行控制器方法
+        $exe->$action();
+        //实例化核心控制器类库
         $controller = new \Library\Controller\Controller();
         //$controller->test();
     }
@@ -151,7 +180,7 @@ class Core
         //Log::record('debug', ['this is a {userName} info', 'framwork:{userName}'], ['extend' => ['function' => 'start', 'method' => 'public static'], 'replace' => ['{userName}' => 'daogePHP']]);
 
         //路由调度
-        \Library\Core::urlDispatch();
+        //\Library\Core::urlDispatch();
 
         //加载http C层
         \Library\Core::http_C();

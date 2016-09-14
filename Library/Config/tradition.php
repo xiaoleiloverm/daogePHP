@@ -11,6 +11,10 @@ return [
     /* 系统设置 */
     'DEFAULT_TIMEZONE'      => 'PRC', // 默认时区
 
+    /* 控制器设置 */
+    'CONTROLLER_SUFFIX'     => 'Controller', //控制器类后缀
+    'ACTION_SUFFIX'         => '', //控制器方法后缀
+
     /* Cookie设置 */
 
     /* SESSION设置 */
@@ -27,8 +31,15 @@ return [
     /* 日志设置 */
     'LOG_TYPE'              => 'MonoLog', //日志类型 MonoLog、 SeasLog
     'LOG_SAVE_PATH'         => APP_PATH . 'Log/app.log', //日志生成文件,含路径
-    'LOG_HANDLER'           => '$error', //日志处理者(MonoLog专用),支持$name自定义命名
-    'LOG_MESSAGE'           => '$message', //日志消息
+
+    /* 子域名映射设置 */
+    'SUB_DOMAIN_MAP_DEPLOY' => true, //true开 false关
+    'SUB_DOMAIN_MAP'        => [],
+
+    /* www域名module映射设置 */
+    'DOMAIN_MODULE_MAP'     => [
+        '/' => 'home', //默认模块映射
+    ],
 
     /* 默认设定 */
     'DEFAULT_M_NAME'        => 'Model', //模型层命名

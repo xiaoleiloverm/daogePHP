@@ -35,31 +35,48 @@ class Route
      */
     public static function makeUrl()
     {
-        switch (self::$url_mode) {
-            //动态url传参 模式
-            case 0:
-                return self::getParamByDynamic();
-                break;
-            //pathinfo 模式
-            case 1:
-                return self::getParamByPathinfo();
-                break;
+        if (IS_CLI) {
+            // CLI模式下 index.php module/controller/action/params/...(或者 ?m=module&c=controller&a=action&...)
+            $_SERVER['PATH_INFO'] = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : '';
+            if (($url_parm = isset($_SERVER['argv'][2])) === true) {
+                //module/controller/action/params/...
+                if ($query_string = strstr('?', $url_parm) === false) {
+                    $query_arr = empty($query_string) ? [] : explode('/', trim($query_string));
+                    return self::getParamByPathinfo($query_arr);
+                }
+                //?m=module&c=controller&a=action&...
+                else {
+                    $query_arr = empty($query_string) ? [] : explode('&', $query_string);
+                    return self::getParamByDynamic($query_arr);
+                }
+            }
+        } else {
+            switch (self::$url_mode) {
+                //动态url传参 模式
+                case 0:
+                    return self::getParamByDynamic();
+                    break;
+                //pathinfo 模式
+                case 1:
+                    return self::getParamByPathinfo();
+                    break;
+            }
         }
     }
 
     /**
      * 获取参数通过url传参模式
      */
-    private static function getParamByDynamic()
+    private static function getParamByDynamic(array $arr = [])
     {
-        $arr  = empty($_SERVER['QUERY_STRING']) ? array() : explode('&', $_SERVER['QUERY_STRING']);
-        $data = array(
+        empty($arr) && $arr = empty($_SERVER['QUERY_STRING']) ? array() : explode('&', strip_tags(trim($_SERVER['QUERY_STRING'])));
+        $data               = array(
             'module'     => '',
             'controller' => '',
             'action'     => '',
             'param'      => array(),
         );
-        if (!empty($arr)) {
+        if (is_array($arr)) {
             $tmp  = array();
             $part = array();
             foreach ($arr as $v) {
@@ -102,9 +119,10 @@ class Route
     /**
      * 获取参数通过pathinfo模式
      */
-    private static function getParamByPathinfo()
+    private static function getParamByPathinfo(array $part = [])
     {
-        $part = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
+        empty($part) && $part = $part = explode('/', trim(strip_tags($_SERVER['REQUEST_URI']), '/'));
+
         $data = array(
             'module'     => '',
             'controller' => '',
@@ -113,7 +131,10 @@ class Route
         );
         if (!empty($part)) {
             krsort($part);
-            $data['module']     = array_pop($part);
+            //子域名映射不走module位路由(www主机方式除外)
+            if (!C('SUB_DOMAIN_MAP_DEPLOY') || strpos(strtolower($_SERVER['HTTP_HOST']), 'www') !== false || end($part) == C('DEFAULT_MODULE')) {
+                $data['module'] = array_pop($part);
+            }
             $data['controller'] = array_pop($part);
             $data['action']     = array_pop($part);
             ksort($part);
