@@ -36,9 +36,20 @@ return [
     'SUB_DOMAIN_MAP_DEPLOY' => true, //true开 false关
     'SUB_DOMAIN_MAP'        => [],
 
-    /* www域名module映射设置 */
+    /* 域名module映射设置 */
     'DOMAIN_MODULE_MAP'     => [
         '/' => 'home', //默认模块映射
+    ],
+
+    /* URL映射 '/x1[/x2[/x3]]'=>module/controller/action */
+    'DOMAIN_URL_MAP'        => [
+        //根据定义映射规则 可以自由定制简洁化的URL
+        //当有配置子域名映射时 module会被替换成指定模块目录
+        '/' => 'Home/Index/index', //前端
+        //配置参考
+        //'admin' => 'Admin/Product/index', //管理后台
+        //'user/my'  => 'Home/User/index',//用户中心
+        //'login'=>'Home/User/login',//登录界面
     ],
 
     /* 默认设定 */

@@ -41,12 +41,12 @@ class Route
             if (($url_parm = isset($_SERVER['argv'][2])) === true) {
                 //module/controller/action/params/...
                 if ($query_string = strstr('?', $url_parm) === false) {
-                    $query_arr = empty($query_string) ? [] : explode('/', trim($query_string));
+                    $query_arr = empty($query_string) ? [] : explode('/', ucwords(trim($query_string)));
                     return self::getParamByPathinfo($query_arr);
                 }
                 //?m=module&c=controller&a=action&...
                 else {
-                    $query_arr = empty($query_string) ? [] : explode('&', $query_string);
+                    $query_arr = empty($query_string) ? [] : explode('&', ucwords($query_string));
                     return self::getParamByDynamic($query_arr);
                 }
             }
@@ -131,6 +131,38 @@ class Route
         );
         if (!empty($part)) {
             krsort($part);
+            if (is_array(C('DOMAIN_URL_MAP'))) {
+                foreach (C('DOMAIN_URL_MAP') as $key => $value) {
+                    $value = explode('/', $value);
+                    //网站前端
+                    if ($key === '/') {
+                        $data['module']     = C('DEFAULT_MODULE') ? C('DEFAULT_MODULE') : 'Home';
+                        $data['controller'] = C('DEFAULT_CONTROLLER') ? C('DEFAULT_CONTROLLER') : 'Index';
+                        $data['action']     = C('DEFAULT_ACTION') ? C('DEFAULT_ACTION') : 'index';
+                    }
+                    //映射URL
+                    // else {
+                    //     $url_map  = explode('/', trim($key, '/'));
+                    //     $tmp0     = isset($tmp_part[0]) ?: '';
+                    //     $tmp1     = isset($tmp_part[1]) ?: '';
+                    //     $tmp2     = isset($tmp_part[2]) ?: '';
+                    //     $tmp_part = $part;
+                    //     if ($tmp0 == $url_map[0]) {
+                    //         array_pop($part);
+                    //         $data['module'] = $value[0];
+                    //     }
+                    //     if ($tmp1 == $url_map[1]) {
+                    //         array_pop($part);
+                    //         $data['controller'] = $value[1];
+                    //     }
+                    //     if ($tmp2 == $url_map[2]) {
+                    //         array_pop($part);
+                    //         $data['action'] = $value[2];
+                    //     }
+                    // }
+                }
+            }
+
             //子域名映射不走module位路由(www主机方式除外)
             if (!C('SUB_DOMAIN_MAP_DEPLOY') || strpos(strtolower($_SERVER['HTTP_HOST']), 'www') !== false || end($part) == C('DEFAULT_MODULE')) {
                 $data['module'] = array_pop($part);
