@@ -121,24 +121,30 @@ class Route
      */
     private static function getParamByPathinfo(array $part = [])
     {
-        empty($part) && $part = $part = explode('/', trim(strip_tags($_SERVER['REQUEST_URI']), '/'));
-
-        $data = array(
+        empty($part) && $part = isset($_SERVER['REDIRECT_URL']) ? explode('/', trim(strip_tags($_SERVER['REDIRECT_URL']), '/')) : [];
+        $data                 = array(
             'module'     => '',
             'controller' => '',
             'action'     => '',
             'param'      => array(),
         );
-        if (!empty($part)) {
+        if (is_array($part)) {
+            $partStr = '/' . trim(implode('/', $part), '/') . '/'; //URL字符串
             krsort($part);
             if (is_array(C('DOMAIN_URL_MAP'))) {
                 foreach (C('DOMAIN_URL_MAP') as $key => $value) {
+                    $key   = '/' . trim(strtolower($key), '/') . '/'; //映射字符串
                     $value = explode('/', $value);
+                    var_dump($key, $partStr, strpos($partStr, $key));
                     //网站前端
-                    if ($key === '/') {
-                        $data['module']     = C('DEFAULT_MODULE') ? C('DEFAULT_MODULE') : 'Home';
-                        $data['controller'] = C('DEFAULT_CONTROLLER') ? C('DEFAULT_CONTROLLER') : 'Index';
-                        $data['action']     = C('DEFAULT_ACTION') ? C('DEFAULT_ACTION') : 'index';
+                    if ($key === '//' && $partStr === '//') {
+                        $data['module']     = $value[0] ?: (C('DEFAULT_MODULE') ?: 'Home');
+                        $data['controller'] = $value[1] ?: (C('DEFAULT_CONTROLLER') ?: 'Index');
+                        $data['action']     = $value[2] ?: (C('DEFAULT_ACTION') ?: 'index');
+                    } else if (strpos($partStr, $key) !== false) {
+                        $data['module']     = $value[0] ?: (C('DEFAULT_MODULE') ?: 'Home');
+                        $data['controller'] = $value[1] ?: (C('DEFAULT_CONTROLLER') ?: 'Index');
+                        $data['action']     = $value[2] ?: (C('DEFAULT_ACTION') ?: 'index');
                     }
                     //映射URL
                     // else {
@@ -164,11 +170,11 @@ class Route
             }
 
             //子域名映射不走module位路由(www主机方式除外)
-            if (!C('SUB_DOMAIN_MAP_DEPLOY') || strpos(strtolower($_SERVER['HTTP_HOST']), 'www') !== false || end($part) == C('DEFAULT_MODULE')) {
-                $data['module'] = array_pop($part);
-            }
-            $data['controller'] = array_pop($part);
-            $data['action']     = array_pop($part);
+            // if (!C('SUB_DOMAIN_MAP_DEPLOY') || strpos(strtolower($_SERVER['HTTP_HOST']), 'www') !== false || end($part) == C('DEFAULT_MODULE')) {
+            //     $data['module'] = array_pop($part);
+            // }
+            // $data['controller'] = array_pop($part);
+            // $data['action']     = array_pop($part);
             ksort($part);
             $part = array_values($part);
             $tmp  = array();
