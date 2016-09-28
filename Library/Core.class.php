@@ -125,9 +125,6 @@ class Core
         }
         //执行控制器方法
         $exe->$action();
-        //实例化核心控制器类库
-        $controller = new \Library\Controller\Controller();
-        //$controller->test();
     }
 
     /**
@@ -135,10 +132,10 @@ class Core
      */
     public static function http_M()
     {
-        //实例化核心模型M
-        $Model = new \Library\Model\Model();
-        $Model->test();
+        //加载模型
 
+        //实例化核心模型M
+        //$Model = new \Library\Model\Model();
     }
 
     /**
