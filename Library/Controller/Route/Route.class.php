@@ -23,7 +23,7 @@ class Route
      */
     public static function init($config)
     {
-        self::$url_mode       = $config['URL_MODE'];
+        self::$url_mode       = $config['URL_MODEL'];
         self::$var_controller = $config['VAR_CONTROLLER'];
         self::$var_action     = $config['VAR_ACTION'];
         self::$var_module     = $config['VAR_MODULE'];
@@ -129,53 +129,56 @@ class Route
             'param'      => array(),
         );
         if (is_array($part)) {
-            $partStr = '/' . trim(implode('/', $part), '/') . '/'; //URL字符串
-            krsort($part);
-            if (is_array(C('DOMAIN_URL_MAP'))) {
+            //PATHINFO URL分割符
+            $urlDepr = C('URL_PATHINFO_DEPR') ?: '/';
+            $partStr = $urlDepr . trim(implode($urlDepr, $part), $urlDepr) . $urlDepr; //URL字符串
+            krsort($part); //倒置
+            if (!empty(C('DOMAIN_URL_MAP'))) {
                 foreach (C('DOMAIN_URL_MAP') as $key => $value) {
-                    $key   = '/' . trim(strtolower($key), '/') . '/'; //映射字符串
-                    $value = explode('/', $value);
-                    var_dump($key, $partStr, strpos($partStr, $key));
+                    $key   = $urlDepr . trim(strtolower($key), $urlDepr) . $urlDepr; //映射字符串
+                    $value = explode($urlDepr, $value);
                     //网站前端
-                    if ($key === '//' && $partStr === '//') {
+                    if ($key === $urlDepr . $urlDepr && $partStr === $urlDepr . $urlDepr) {
                         $data['module']     = $value[0] ?: (C('DEFAULT_MODULE') ?: 'Home');
                         $data['controller'] = $value[1] ?: (C('DEFAULT_CONTROLLER') ?: 'Index');
                         $data['action']     = $value[2] ?: (C('DEFAULT_ACTION') ?: 'index');
                     } else if (strpos($partStr, $key) !== false) {
+                        $partStr            = str_replace($key, '', $partStr);
                         $data['module']     = $value[0] ?: (C('DEFAULT_MODULE') ?: 'Home');
                         $data['controller'] = $value[1] ?: (C('DEFAULT_CONTROLLER') ?: 'Index');
                         $data['action']     = $value[2] ?: (C('DEFAULT_ACTION') ?: 'index');
+                        $part               = explode($urlDepr, trim($partStr, $urlDepr)); //路由替换
+                        krsort($part); //倒置
+                    } else {
+
                     }
-                    //映射URL
-                    // else {
-                    //     $url_map  = explode('/', trim($key, '/'));
-                    //     $tmp0     = isset($tmp_part[0]) ?: '';
-                    //     $tmp1     = isset($tmp_part[1]) ?: '';
-                    //     $tmp2     = isset($tmp_part[2]) ?: '';
-                    //     $tmp_part = $part;
-                    //     if ($tmp0 == $url_map[0]) {
-                    //         array_pop($part);
-                    //         $data['module'] = $value[0];
-                    //     }
-                    //     if ($tmp1 == $url_map[1]) {
-                    //         array_pop($part);
-                    //         $data['controller'] = $value[1];
-                    //     }
-                    //     if ($tmp2 == $url_map[2]) {
-                    //         array_pop($part);
-                    //         $data['action'] = $value[2];
-                    //     }
-                    // }
                 }
             }
-
-            //子域名映射不走module位路由(www主机方式除外)
-            // if (!C('SUB_DOMAIN_MAP_DEPLOY') || strpos(strtolower($_SERVER['HTTP_HOST']), 'www') !== false || end($part) == C('DEFAULT_MODULE')) {
-            //     $data['module'] = array_pop($part);
-            // }
-            // $data['controller'] = array_pop($part);
-            // $data['action']     = array_pop($part);
-            ksort($part);
+            //子域名映射开关
+            if (empty(C('SUB_DOMAIN_MAP_DEPLOY'))) {
+                $data['module'] = array_pop($part);
+            }
+            //子域名映射到模块
+            else {
+                $SUB_DOMAIN_MAP = C('SUB_DOMAIN_MAP');
+                foreach ($SUB_DOMAIN_MAP as $key => $value) {
+                    if (strpos($_SERVER['HTTP_HOST'], strtolower($key)) !== false) {
+                        $data['module'] = !empty($value) ? $value : C('DEFAULT_MODULE');
+                        if (end($part) == $value) {
+                            array_pop($part);
+                        }
+                    }
+                }
+            }
+            $data['module']     = $data['module'] ?: (C('DEFAULT_MODULE') ?: 'Home');
+            $data['controller'] = $data['controller'] ?: array_pop($part);
+            $data['action']     = $data['action'] ?: (array_pop($part) ?: (C('DEFAULT_ACTION') ?: 'index'));
+            if ($suffix = C('URL_HTML_SUFFIX')) {
+                $suffix         = preg_replace('/\W/', '', $suffix);
+                $data['action'] = preg_replace("/\.{$suffix}/", '', $data['action']); //替换url后缀
+            }
+            //$data['action']     = preg_replace('/(\.htm|\.html|\.php|\.jsp|\.aspx?|\.action|\.daoge)/', '', $data['action']);
+            ksort($part); //恢复顺序
             $part = array_values($part);
             $tmp  = array();
             if (count($part) > 0) {

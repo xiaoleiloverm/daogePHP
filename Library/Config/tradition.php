@@ -32,15 +32,13 @@ return [
     'LOG_TYPE'              => 'MonoLog', //日志类型 MonoLog、 SeasLog
     'LOG_SAVE_PATH'         => APP_PATH . 'Log/app.log', //日志生成文件,含路径
 
-    /* 子域名映射设置 */
+    /* URL配置 */
+    'URL_MODEL'             => 1, //如果你的环境不支持PATHINFO 请设置为0 (0:动态url传参 模式;1:pathinfo 模式)
+    'URL_HTML_SUFFIX'       => 'action', //url后缀
+    'URL_PATHINFO_DEPR'     => '/', //PATHINFO URL分割符
+    //子域名映射设置
     'SUB_DOMAIN_MAP_DEPLOY' => true, //true开 false关
     'SUB_DOMAIN_MAP'        => [],
-
-    /* 域名module映射设置 */
-    'DOMAIN_MODULE_MAP'     => [
-        '/' => 'home', //默认模块映射
-    ],
-
     /* URL映射 '/x1[/x2[/x3]]'=>module/controller/action */
     'DOMAIN_URL_MAP'        => [
         //根据定义映射规则 可以自由定制简洁化的URL
@@ -51,6 +49,7 @@ return [
         //'user/my'  => 'Home/User/index',//用户中心
         //'login'=>'Home/User/login',//登录界面
     ],
+    //PATHINFO URL分割符
 
     /* 默认设定 */
     'DEFAULT_M_NAME'        => 'Model', //模型层命名

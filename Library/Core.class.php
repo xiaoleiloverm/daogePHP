@@ -86,7 +86,7 @@ class Core
     {
         //路由参数
         $router = [
-            'URL_MODE'       => C('URL_MODE') ?: 0,
+            'URL_MODEL'      => C('URL_MODEL') ?: 0,
             'VAR_CONTROLLER' => C('VAR_CONTROLLER') ?: 'c',
             'VAR_ACTION'     => C('VAR_ACTION') ?: 'a',
             'VAR_MODULE'     => C('VAR_MODULE') ?: 'm',
@@ -95,17 +95,6 @@ class Core
         \Library\Controller\Route\Route::init($router); //传入参数进行初始化
         //url参数打包
         $makeUrl = \Library\Controller\Route\Route::makeUrl();
-        //子域名映射
-        if (C('SUB_DOMAIN_MAP_DEPLOY')) {
-            if (!empty(C('SUB_DOMAIN_MAP')) && is_array(C('SUB_DOMAIN_MAP'))) {
-                $SUB_DOMAIN_MAP = C('SUB_DOMAIN_MAP');
-                foreach ($SUB_DOMAIN_MAP as $key => $value) {
-                    if (strpos($_SERVER['HTTP_HOST'], strtolower($key)) !== false) {
-                        $makeUrl['module'] = !empty($value) ? $value : C('DEFAULT_MODULE');
-                    }
-                }
-            }
-        }
         return $makeUrl;
     }
 
@@ -121,7 +110,7 @@ class Core
         define('CONTROLLER_NAME', $makeUrl['controller'] ?: C('DEFAULT_CONTROLLER')); //控制器名常量
         define('ACTION_NAME', $makeUrl['action'] ?: C('DEFAULT_ACTION')); //方法名常量
         $GLOBALS['_urlParam'] = $makeUrl['param']; //url 参数
-        var_dump($makeUrl, $_SERVER);
+        //var_dump($makeUrl, $_SERVER);
         // 默认路由
         $df_module     = C('DEFAULT_MODULE') ? C('DEFAULT_MODULE') : 'Default'; // 默认模块名
         $df_controller = C('DEFAULT_CONTROLLER') ? C('DEFAULT_CONTROLLER') : 'Index'; // 默认控制器
