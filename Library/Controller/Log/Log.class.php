@@ -82,7 +82,7 @@ class Log
      * @param array $module 模块目录
      * @return void
      */
-    public static function record($level, $message, $context, $module = '')
+    public static function record($level, $message, $context = '', $module = '')
     {
         $_this           = (new self);
         $level || $level = $_this->LogHandler->level;
