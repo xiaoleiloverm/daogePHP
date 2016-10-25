@@ -10,9 +10,11 @@
  */
 namespace Library\Model;
 
+use Library\Construct\Model\Db\Db as DbAbstract;
+
 class Db
 {
-    private static $connectDb = []; //数据库连接实例对象
+    private static $connectDb = null; //数据库连接实例对象
 
     /**
      * 取得数据库类实例
@@ -21,8 +23,14 @@ class Db
      * @param mixed $config 连接配置
      * @return Object 返回数据库驱动类
      */
-    public static function getConnectDb($config = [])
+    public static function getConnectDb(DbAbstract $dbh)
     {
+        self::$connectDb = $dbh;
+    }
 
+    // 调用驱动类的方法
+    public static function __callStatic($method, $params)
+    {
+        return call_user_func_array(array(self::$connectDb, $method), $params);
     }
 }

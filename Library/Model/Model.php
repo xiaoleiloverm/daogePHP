@@ -18,12 +18,13 @@ class Model
         if ($this->dbConn) {
             return $this->dbConn;
         } else {
-            //$confObj = new Config(DAOGE_PATH . '/App/Common/Conf');
-            //$conf    = $confObj->offsetGet('config');
-            $config = $conf['DB_MASTER'];
+            // $confObj = new Config(DAOGE_PATH . '/App/Common/Conf');
+            // $conf    = $confObj->offsetGet('config');
+            // $config = $conf['DB_MASTER'];
+            // $this->dbConn = new \Simplon\Mysql\Mysql($config['server'], $config['username'], $config['password'], $config['database']);
+            // return $this->dbConn;
 
-            $this->dbConn = new \Simplon\Mysql\Mysql($config['server'], $config['username'], $config['password'], $config['database']);
-            return $this->dbConn;
+            //调用中间层
         }
     }
 }
