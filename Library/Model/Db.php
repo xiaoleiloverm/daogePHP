@@ -155,7 +155,7 @@ class Db
      */
     protected static function table($table)
     {
-
+        //TODO
     }
 
     /*
