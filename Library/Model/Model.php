@@ -16,7 +16,7 @@ use Db;
 class Model
 {
     public $dbConn; //连接对象
-    public function __construct($host, $user, $password, $database, $fetchMode = \PDO::FETCH_ASSOC, $charset = 'utf8', array $options = [])
+    public function __construct($db,$host, $user, $password, $database, $fetchMode = \PDO::FETCH_ASSOC, $charset = 'utf8', array $options = [])
     {
         if ($this->dbConn) {
             return $this->dbConn;
@@ -30,27 +30,27 @@ class Model
             //调用中间层
             try
             {
-                // use host
-                $dns = 'mysql:host=' . $host;
-
+                //数据库
+                $dns = $db?:'mysql';
+                //主机
+                $dns .= ':host=' . $host;
+                //端口
                 if (isset($options['port'])) {
                     $dns .= ';port=' . $options['port'];
                 }
-
                 // use unix socket
                 if (isset($options['unixSocket'])) {
                     $dns = 'mysql:unix_socket=' . $options['unixSocket'];
                 }
-
+                //数据库名
                 $dns .= ';dbname=' . $database;
+                //编码
                 $dns .= ';charset=' . $charset;
-
-                // ------------------------------
-
-                // create PDO instance
+                //创建PDO实例
                 //TODO
-                $this->dbConn = new \PDO($dns, $user, $password));
-                Db::setDbh($this->dbConn);
+                $pdo = new \PDO($dns, $user, $password));
+                //创建连接实例
+                $this->dbConn = Db::setDbh($pdo);
 
                 // set fetchMode
                 $this->setFetchMode($fetchMode);
