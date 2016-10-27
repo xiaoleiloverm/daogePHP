@@ -27,7 +27,10 @@ abstract class Db
     //设置驱动
     protected function setDriver($driver)
     {
-        return $this->driver = $driver;
+        if ($driver instanceof Db) {
+            return $this->driver = $driver;
+        }
+        return;
     }
 
     //获取驱动
