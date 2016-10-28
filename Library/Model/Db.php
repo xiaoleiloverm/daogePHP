@@ -19,7 +19,7 @@ class Db
     protected static $driver = 'mysql'; //数据库驱动
 
     /**
-     * 取得数据库类实例
+     * 设置数据库类实例
      * @static
      * @access protected
      * @param Object 数据库实例
@@ -64,6 +64,17 @@ class Db
     protected static function setDriver(DbAbstract $driver)
     {
         return static::$driver = $driver;
+    }
+
+    /**
+     * 设置驱动数据库连接,设置数据库驱动和设置数据库类实例
+     * @return Object
+     */
+    protected static function setDriverDbh(DbAbstract $driver, $dbh)
+    {
+        self::setDbh($dbh);
+        self::setDriver($driver);
+        return static::$driver;
     }
 
     //驱动类型

@@ -19,44 +19,32 @@ class Model
 
     public $driver; //数据库驱动
 
-    public function __construct($db, $host, $user, $password, $database, $fetchMode = \PDO::FETCH_ASSOC, $charset = 'utf8', array $options = [])
+    public $table;//数据表
+
+    public $tablePrefix = '';//数据表前缀
+
+    /**
+     * 架构函数
+     * 取得数据库驱动的实例对象
+     * @access public
+     * @param string $table 模型名称
+     * @param string $tablePrefix 表前缀
+     * @param object $pdo 数据库连接pdo对象
+     * @param string $driverName 数据库驱动名
+     */
+    public function __construct($table,$tablePrefix,$pdo,$driverName)
     {
         if ($this->dbConn) {
             return $this->dbConn;
         } else {
-            // $confObj = new Config(DAOGE_PATH . '/App/Common/Conf');
-            // $conf    = $confObj->offsetGet('config');
-            // $config = $conf['DB_MASTER'];
-            // $this->dbConn = new \Simplon\Mysql\Mysql($config['server'], $config['username'], $config['password'], $config['database']);
-            // return $this->dbConn;
-
             //调用中间层
             try
             {
-                //数据库
-                $dns = $db ?: 'mysql';
-                //主机
-                $dns .= ':host=' . $host;
-                //端口
-                if (isset($options['port'])) {
-                    $dns .= ';port=' . $options['port'];
-                }
-                // use unix socket
-                if (isset($options['unixSocket'])) {
-                    $dns = 'mysql:unix_socket=' . $options['unixSocket'];
-                }
-                //数据库名
-                $dns .= ';dbname=' . $database;
-                //编码
-                $dns .= ';charset=' . $charset;
-
-                //创建连接实例
-                $pdo = new \PDO($dns, $user, $password);
-                $this->dbConn = Db::setDbh($pdo);
-                $_db          = Db::getDriverOption($db); //获取格式化驱动类
-                $class        = '\\Library\\Model\\Driver\\' . $_db;
-                //设置驱动
-                $this->driver = Db::setDriver(new $class($this->dbConn));
+                $tablePrefix = !is_null($tablePrefix)?($this->tablePrefix = $tablePrefix):C('DB_PREFIX');
+                $this->table = $tablePrefix.$table;
+                //设置驱动连接数据库实例
+                $class        = '\\Library\\Model\\Driver\\' . Db::getDriverOption($driverName);
+                $this->driver = Db::setDriverDbh(new $class(Db::getDbh()),$pdo);
             } catch (\PDOException $e) {
                 throw new \PDOException($e->getMessage(), $e->getCode());
             }

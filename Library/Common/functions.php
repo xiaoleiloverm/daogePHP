@@ -92,23 +92,42 @@ function D()
  * 实例化一个没有模型文件的Model
  * @param string $name Model名称 支持指定基础模型 例如 MongoModel:User
  * @param string $tablePrefix 表前缀
+ * @param mixed $pdo 数据库连接信息
  * @param mixed $connection 数据库连接信息
  * @return Think\Model
  */
-function M($name = '', $tablePrefix = '', $connection = '')
+function M($name = '', $tablePrefix = '', $pdo = null, $driver = 'mysql')
 {
-    static $_model = array();
+    static $_model = null;
+    //数据库
+    $dns = C('DB_TYPE') ?: 'mysql';
+    //主机
+    $dns .= ':host=' . C('DB_HOST');
+    //端口
+    if (C('DB_PORT')) {
+        $dns .= ';port=' . C('DB_PORT');
+    }
+    // use unix socket
+    if (C('UNIX_SOCKET')) {
+        $dns = 'mysql:unix_socket=' . C('UNIX_SOCKET');
+    }
+    //数据库名
+    $dns .= ';dbname=' . C('DB_NAME');
+    //编码
+    $dns .= ';charset=' . C('DB_CHARSET');
+
+    //创建连接实例
+    $pdo = new \PDO($dns, $user, $password);
     if (strpos($name, ':')) {
         list($class, $name) = explode(':', $name);
     } else {
         $class = '\\Library\\Model\\Model';
     }
-    $guid = (is_array($connection) ? implode('', $connection) : $connection) . $tablePrefix . $name . '_' . $class;
-    if (!isset($_model[$guid])) {
-        $_model[$guid] = new $class($name, $tablePrefix, $connection);
+    if (!isset($_model)) {
+        $_model = new $class($name, $tablePrefix, $pdo, C('DB_TYPE'));
     }
 
-    return $_model[$guid];
+    return $_model;
 }
 
 /**

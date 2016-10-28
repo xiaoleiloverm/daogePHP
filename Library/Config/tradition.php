@@ -26,6 +26,7 @@ return [
     'DB_USER'               => '', // 用户名
     'DB_PWD'                => '', // 密码
     'DB_PORT'               => '', // 端口
+    'UNIX_SOCKET'           => '', // unix套接字
     'DB_PREFIX'             => '', // 数据库表前缀
     'DB_DEBUG'              => true, // 数据库调试模式 开启后可以记录SQL日志
     'DB_CHARSET'            => 'utf8', // 数据库编码默认采用utf8
