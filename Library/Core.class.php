@@ -118,7 +118,6 @@ class Core
         //根据路由加载控制器
         $layer = C('DEFAULT_C_NAME');
         $class = '\\' . MODULE_NAME . '\\' . $layer . '\\' . CONTROLLER_NAME . C('CONTROLLER_SUFFIX');
-        var_dump($class);
         //$exe    = new $class;
         $exe    = new \Home\Controller\IndexController;
         $action = ACTION_NAME . C('ACTION_SUFFIX');
