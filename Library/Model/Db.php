@@ -14,18 +14,18 @@ use Library\Construct\Model\Db\Db as DbAbstract;
 
 class Db
 {
-    protected static $dbh = null; //数据库连接实例对象
+    public static $dbh = null; //数据库连接实例对象
 
-    protected static $driver = 'mysql'; //数据库驱动
+    public static $driver = 'mysql'; //数据库驱动
 
     /**
      * 设置数据库类实例
      * @static
-     * @access protected
+     * @access public
      * @param Object 数据库实例
      * @return Object 数据库实例对象
      */
-    protected static function setDbh($dbh)
+    public static function setDbh($dbh)
     {
         if ($dbh instanceof \PDO) {
             return static::$dbh = $dbh;
@@ -36,11 +36,11 @@ class Db
     /**
      * 取得数据库类实例
      * @static
-     * @access protected
+     * @access public
      * @param Object 数据库实例
      * @return Object 数据库实例对象
      */
-    protected static function getDbh()
+    public static function getDbh()
     {
         if (isset(static::$dbh)) {
             return static::$dbh;
@@ -52,7 +52,7 @@ class Db
      * 获取数据库驱动
      * @return Object 数据库驱动
      */
-    protected static function getDriver()
+    public static function getDriver()
     {
         return static::$driver;
     }
@@ -61,7 +61,7 @@ class Db
      * 设置数据库驱动
      * @return Object
      */
-    protected static function setDriver(DbAbstract $driver)
+    public static function setDriver(DbAbstract $driver)
     {
         return static::$driver = $driver;
     }
@@ -70,7 +70,7 @@ class Db
      * 设置驱动数据库连接,设置数据库驱动和设置数据库类实例
      * @return Object
      */
-    protected static function setDriverDbh(DbAbstract $driver, $dbh)
+    public static function setDriverDbh(DbAbstract $driver, $dbh)
     {
         self::setDbh($dbh);
         self::setDriver($driver);
@@ -78,7 +78,7 @@ class Db
     }
 
     //驱动类型
-    final protected static function getDriverOption($driver)
+    final public static function getDriverOption($driver)
     {
         switch ($driver = strtolower($driver)) {
             //Cubrid
@@ -139,7 +139,7 @@ class Db
      * 启动一个事务
      * @return bool
      */
-    protected function beginTransaction()
+    public function beginTransaction()
     {
         return static::$driver->beginTransaction();
     }
@@ -148,7 +148,7 @@ class Db
      * 回滚
      * @return bool
      */
-    protected static function rollBack()
+    public static function rollBack()
     {
         return static::$driver->rollBack();
     }
@@ -157,7 +157,7 @@ class Db
      * 提交一个事务
      * @return bool
      */
-    protected static function commit()
+    public static function commit()
     {
         return static::$driver->commit();
     }
@@ -166,7 +166,7 @@ class Db
      * 关闭
      * @return void
      */
-    protected static function close()
+    public static function close()
     {
         static::$driver = null;
     }
@@ -175,7 +175,7 @@ class Db
      * 获取记录的行数
      * @return bool|int
      */
-    protected static function getRowCount()
+    public static function getRowCount()
     {
         return static::$driver->getRowCount();
     }
@@ -184,7 +184,7 @@ class Db
      * PDO执行一条 SQL 语句，并返回受影响的行数
      * @return int
      */
-    protected static function exec($sql)
+    public static function exec($sql)
     {
         return static::$driver->exec($sql);
     }
@@ -193,7 +193,7 @@ class Db
      * PDO执行一条SQL语句,返回一个结果集作为PDOStatement对象
      * @return array
      */
-    protected static function query($sql)
+    public static function query($sql)
     {
         return static::$driver->query($sql);
     }
@@ -203,7 +203,7 @@ class Db
      * 执行预处理过的语句。如果预处理过的语句含有参数标记，必须选择下面其中一种做法:调用 PDOStatement::bindParam() 绑定 PHP 变量到参数标记
      * @return object
      */
-    protected static function execute($sql)
+    public static function execute($sql)
     {
         return static::$driver->execute();
     }
@@ -212,7 +212,7 @@ class Db
      * 快捷执行一条 table 表的操作 如 DB::table('user')->select()
      * @return object
      */
-    protected static function table($table)
+    public static function table($table)
     {
         //TODO
     }

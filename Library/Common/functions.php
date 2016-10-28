@@ -117,7 +117,7 @@ function M($name = '', $tablePrefix = '', $pdo = null, $driver = 'mysql')
     $dns .= ';charset=' . C('DB_CHARSET');
 
     //创建连接实例
-    $pdo = new \PDO($dns, $user, $password);
+    $pdo = new \PDO($dns, C('DB_USER'), C('DB_PWD'));
     if (strpos($name, ':')) {
         list($class, $name) = explode(':', $name);
     } else {

@@ -10,7 +10,7 @@
  */
 namespace Library\Model;
 
-use Db;
+use Library\Model\Db;
 use PDO;
 
 class Model
@@ -19,9 +19,9 @@ class Model
 
     public $driver; //数据库驱动
 
-    public $table;//数据表
+    public $table; //数据表
 
-    public $tablePrefix = '';//数据表前缀
+    public $tablePrefix = ''; //数据表前缀
 
     /**
      * 架构函数
@@ -32,7 +32,7 @@ class Model
      * @param object $pdo 数据库连接pdo对象
      * @param string $driverName 数据库驱动名
      */
-    public function __construct($table,$tablePrefix,$pdo,$driverName)
+    public function __construct($table, $tablePrefix, $pdo, $driverName)
     {
         if ($this->dbConn) {
             return $this->dbConn;
@@ -40,33 +40,16 @@ class Model
             //调用中间层
             try
             {
-                $tablePrefix = !is_null($tablePrefix)?($this->tablePrefix = $tablePrefix):C('DB_PREFIX');
-                $this->table = $tablePrefix.$table;
+                $tablePrefix = !is_null($tablePrefix) ? ($this->tablePrefix = $tablePrefix) : C('DB_PREFIX');
+                $this->table = $tablePrefix . $table;
                 //设置驱动连接数据库实例
                 $class        = '\\Library\\Model\\Driver\\' . Db::getDriverOption($driverName);
-                $this->driver = Db::setDriverDbh(new $class(Db::getDbh()),$pdo);
+                $this->dbConn = Db::setDbh($pdo);
+                $this->driver = Db::setDriver(new $class(Db::getDbh()));
             } catch (\PDOException $e) {
                 throw new \PDOException($e->getMessage(), $e->getCode());
             }
         }
-    }
-
-    /**
-     *
-     *获取DB驱动
-     */
-    protected function getDbDriver()
-    {
-        return Db::getDriver() ?: null;
-    }
-
-    /**
-     *
-     *获取连接实例
-     */
-    protected function getDbDriver()
-    {
-        return Db::getDbh() ?: null;
     }
 
     /**
@@ -95,7 +78,6 @@ class Model
     {
         return $this->driver->commit();
     }
-
 
     /**
      * 关闭
