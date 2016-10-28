@@ -116,8 +116,11 @@ class Core
         $df_controller = C('DEFAULT_CONTROLLER') ? C('DEFAULT_CONTROLLER') : 'Index'; // 默认控制器
         $df_action     = C('DEFAULT_ACTION') ? C('DEFAULT_ACTION') : 'index'; // 默认方法
         //根据路由加载控制器
-        $class  = '\\' . MODULE_NAME . '\\' . CONTROLLER_NAME . C('CONTROLLER_SUFFIX');
-        $exe    = new $class;
+        $layer = C('DEFAULT_C_NAME');
+        $class = '\\' . MODULE_NAME . '\\' . $layer . '\\' . CONTROLLER_NAME . C('CONTROLLER_SUFFIX');
+        var_dump($class);
+        //$exe    = new $class;
+        $exe    = new \Home\Controller\IndexController;
         $action = ACTION_NAME . C('ACTION_SUFFIX');
         if (!preg_match('/^[A-Za-z](\w)*$/', $action)) {
             // 非法操作
@@ -188,11 +191,13 @@ class Core
         $class = str_replace('\\', '/', $class);
         //类文件自动加载
         if (file_exists(DAOGE_PATH . $class . EXT)) {
-            require DAOGE_PATH . $class . EXT;
+            require_once DAOGE_PATH . $class . EXT;
+        } elseif (file_exists(APP_PATH . $class . EXT)) {
+            require_once APP_PATH . $class . EXT;
         }
         //普通文件自动加载
         elseif (file_exists(DAOGE_PATH . $class . '.php')) {
-            require DAOGE_PATH . $class . '.php';
+            require_once DAOGE_PATH . $class . '.php';
         }
     }
 
