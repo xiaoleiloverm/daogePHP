@@ -201,11 +201,13 @@ class Db
     /*
      * PDOStatement执行一条预处理语句
      * 执行预处理过的语句。如果预处理过的语句含有参数标记，必须选择下面其中一种做法:调用 PDOStatement::bindParam() 绑定 PHP 变量到参数标记
-     * @return object
+     * @param  sql 需要预处理的sql
+     * @param  params 预处理参数
+     * @return array
      */
-    public static function execute($sql)
+    public static function execute($sql, $params = [])
     {
-        return static::$driver->execute();
+        return static::$driver->execute($sql, $params);
     }
 
     /*

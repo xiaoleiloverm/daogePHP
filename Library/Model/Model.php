@@ -11,7 +11,6 @@
 namespace Library\Model;
 
 use Library\Model\Db;
-use PDO;
 
 class Model
 {
@@ -53,76 +52,11 @@ class Model
     }
 
     /**
-     * 启动一个事务
-     * @return bool
+     *处理本类未定义函数,调用驱动方法
      */
-    public function beginTransaction()
+    public function __call($name, $param_arr)
     {
-        return $this->driver->beginTransaction();
-    }
-
-    /**
-     * 回滚
-     * @return bool
-     */
-    protected static function rollBack()
-    {
-        return $this->driver->rollBack();
-    }
-
-    /**
-     * 提交一个事务
-     * @return bool
-     */
-    protected static function commit()
-    {
-        return $this->driver->commit();
-    }
-
-    /**
-     * 关闭
-     * @return void
-     */
-    protected static function close()
-    {
-        $this->driver = null;
-    }
-
-    /**
-     * 获取记录的行数
-     * @return bool|int
-     */
-    protected static function getRowCount()
-    {
-        return $this->driver->getRowCount();
-    }
-
-    /*
-     * PDO执行一条 SQL 语句，并返回受影响的行数
-     * @return int
-     */
-    protected static function exec($sql)
-    {
-        return $this->driver->exec($sql);
-    }
-
-    /*
-     * PDO执行一条SQL语句,返回一个结果集作为PDOStatement对象
-     * @return array
-     */
-    protected static function query($sql)
-    {
-        return $this->driver->query($sql);
-    }
-
-    /*
-     * PDOStatement执行一条预处理语句
-     * 执行预处理过的语句。如果预处理过的语句含有参数标记，必须选择下面其中一种做法:调用 PDOStatement::bindParam() 绑定 PHP 变量到参数标记
-     * @return object
-     */
-    protected static function execute($sql)
-    {
-        return $this->driver->execute();
+        return call_user_func_array([$this->driver, $name], $param_arr);
     }
 
 }

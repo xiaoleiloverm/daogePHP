@@ -12,20 +12,20 @@ namespace Library\Construct\Model\Db;
 
 abstract class Db
 {
-    protected $dbh; //连接实例
+    public $dbh; //连接实例
 
-    protected $driver; //驱动对象
+    public $driver; //驱动对象
 
-    protected $driverName; //驱动名
+    public $driverName; //驱动名
 
     // 设置连接实例
-    abstract protected function setDbh($dbh);
+    abstract public function setDbh($dbh);
 
     //获取连接实例
-    abstract protected function getDbh();
+    abstract public function getDbh();
 
     //设置驱动
-    protected function setDriver($driver)
+    public function setDriver($driver)
     {
         if ($driver instanceof Db) {
             return $this->driver = $driver;
@@ -34,25 +34,25 @@ abstract class Db
     }
 
     //获取驱动
-    protected function getDriver()
+    public function getDriver()
     {
         return $this->driver;
     }
 
     //设置驱动名
-    protected function setDriverName($name)
+    public function setDriverName($name)
     {
         return $this->driverName = $this->getDriverOption($name);
     }
 
     //获取驱动名
-    protected function getDriverName()
+    public function getDriverName()
     {
         return $this->driverName ?: (is_object($this->driver) ? get_class($this->driver) : null);
     }
 
     //驱动类型
-    final protected function getDriverOption($driver)
+    final public function getDriverOption($driver)
     {
         switch ($driver = strtolower($driver)) {
             //Cubrid
@@ -113,46 +113,81 @@ abstract class Db
      * 启动一个事务
      * @return bool
      */
-    protected function beginTransaction()
+    public function beginTransaction()
     {
-        return $this->driver->beginTransaction();
+        return $this->dbh->beginTransaction();
     }
 
     /**
      * 回滚
      * @return bool
      */
-    protected function rollBack()
+    public function rollBack()
     {
-        return $this->driver->rollBack();
+        return $this->dbh->rollBack();
     }
 
     /**
      * 提交一个事务
      * @return bool
      */
-    protected function commit()
+    public function commit()
     {
-        return $this->driver->commit();
+        return $this->dbh->commit();
     }
 
     /**
      * 设置连接实例 setDbh的别名
      * @return object
      */
-    protected function connection($dbh)
+    public function connection($dbh)
     {
         //setDbh
-        return $this->driver->setDbh();
+        return $this->dbh->setDbh();
+    }
+
+    /*
+     * PDO执行一条 SQL 语句，并返回受影响的行数
+     * @return int
+     */
+    public function exec($sql)
+    {
+        return $this->dbh->exec($sql);
+    }
+
+    /*
+     * PDO执行一条SQL语句,返回一个结果集作为PDOStatement对象
+     * @return array
+     */
+    public function query($sql)
+    {
+        return $this->dbh->query($sql);
+    }
+
+    /*
+     * PDOStatement执行一条预处理语句
+     * 执行预处理过的语句。如果预处理过的语句含有参数标记，必须选择下面其中一种做法:调用 PDOStatement::bindParam() 绑定 PHP 变量到参数标记
+     * @param  sql 需要预处理的sql
+     * @param  params 预处理参数
+     * @return array
+     */
+    public function execute($sql, $params = [])
+    {
+        $this->dbh = $this->dbh->prepare($sql); //预处理
+        if (is_string($params)) {
+            $params = explode(',', $params);
+        }
+        return empty($params) ? $this->dbh->execute() : $this->dbh->execute($params);
     }
 
     /**
      * 关闭
      * @return void
      */
-    protected function close()
+    public function close()
     {
         $this->driver = null;
+        $this->dbh    = null;
     }
 
 }
