@@ -19,7 +19,7 @@ abstract class Db
     public $driverName; //驱动名
 
     // 设置连接实例
-    abstract public function setDbh($dbh);
+    abstract protected function setDbh($dbh);
 
     //获取连接实例
     abstract public function getDbh();
