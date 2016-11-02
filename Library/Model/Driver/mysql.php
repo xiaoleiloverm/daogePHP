@@ -720,10 +720,10 @@ class Mysql extends DbAbstract
 
     /**
      * 更新操作
-     * @param string $tableName
-     * @param array $conds
-     * @param array $data
-     * @param null $condsQuery
+     * @param string $tableName 表名
+     * @param array $conds 条件数组（_前缀的为特殊键）
+     * @param array $data 更新的字段数据映射数组
+     * @param null $condsQuery 条件字符串
      *
      * @return bool
      * @throws \PDOException
@@ -757,9 +757,9 @@ class Mysql extends DbAbstract
 
     /**
      * 删除操作
-     * @param string $tableName
-     * @param array $conds
-     * @param null $condsQuery
+     * @param string $tableName 表名
+     * @param array $conds 条件数组（_前缀的为特殊键）
+     * @param null $condsQuery 条件字符串
      *
      * @return bool
      * @throws \PDOException
@@ -778,14 +778,15 @@ class Mysql extends DbAbstract
 
     /**
      * 插入删除操作组织条件语句
-     * @param string $query
-     * @param array $conds
-     * @param string|null $condsQuery
+     * @param string $query 查询语句
+     * @param array $conds 条件数组 为空代表条件无WHERE条件，慎用
+     * @param string|null $condsQuery 条件字符串，WHERE后面部分
      *
      * @return string
      */
     private function buildCondsQuery($query, array $conds, $condsQuery = null)
     {
+        //条件数组不为空
         if (!empty($conds)) {
             if ($condsQuery === null) {
                 $placeholder = [];
@@ -797,10 +798,14 @@ class Mysql extends DbAbstract
                 }
 
                 $query = str_replace(':CONDS', join(' AND ', $placeholder), $query);
-            } else {
+            }
+            //条件字符串组织数组条件
+            else {
                 $query = str_replace(':CONDS', $condsQuery, $query);
             }
-        } else {
+        }
+        //无条件
+        else {
             $query = str_replace(' WHERE :CONDS', '', $query);
         }
 
@@ -808,6 +813,7 @@ class Mysql extends DbAbstract
     }
 
     /**
+     * 验证字段条件数组的键为非特殊键 true:非特殊键会组织成条件语句字符串
      * @param string $key
      *
      * @return bool
