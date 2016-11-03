@@ -58,7 +58,7 @@ interface AdapterInterface
     public function set($key, $value, $ttl = null);
 
     /**
-     * 设置适配器对应option
+     * 设置适配器对应option 缓存周期和前缀
      *
      * @param string $key
      * @param string $value
