@@ -47,10 +47,12 @@ class Predis extends AbstractAdapter
      */
     public function del($key)
     {
+        //定义 DEL 命令
         $cmd = $this->predis->createCommand('DEL');
+        //设置参数
         $cmd->setArguments([$key]);
 
-        $this->predis->executeCommand($cmd);
+        $this->predis->executeCommand($cmd); //执行
     }
 
     /**
@@ -60,8 +62,9 @@ class Predis extends AbstractAdapter
      *
      * @return mixed
      */
-    public function get($key){
-        $cmd = $this->predis->get($key);
+    public function get($key)
+    {
+        return $this->unPack($this->predis->get($key));
     }
 
     /**
@@ -71,7 +74,13 @@ class Predis extends AbstractAdapter
      *
      * @return bool
      */
-    public function has($key);
+    public function has($key)
+    {
+        $cmd = $this->predis->createCommand('EXISTS');
+        $cmd->setArguments([$key]);
+
+        return $this->predis->executeCommand($cmd);
+    }
 
     /**
      * 设置缓存
@@ -80,7 +89,16 @@ class Predis extends AbstractAdapter
      * @param mixed  $value 值
      * @param int    $ttl
      */
-    public function set($key, $value, $ttl = null);
+    public function set($key, $value, $ttl = null)
+    {
+        $this->predis->set($key, $this->pack($value));
+        if (!$ttl) {
+            $ttl = $this->ttl;
+        }
+        $cmd = $this->predis->createCommand('EXPIRE');
+        $cmd->setArguments([$key, $ttl]);
+        $this->predis->executeCommand($cmd);
+    }
 
     /**
      * 设置适配器对应option 缓存周期和前缀
@@ -88,15 +106,15 @@ class Predis extends AbstractAdapter
      * @param string $key
      * @param string $value
      */
-    public function setOption($key, $value);
+    //public function setOption($key, $value){}//abstract已定义
 
     /**
      * 清洗所有的过期记录缓存
      */
-    public function clearCache();
+    //public function clearCache(){}
 
     /**
      * 清空所有缓存
      */
-    public function dropCache();
+    //public function dropCache(){}
 }
