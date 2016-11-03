@@ -12,6 +12,10 @@ class ComposerStaticInit0f5d0eb39830408418e02ec7fa321641
             'Simplon\\Mysql\\' => 14,
             'Seld\\CliPrompt\\' => 15,
         ),
+        'P' => 
+        array (
+            'Predis\\' => 7,
+        ),
         'M' => 
         array (
             'Monolog\\' => 8,
@@ -35,6 +39,10 @@ class ComposerStaticInit0f5d0eb39830408418e02ec7fa321641
         'Seld\\CliPrompt\\' => 
         array (
             0 => __DIR__ . '/..' . '/seld/cli-prompt/src',
+        ),
+        'Predis\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/predis/predis/src',
         ),
         'Monolog\\' => 
         array (
