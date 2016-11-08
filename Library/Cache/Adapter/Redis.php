@@ -10,6 +10,7 @@
  */
 namespace Library\Cache\Adapter;
 
+use Library\Cache\Adapter\Exception\CacheException;
 use Library\Construct\Cache\AbstractAdapter;
 
 class Redis extends AbstractAdapter
@@ -24,7 +25,7 @@ class Redis extends AbstractAdapter
     public function __construct(\Redis $redis, array $options = [])
     {
         if (!class_exists('Redis')) {
-            throw new Exception("uninstalled Redis extend"); //未安装redis扩展
+            throw new CacheException("uninstalled Redis extend"); //未安装redis扩展
         }
         //实例化扩展类
         $this->redis = $redis ?: (new \Redis());
