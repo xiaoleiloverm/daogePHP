@@ -99,6 +99,6 @@ abstract class AbstractAdapter implements AdapterInterface
      */
     protected function unPack($value)
     {
-        return unserialize($value);
+        return $value ? unserialize($value) : null;
     }
 }

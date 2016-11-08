@@ -78,7 +78,8 @@ class Redis extends AbstractAdapter
      */
     public function get($key)
     {
-        return $this->unPack($this->redis->get($this->getKey($key)));
+        $data = $this->redis->get($this->getKey($key));
+        return $data ? $this->unPack($data) : '';
     }
 
     /**
