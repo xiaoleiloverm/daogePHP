@@ -13,7 +13,7 @@ namespace Library\Cache\Adapter;
 use Library\Construct\Cache\AbstractAdapter;
 use Memcache as BaseMemcache;
 
-class Memcache extends AbstractAdapter
+class Memcached extends AbstractAdapter
 {
     protected $server; //连接实例
 
