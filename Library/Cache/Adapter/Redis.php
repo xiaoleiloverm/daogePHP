@@ -62,7 +62,7 @@ class Redis extends AbstractAdapter
     {
         $key = explode(',', $key);
         foreach ($key as &$v) {
-            $v = $this->$prefix . $v;
+            $v = $this->getKey($v);
         }
         //批量删除
         return $this->redis->delete($key);
@@ -77,7 +77,7 @@ class Redis extends AbstractAdapter
      */
     public function get($key)
     {
-        return $this->unPack($this->redis->get($this->$prefix . $key));
+        return $this->unPack($this->redis->get($this->getKey($key)));
     }
 
     /**
@@ -89,7 +89,7 @@ class Redis extends AbstractAdapter
      */
     public function has($key)
     {
-        return $this->redis->exists($this->$prefix . $key);
+        return $this->redis->exists($this->getKey($key));
     }
 
     /**
@@ -97,14 +97,14 @@ class Redis extends AbstractAdapter
      *
      * @param string $key 键
      * @param mixed  $value 值
-     * @param int    $ttl
+     * @param int    $ttl 周期 s
      */
     public function set($key, $value, $ttl = null)
     {
         if (!$ttl) {
             $ttl = $this->ttl;
         }
-        return $this->redis->setex($this->$prefix . $key, $this->pack($value));
+        return $this->redis->setex($this->getKey($key), $this->pack($value));
     }
 
     /**
@@ -115,7 +115,7 @@ class Redis extends AbstractAdapter
      */
     public function lPush($key, $value)
     {
-        return $this->redis->lPush($this->$prefix . $key, $this->pack($value));
+        return $this->redis->lPush($this->getKey($key), $this->pack($value));
     }
 
     /**
@@ -126,7 +126,7 @@ class Redis extends AbstractAdapter
      */
     public function lPushx($key, $value)
     {
-        return $this->redis->lPushx($this->$prefix . $key, $this->pack($value));
+        return $this->redis->lPushx($this->getKey($key), $this->pack($value));
     }
 
     /**
@@ -136,7 +136,7 @@ class Redis extends AbstractAdapter
      */
     public function rPop($key)
     {
-        return $this->redis->rPop($this->$prefix . $key);
+        return $this->redis->rPop($this->getKey($key));
     }
 
     /**
@@ -147,7 +147,7 @@ class Redis extends AbstractAdapter
      */
     public function rPush($key, $value)
     {
-        return $this->redis->rPush($this->$prefix . $key, $this->pack($value));
+        return $this->redis->rPush($this->getKey($key), $this->pack($value));
     }
 
     /**
@@ -158,7 +158,7 @@ class Redis extends AbstractAdapter
      */
     public function rPushx($key, $value)
     {
-        return $this->redis->rPushx($this->$prefix . $key, $this->pack($value));
+        return $this->redis->rPushx($this->getKey($key), $this->pack($value));
     }
 
     /**
@@ -168,7 +168,7 @@ class Redis extends AbstractAdapter
      */
     public function lPop($key)
     {
-        return $this->redis->lPop($this->$prefix . $key);
+        return $this->redis->lPop($this->getKey($key));
     }
 
     /**
@@ -183,7 +183,7 @@ class Redis extends AbstractAdapter
         foreach ($key as &$v) {
             $v = $this->$prefix . $v;
         }
-        return $this->redis->blPop($this->$prefix . $key, $timeout);
+        return $this->redis->blPop($this->getKey($key), $timeout);
     }
 
     /**
@@ -198,7 +198,7 @@ class Redis extends AbstractAdapter
         foreach ($key as &$v) {
             $v = $this->$prefix . $v;
         }
-        return $this->redis->brPop($this->$prefix . $key, $timeout);
+        return $this->redis->brPop($this->getKey($key), $timeout);
     }
 
     /**
@@ -208,7 +208,7 @@ class Redis extends AbstractAdapter
      */
     public function lSize($key)
     {
-        return $this->redis->lSize($this->$prefix . $key);
+        return $this->redis->lSize($this->getKey($key));
     }
 
     /**
@@ -219,7 +219,7 @@ class Redis extends AbstractAdapter
      */
     public function lIndex($key, $index = 0)
     {
-        return $this->redis->lIndex($this->$prefix . $key, $index);
+        return $this->redis->lIndex($this->getKey($key), $index);
     }
 
     /**
@@ -230,7 +230,7 @@ class Redis extends AbstractAdapter
      */
     public function lGet($key, $index = 0)
     {
-        return $this->redis->lGet($this->$prefix . $key, $index);
+        return $this->redis->lGet($this->getKey($key), $index);
     }
 
     /**
@@ -241,7 +241,7 @@ class Redis extends AbstractAdapter
      */
     public function lSet($key, $index = 0)
     {
-        return $this->redis->lSet($this->$prefix . $key, $index);
+        return $this->redis->lSet($this->getKey($key), $index);
     }
 
     /**
