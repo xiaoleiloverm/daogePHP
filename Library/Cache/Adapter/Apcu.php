@@ -124,12 +124,12 @@ class Apcu extends AbstractAdapter
     {
         $data = $this->unPack(apc_fetch($this->getKey($key)));
         if (!$this->validateDataFromCache($data, $key)) {
-            $this->del($key);
+            $this->del($this->getKey($key));
 
             return;
         }
         if ($this->ttlHasExpired($data['ttl'])) {
-            $this->del($key);
+            $this->del($this->getKey($key));
 
             return;
         }
