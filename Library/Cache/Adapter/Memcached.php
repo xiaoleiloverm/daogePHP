@@ -40,7 +40,7 @@ class Memcached extends AbstractAdapter
      */
     public function del($key)
     {
-        return $this->server->delete($key);
+        return $this->server->delete($this->getKey($key));
     }
 
     /**
