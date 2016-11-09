@@ -74,15 +74,16 @@ class Memcache extends AbstractAdapter
      * @param string $key 键
      * @param mixed  $value 值
      * @param bool   $flag：是否用MEMCACHE_COMPRESSED来压缩存储的值，true表示压缩，false表示不压缩。
-     * @param int   $ttl 存储值的过期时间，如果为0表示不会过期
-     *                   你可以用unix时间戳或者描述来表示从现在开始的时间，但是你在使用秒数表示的时候，不要超过2592000秒 (表示30天)。
+     * @param int   $ttl 缓存生存周期 设置值为多少s后过期
      */
     public function set($key, $value, $ttl = null)
     {
         if (!$ttl) {
             $ttl = $this->ttl;
         }
-        return $this->server->set($this->getKey($key), $this->pack($value), false, $ttl);
+        //第四参数表示存储值的过期时间，如果为0表示不会过期
+        //你可以用unix时间戳或者描述来表示从现在开始的时间，但是你在使用秒数表示的时候，不要超过2592000秒 (表示30天)。
+        return $this->server->set($this->getKey($key), $this->pack($value), false, time() + $ttl);
     }
 
 }
