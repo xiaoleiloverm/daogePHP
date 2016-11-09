@@ -73,17 +73,17 @@ class Apcu extends AbstractAdapter
         if (!$ttl) {
             $ttl = $this->ttl;
         }
-        return apc_store($this->getKey($key), $this->pack($value), $ttl);
-        apc_store(
+        $res = apc_store(
             $this->getKey($key),
             $this->pack(
                 [
                     'value' => $value,
-                    'ttl' => (int) $ttl + time(),
+                    'ttl'   => (int) $ttl + time(),
                 ]
             ),
             $ttl
-        )
+        );
+        return $res ? true : false;
     }
 
     /**
