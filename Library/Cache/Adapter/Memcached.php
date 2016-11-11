@@ -65,7 +65,7 @@ class Memcached extends AbstractAdapter
      */
     public function has($key)
     {
-        return $this->server->get($this->getKey($key)) ? true : false;
+        return $this->get($key) ? true : false;
     }
 
     /**
