@@ -113,7 +113,7 @@ class Mongo extends AbstractAdapter
         if ($this->collection instanceof \MongoDB\Driver\Manager) {
             $bulk = new \MongoDB\Driver\BulkWrite;
             $bulk->delete(['_id' => $tKey]);
-            $connName = $this->databaseName . $this->collectionName;
+            $connName = $this->databaseName . '.' . $this->collectionName;
             $result   = $this->collection->executeBulkWrite($connName, $bulk, $this->writeConcern);
             //错误
             if ($writeConcernError = $result->getWriteConcernError()) {
@@ -153,7 +153,21 @@ class Mongo extends AbstractAdapter
                 return $this->unPack($data['value']);
             }
         } else {
-            //TODO
+            //过滤条件
+            $filter = ['ttl' => ['$gt' => $tNow]];
+            //返回条件匹配文档
+            $options = [
+                "projection" => ["_id" => 0], //查询条件
+                //"sort"       => ["_id" => -1],//排序
+                "modifiers"  => ['$comment' => "This is a query comment", '$maxTimeMS' => 100], //查询附加参数
+            ];
+            $query          = new MongoDB\Driver\Query($filter, $options);
+            $readPreference = new MongoDB\Driver\ReadPreference(MongoDB\Driver\ReadPreference::RP_PRIMARY);
+            $connName       = $this->databaseName . '.' . $this->collectionName;
+            $cursor         = $this->collection->executeQuery($connName, $query, $readPreference);
+            if (isset($cursor[0]['value'])) {
+                return $this->unPack($cursor[0]['value']);
+            }
         }
         return false;
 
@@ -219,8 +233,12 @@ class Mongo extends AbstractAdapter
      */
     protected function getTtl($ttl = 0)
     {
-        return $this->collection instanceof \MongoCollection ?
-        new \MongoDate((int) $ttl + time()) :
-        new \MongoDB\BSON\UTCDatetime(((int) $ttl + time() * 1000));
+        if ($this->collection instanceof \MongoCollection) {
+            return new \MongoDate((int) $ttl + time());
+        } else {
+            $DTObject = new \MongoDB\BSON\UTCDatetime(((int) $ttl + time() * 1000));
+            return (string) $DTObject;
+        }
+
     }
 }
