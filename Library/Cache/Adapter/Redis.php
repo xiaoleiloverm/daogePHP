@@ -42,6 +42,35 @@ class Redis extends AbstractAdapter
         } else {
             $this->redis->$conn($options['host']);
         }
+        if (isset($options['redis_pass'])) {
+            $this->redis->auth($options['redis_pass']);
+        }
+        if (isset($options['redis_index'])) {
+            $this->redis->select($options['redis_index']);
+        }
+        //redis扩展setOption方法
+        if (isset($options['setOption']) && !empty($options['setOption'])) {
+            if (is_array($options['setOption'])) {
+                foreach ($options['setOption'] as $key => $value) {
+                    $this->redis->setOption($key, $value);
+                }
+            }
+        }
+        //在setOption中已经配置前缀 操作缓存不需要带前缀
+        if (!empty($options['setOption'][\Redis::OPT_PREFIX])) {
+            //设置全局前缀
+            $this->setOption('prefix', $options['setOption'][\Redis::OPT_PREFIX]);
+        }
+    }
+
+    /**
+     * 获取缓存完整键名
+     *
+     * @return string
+     */
+    protected function getKey($key)
+    {
+        return sprintf('%s%s', $this->prefix, $key);
     }
 
     /**
@@ -78,7 +107,7 @@ class Redis extends AbstractAdapter
      */
     public function get($key)
     {
-        $data = $this->redis->get($this->getKey($key));
+        $data = $this->redis->get($key);
         return $data ? $this->unPack($data) : '';
     }
 
@@ -91,7 +120,7 @@ class Redis extends AbstractAdapter
      */
     public function has($key)
     {
-        return $this->redis->exists($this->getKey($key));
+        return $this->redis->exists($key);
     }
 
     /**
@@ -106,7 +135,7 @@ class Redis extends AbstractAdapter
         if (!$ttl) {
             $ttl = $this->ttl;
         }
-        return $this->redis->setex($this->getKey($key), $this->pack($value));
+        return $this->redis->setex($key, $this->pack($value));
     }
 
     /**
@@ -117,7 +146,7 @@ class Redis extends AbstractAdapter
      */
     public function lPush($key, $value)
     {
-        return $this->redis->lPush($this->getKey($key), $this->pack($value));
+        return $this->redis->lPush($key, $this->pack($value));
     }
 
     /**
@@ -128,7 +157,7 @@ class Redis extends AbstractAdapter
      */
     public function lPushx($key, $value)
     {
-        return $this->redis->lPushx($this->getKey($key), $this->pack($value));
+        return $this->redis->lPushx($key, $this->pack($value));
     }
 
     /**
@@ -138,7 +167,7 @@ class Redis extends AbstractAdapter
      */
     public function rPop($key)
     {
-        return $this->redis->rPop($this->getKey($key));
+        return $this->redis->rPop($key);
     }
 
     /**
@@ -149,7 +178,7 @@ class Redis extends AbstractAdapter
      */
     public function rPush($key, $value)
     {
-        return $this->redis->rPush($this->getKey($key), $this->pack($value));
+        return $this->redis->rPush($key, $this->pack($value));
     }
 
     /**
@@ -160,7 +189,7 @@ class Redis extends AbstractAdapter
      */
     public function rPushx($key, $value)
     {
-        return $this->redis->rPushx($this->getKey($key), $this->pack($value));
+        return $this->redis->rPushx($key, $this->pack($value));
     }
 
     /**
@@ -170,7 +199,7 @@ class Redis extends AbstractAdapter
      */
     public function lPop($key)
     {
-        return $this->redis->lPop($this->getKey($key));
+        return $this->redis->lPop($key);
     }
 
     /**
@@ -185,7 +214,7 @@ class Redis extends AbstractAdapter
         foreach ($key as &$v) {
             $v = $this->$prefix . $v;
         }
-        return $this->redis->blPop($this->getKey($key), $timeout);
+        return $this->redis->blPop($key, $timeout);
     }
 
     /**
@@ -200,7 +229,7 @@ class Redis extends AbstractAdapter
         foreach ($key as &$v) {
             $v = $this->$prefix . $v;
         }
-        return $this->redis->brPop($this->getKey($key), $timeout);
+        return $this->redis->brPop($key, $timeout);
     }
 
     /**
@@ -210,7 +239,7 @@ class Redis extends AbstractAdapter
      */
     public function lSize($key)
     {
-        return $this->redis->lSize($this->getKey($key));
+        return $this->redis->lSize($key);
     }
 
     /**
@@ -221,7 +250,7 @@ class Redis extends AbstractAdapter
      */
     public function lIndex($key, $index = 0)
     {
-        return $this->redis->lIndex($this->getKey($key), $index);
+        return $this->redis->lIndex($key, $index);
     }
 
     /**
@@ -232,7 +261,7 @@ class Redis extends AbstractAdapter
      */
     public function lGet($key, $index = 0)
     {
-        return $this->redis->lGet($this->getKey($key), $index);
+        return $this->redis->lGet($key, $index);
     }
 
     /**
@@ -243,7 +272,7 @@ class Redis extends AbstractAdapter
      */
     public function lSet($key, $index = 0)
     {
-        return $this->redis->lSet($this->getKey($key), $index);
+        return $this->redis->lSet($key, $index);
     }
 
     /**

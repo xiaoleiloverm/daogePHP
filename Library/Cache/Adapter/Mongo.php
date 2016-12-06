@@ -153,7 +153,7 @@ class Mongo extends AbstractAdapter
                 return $this->unPack($data['value']);
             }
         } else {
-            //过滤条件
+            //过滤条件 有效期 TODO
             $filter = ['ttl' => ['$gt' => $tNow]];
             //返回条件匹配文档
             $options = [
