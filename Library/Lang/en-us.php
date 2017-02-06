@@ -13,6 +13,7 @@
  * DaogePHP 英文 语言包
  */
 return [
-    '_SYS_REDIRECT_MSG_' => 'System will be in {$time} seconds after automatically jump to {$url}！', // redirect function
-    '_NOT_FIND_SEASLOG_' => 'php extend seasLog not found',
+    '_SYS_REDIRECT_MSG_'   => 'System will be in {$time} seconds after automatically jump to {$url}！', // redirect function
+    '_NOT_FIND_SEASLOG_'   => 'php extend seasLog not found',
+    '_TEMPLATE_NOT_EXIST_' => 'tpl not found',
 ];
