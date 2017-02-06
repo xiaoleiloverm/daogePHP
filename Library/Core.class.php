@@ -198,6 +198,10 @@ class Core
         elseif (file_exists(DAOGE_PATH . $class . '.php')) {
             require_once DAOGE_PATH . $class . '.php';
         }
+        //加载自定义外部命名空间类文件
+        elseif (file_exists($class . EXT)) {
+            require_once $class . EXT;
+        }
     }
 
     /**
