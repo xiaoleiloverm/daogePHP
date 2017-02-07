@@ -50,7 +50,7 @@ class Core
     public static function coreConfig()
     {
         $mode = include CONFIG_PATH . 'core' . CONFIG_EXT;
-        // 加载核心文件
+        // 加载核心文件 核心配置和核心函数等
         foreach ($mode['core'] as $file) {
             if (is_file($file)) {
                 include $file;
@@ -65,6 +65,17 @@ class Core
     }
 
     /**
+     *加载扩展函数库
+     */
+    public static function extFunc()
+    {
+        //1.公共COMMON扩展函数
+        is_file($path = APP_COMM_PATH . 'function.php') && include $path;
+        //2.项目扩展函数
+        is_file($path = APP_PATH . MODULE_NAME . '/Common/function.php') && include $path;
+    }
+
+    /**
      *加载应用配置
      */
     public static function appConfig()
@@ -73,10 +84,24 @@ class Core
         if (is_file(APP_CONFIG_PATH . 'config' . CONFIG_EXT)) {
             C(include APP_CONFIG_PATH . 'config' . CONFIG_EXT);
         }
-        ////加载应用项目配置,可覆盖公共配置
-        // if (is_file(APP_PATH . 'Config/config' . CONFIG_EXT)) {
-        //     C(include APP_PATH . 'Config/config' . CONFIG_EXT);
-        // }
+        //加载应用项目配置,可覆盖公共配置
+        if (is_file(APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT)) {
+            C(include APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT);
+        }
+        //加载扩展配置文件
+        if ($extConf = C('LOAD_EXT_CONFIG')) {
+            $extConf = explode(',', $extConf);
+            foreach ($extConf as $value) {
+                is_file(APP_CONFIG_PATH . $value . CONFIG_EXT) && C(include APP_CONFIG_PATH . $value . CONFIG_EXT);
+            }
+        }
+        //扩展函数
+        if ($extFile = C('LOAD_EXT_FILE')) {
+            $extFile = explode(',', $extFile);
+            foreach ($extFile as $value) {
+                is_file(APP_COMM_PATH . $value . '.php') && include APP_COMM_PATH . $value . '.php';
+            }
+        }
     }
 
     /**
@@ -161,6 +186,9 @@ class Core
 
         //加载应用配置文件
         \Library\Core::appConfig();
+
+        //加载系统默认扩展函数
+        \Library\Core::extFunc();
 
         //var_dump(C());
 
