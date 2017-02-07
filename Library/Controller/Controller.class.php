@@ -80,21 +80,22 @@ class Controller
     public function fetch($templateFile = '')
     {
         //模版路径
-        $path = [];
+        $path         = [];
+        $templateFile = str_replace(':', '/', $templateFile);
         if (empty($templateFile)) {
             $path = [MODULE_NAME, CONTROLLER_NAME, ACTION_NAME];
-        } elseif (count(explode('/', $templateFile)) >= 1) {
+        } elseif (count($tplDirArr = explode('/', $templateFile)) >= 1) {
             if (count($tplDirArr) == 1) {
-                $path = [MODULE_NAME, CONTROLLER_NAME, $templateFile[0]];
+                $path = [MODULE_NAME, CONTROLLER_NAME, $tplDirArr[0]];
             }
             if (count($tplDirArr) == 2) {
-                $path = [MODULE_NAME, $templateFile[0], $templateFile[1]];
+                $path = [MODULE_NAME, $tplDirArr[0], $tplDirArr[1]];
             }
             if (count($tplDirArr) >= 3) {
-                $path = [$templateFile[0], $templateFile[1], $templateFile[2]];
+                $path = [$tplDirArr[0], $tplDirArr[1], $tplDirArr[2]];
             }
         }
-        $fileDir = APP_PATH . $path[0] . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . C('DEFAULT_THEME') . DIRECTORY_SEPARATOR . $path[1] . DIRECTORY_SEPARATOR . $path[2] . C('TMPL_TEMPLATE_SUFFIX');
+        $fileDir = APP_PATH . $path[0] . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . (C('DEFAULT_THEME') ? C('DEFAULT_THEME') . DIRECTORY_SEPARATOR : '') . $path[1] . DIRECTORY_SEPARATOR . $path[2] . C('TMPL_TEMPLATE_SUFFIX');
         // 模板文件不存在直接返回
         if (!is_file($fileDir)) {
             E(L('_TEMPLATE_NOT_EXIST_') . ':' . $fileDir);
