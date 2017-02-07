@@ -141,10 +141,9 @@ class Core
         $df_controller = C('DEFAULT_CONTROLLER') ? C('DEFAULT_CONTROLLER') : 'Index'; // 默认控制器
         $df_action     = C('DEFAULT_ACTION') ? C('DEFAULT_ACTION') : 'index'; // 默认方法
         //根据路由加载控制器
-        $layer = C('DEFAULT_C_NAME');
-        $class = '\\' . MODULE_NAME . '\\' . $layer . '\\' . CONTROLLER_NAME . C('CONTROLLER_SUFFIX');
-        //$exe    = new $class;
-        $exe    = new \Home\Controller\IndexController;
+        $layer  = C('DEFAULT_C_NAME');
+        $class  = '\\' . MODULE_NAME . '\\' . $layer . '\\' . CONTROLLER_NAME . C('CONTROLLER_SUFFIX');
+        $exe    = new $class;
         $action = ACTION_NAME . C('ACTION_SUFFIX');
         if (!preg_match('/^[A-Za-z](\w)*$/', $action)) {
             // 非法操作
