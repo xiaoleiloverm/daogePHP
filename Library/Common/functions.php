@@ -601,3 +601,69 @@ function cookie($name = '', $value = '', $option = null)
     }
     return null;
 }
+
+/**
+ * 导入所需的类库 同java的Import 本函数有缓存功能
+ * @param string $class 类库命名空间字符串
+ * @param string $baseUrl 起始路径
+ * @param string $ext 导入的文件扩展名
+ * @return boolean
+ */
+function import($class, $baseUrl = '', $ext = EXT)
+{
+    static $_file = array();
+    $class        = str_replace(array('.', '#'), array('/', '.'), $class);
+    if (isset($_file[$class . $baseUrl])) {
+        return true;
+    } else {
+        $_file[$class . $baseUrl] = true;
+    }
+
+    $class_strut = explode('/', $class);
+    if (empty($baseUrl)) {
+        if ('@' == $class_strut[0] || MODULE_NAME == $class_strut[0]) {
+            //加载当前模块的类库
+            $baseUrl = APP_PATH . MODULE_NAME . '/';
+            $class   = substr_replace($class, '', 0, strlen($class_strut[0]) + 1);
+        } elseif ('Common' == $class_strut[0]) {
+            //加载公共模块的类库
+            $baseUrl = APP_COMMON_PATH;
+            $class   = substr($class, 7);
+        } elseif (in_array($class_strut[0], array('Org', 'Vendor')) || is_dir(LIB_PATH . $class_strut[0])) {
+            // 系统类库包和第三方类库包
+            $baseUrl = LIB_PATH;
+        } else {
+            // 加载其他模块的类库
+            $baseUrl = APP_PATH;
+        }
+    }
+    if (substr($baseUrl, -1) != '/') {
+        $baseUrl .= '/';
+    }
+
+    $classfile = $baseUrl . $class . $ext;
+    if (!class_exists(basename($class), false)) {
+        // 如果类不存在 则导入类库文件
+        return require_cache($classfile);
+    }
+    return null;
+}
+
+/**
+ * 优化的require_once
+ * @param string $filename 文件地址
+ * @return boolean
+ */
+function require_cache($filename)
+{
+    static $_importFiles = array();
+    if (!isset($_importFiles[$filename])) {
+        if (file_exists_case($filename)) {
+            require $filename;
+            $_importFiles[$filename] = true;
+        } else {
+            $_importFiles[$filename] = false;
+        }
+    }
+    return $_importFiles[$filename];
+}
