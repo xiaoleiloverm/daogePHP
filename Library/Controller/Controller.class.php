@@ -120,6 +120,15 @@ class Controller
     }
 
     /**
+     * 析构方法
+     * @access public
+     */
+    public function __destruct()
+    {
+        // 执行后续操作TODO
+    }
+
+    /**
      *
      */
     public function test()
