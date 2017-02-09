@@ -17,4 +17,6 @@ return [
     '_NOT_FIND_SEASLOG_'   => 'php扩展seasLog没找到',
     '_TEMPLATE_NOT_EXIST_' => '模版文件没找到',
     '_NOT_SUPPERT_'        => '不支持扩展',
+    '_OPERATION_FAIL_'     => '操作失败！',
+    '_OPERATION_SUCCESS_'  => '操作成功！',
 ];

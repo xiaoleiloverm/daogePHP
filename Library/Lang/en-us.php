@@ -17,4 +17,6 @@ return [
     '_NOT_FIND_SEASLOG_'   => 'php extend seasLog not found',
     '_TEMPLATE_NOT_EXIST_' => 'tpl not found',
     '_NOT_SUPPERT_'        => 'not found extend',
+    '_OPERATION_FAIL_'     => 'Operation failed!',
+    '_OPERATION_SUCCESS_'  => 'Operation succeed!',
 ];
