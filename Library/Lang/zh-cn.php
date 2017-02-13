@@ -19,4 +19,5 @@ return [
     '_NOT_SUPPERT_'        => '不支持扩展',
     '_OPERATION_FAIL_'     => '操作失败！',
     '_OPERATION_SUCCESS_'  => '操作成功！',
+    '_XML_TAG_ERROR_'      => 'XML标签语法错误',
 ];

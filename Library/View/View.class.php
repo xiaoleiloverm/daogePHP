@@ -39,9 +39,10 @@ class View
         if (!$content) {
             $content = $this->fetch($templateFile);
         } else {
-            // 输出模板内容
-            $this->render($content, $charset, $contentType);
+            $content = $this->fetch($templateFile) . $content;
         }
+        // 输出模板内容
+        $this->render($content, $charset, $contentType);
 
     }
 
@@ -79,35 +80,18 @@ class View
      */
     public function fetch($templateFile = '')
     {
-        //模版路径
-        $path         = [];
-        $templateFile = str_replace(':', '/', $templateFile);
-        if (empty($templateFile)) {
-            $path = [MODULE_NAME, CONTROLLER_NAME, ACTION_NAME];
-        } elseif (count($tplDirArr = explode('/', $templateFile)) >= 1) {
-            if (count($tplDirArr) == 1) {
-                $path = [MODULE_NAME, CONTROLLER_NAME, $tplDirArr[0]];
-            }
-            if (count($tplDirArr) == 2) {
-                $path = [MODULE_NAME, $tplDirArr[0], $tplDirArr[1]];
-            }
-            if (count($tplDirArr) >= 3) {
-                $path = [$tplDirArr[0], $tplDirArr[1], $tplDirArr[2]];
-            }
-        }
-        $fileDir = APP_PATH . $path[0] . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . (C('DEFAULT_THEME') ? C('DEFAULT_THEME') . DIRECTORY_SEPARATOR : '') . $path[1] . DIRECTORY_SEPARATOR . $path[2] . C('TMPL_TEMPLATE_SUFFIX');
+        $fileDir = T($templateFile);
         // 模板文件不存在直接返回
         if (!is_file($fileDir)) {
             E(L('_TEMPLATE_NOT_EXIST_') . ':' . $fileDir);
         }
-        // // 视图解析标签 TODO
-        // $params = array('var' => $this->tplVar, 'file' => $templateFile);
-        // // Hook::listen('view_parse',$params);
-        // $view_parse = new \Library\View\Template\Template();
-        // $res        = $view_parse->fetch($param['file'], $param['var']);
-        // var_dump($res);exit;
+        // 视图解析标签 TODO
+        $params = array('var' => $this->tplVar, 'file' => $fileDir);
+        // Hook::listen('view_parse',$params);
+        $view_parse = new \Library\View\Template\Template();
+        $tpl        = $view_parse->fetch($params['file'], $params['var']);
         //加载
-        $tpl = include $fileDir;
+        //$tpl = include $fileDir;
         return $tpl;
     }
 

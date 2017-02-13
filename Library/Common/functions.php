@@ -718,3 +718,30 @@ function strip_whitespace($content)
     }
     return $stripStr;
 }
+
+/**
+ * 获取模版文件全路径
+ * @param string $templateFile 模版资源相对地址
+ * @return string
+ */
+function T($templateFile)
+{
+    //模版路径
+    $path         = [];
+    $templateFile = str_replace(':', '/', $templateFile);
+    if (empty($templateFile)) {
+        $path = [MODULE_NAME, CONTROLLER_NAME, ACTION_NAME];
+    } elseif (count($tplDirArr = explode('/', $templateFile)) >= 1) {
+        if (count($tplDirArr) == 1) {
+            $path = [MODULE_NAME, CONTROLLER_NAME, $tplDirArr[0]];
+        }
+        if (count($tplDirArr) == 2) {
+            $path = [MODULE_NAME, $tplDirArr[0], $tplDirArr[1]];
+        }
+        if (count($tplDirArr) >= 3) {
+            $path = [$tplDirArr[0], $tplDirArr[1], $tplDirArr[2]];
+        }
+    }
+    $fileDir = APP_PATH . $path[0] . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . (C('DEFAULT_THEME') ? C('DEFAULT_THEME') . DIRECTORY_SEPARATOR : '') . $path[1] . DIRECTORY_SEPARATOR . $path[2] . C('TMPL_TEMPLATE_SUFFIX');
+    return $fileDir;
+}

@@ -59,6 +59,10 @@ return [
     'LAYOUT_ON'             => false, // 是否启用布局
     'LAYOUT_NAME'           => 'layout', // 当前布局名称 默认为layout
 
+    // Think模板引擎标签库相关设定
+    'TAGLIB_BEGIN'          => '<', // 标签库标签开始标记
+    'TAGLIB_END'            => '>', // 标签库标签结束标记
+
     /* 日志设置 */
     'LOG_TYPE'              => 'MonoLog', //日志类型 MonoLog、 SeasLog
     'LOG_SAVE_PATH'         => APP_PATH . 'Log/app.log', //日志生成文件,含路径

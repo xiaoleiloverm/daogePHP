@@ -73,7 +73,8 @@ class Template
      */
     public function fetch($templateFile, $templateVar, $prefix = '')
     {
-        $this->tVar        = $templateVar;
+        $this->tVar = $templateVar;
+        //var_dump($templateFile);
         $templateCacheFile = $this->loadTemplate($templateFile, $prefix);
         return $templateCacheFile;
     }
@@ -250,6 +251,7 @@ class Template
             $content = str_replace($matches[0], '', $content);
             // 记录页面中的block标签
             preg_replace_callback('/' . $begin . 'block\sname=[\'"](.+?)[\'"]\s*?' . $end . '(.*?)' . $begin . '\/block' . $end . '/is', array($this, 'parseBlock'), $content);
+            //var_dump($matches, $content);
             // 读取继承模板
             $array   = $this->parseXmlAttrs($matches[1]);
             $content = $this->parseTemplateName($array['name']);
@@ -678,6 +680,7 @@ class Template
      */
     private function parseTemplateName($templateName)
     {
+        //var_dump($templateName);
         if (substr($templateName, 0, 1) == '$')
         //支持加载变量文件名
         {

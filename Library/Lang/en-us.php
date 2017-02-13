@@ -19,4 +19,5 @@ return [
     '_NOT_SUPPERT_'        => 'not found extend',
     '_OPERATION_FAIL_'     => 'Operation failed!',
     '_OPERATION_SUCCESS_'  => 'Operation succeed!',
+    '_XML_TAG_ERROR_'      => 'XML tag syntax errors',
 ];
