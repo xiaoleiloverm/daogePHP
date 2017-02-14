@@ -92,6 +92,16 @@ class View
         $tpl        = $view_parse->fetch($params['file'], $params['var']);
         //加载
         //$tpl = include $fileDir;
+        // //解析php:方法1 TODO
+        // var_dump($tpl);
+        // $tpl = eval($tpl);
+        // // 解析php:方法2 TODO
+        // //注册自定义流,别名 stream_wrapper_register
+        // stream_register_wrapper("var", "\\Library\\Protocol\\Stream");
+        // $stream = new \Library\Protocol\Stream();
+        // $stream->setData($tpl);
+        // include "var://$tpl";
+        var_dump($tpl); //TODO
         return $tpl;
     }
 
