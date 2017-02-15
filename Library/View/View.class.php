@@ -30,20 +30,15 @@ class View
      */
     public function display($templateFile = '', $charset = '', $contentType = '', $content = '')
     {
-        //变量输出到模版
-        if (!empty($this->tplVar)) {
-            extract($this->tplVar, EXTR_OVERWRITE);
-        }
         // 解析并获取模板内容
-
         if (!$content) {
+            //自动输出
             $content = $this->fetch($templateFile);
         } else {
             $content = $this->fetch($templateFile) . $content;
+            // 输出模板内容
+            $this->render($content, $charset, $contentType);
         }
-        // 输出模板内容
-        $this->render($content, $charset, $contentType);
-
     }
 
     /**
@@ -85,6 +80,10 @@ class View
         if (!is_file($fileDir)) {
             E(L('_TEMPLATE_NOT_EXIST_') . ':' . $fileDir);
         }
+        //变量输出到模版
+        if (!empty($this->tplVar)) {
+            extract($this->tplVar, EXTR_OVERWRITE);
+        }
         // 视图解析标签 TODO
         $params = array('var' => $this->tplVar, 'file' => $fileDir);
         // Hook::listen('view_parse',$params);
@@ -93,15 +92,12 @@ class View
         //加载
         //$tpl = include $fileDir;
         // //解析php:方法1 TODO
-        // var_dump($tpl);
         // $tpl = eval($tpl);
-        // // 解析php:方法2 TODO
-        // //注册自定义流,别名 stream_wrapper_register
-        // stream_register_wrapper("var", "\\Library\\Protocol\\Stream");
-        // $stream = new \Library\Protocol\Stream();
-        // $stream->setData($tpl);
-        // include "var://$tpl";
-        var_dump($tpl); //TODO
+        // 解析php:方法2 TODO
+        //注册自定义流,别名 stream_wrapper_register
+        stream_register_wrapper("var", "\\Library\\Protocol\\Stream");
+        include "var://$tpl";
+        //var_dump($tpl);
         return $tpl;
     }
 

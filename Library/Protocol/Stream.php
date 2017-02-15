@@ -42,7 +42,7 @@ class Stream extends StreamAbstract
         }
         //var_dump($url, $file, $path, $this->string);
         $this->position = 0;
-        return true;
+        return true; //return true/false 直接输出内容/不输出
     }
 
     //读取流
