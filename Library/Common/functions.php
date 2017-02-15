@@ -13,9 +13,9 @@
  * 类库实例化函数
  *
  */
-function A()
+function A($class)
 {
-
+    return new $class;
 }
 
 /**
@@ -744,4 +744,80 @@ function T($templateFile)
     }
     $fileDir = APP_PATH . $path[0] . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . (C('DEFAULT_THEME') ? C('DEFAULT_THEME') . DIRECTORY_SEPARATOR : '') . $path[1] . DIRECTORY_SEPARATOR . $path[2] . C('TMPL_TEMPLATE_SUFFIX');
     return $fileDir;
+}
+
+/**
+ * URL生成 TODO
+ * @param string $url URL表达式，格式：'[模块/控制器/操作#锚点@域名]?参数1=值1&参数2=值2...'
+ * @param string|array $vars 传入的参数，支持数组和字符串
+ * @param string|boolean $suffix 伪静态后缀，默认为true表示获取配置值
+ * @param boolean $domain 是否显示域名
+ * @return string
+ */
+function U($url = '', $vars = '', $suffix = true, $domain = false)
+{
+    // 解析URL
+    $info = parse_url($url);
+    // 'scheme' => string 'http' (length=4)
+    // 'host' => string 'hostname' (length=8)
+    // 'user' => string 'username' (length=8)
+    // 'pass' => string 'password' (length=8)
+    // 'path' => string '/path' (length=5)
+    // 'query' => string 'arg=value' (length=9)
+    // 'fragment' => string 'anchor' (length=6)
+    $url = !empty($info['path']) ? $info['path'] : ACTION_NAME;
+    if (isset($info['fragment'])) {
+        // 解析锚点
+        $anchor = $info['fragment'];
+        if (false !== strpos($anchor, '?')) {
+            // 解析参数
+            list($anchor, $info['query']) = explode('?', $anchor, 2);
+        }
+        if (false !== strpos($anchor, '@')) {
+            // 解析域名
+            list($anchor, $host) = explode('@', $anchor, 2);
+        }
+    } elseif (false !== strpos($url, '@')) {
+        // 解析域名
+        list($url, $host) = explode('@', $info['path'], 2);
+    }
+
+    // 解析子域名
+    if (isset($host)) {
+        $domain = $host . (strpos($host, '.') ? '' : strstr($_SERVER['HTTP_HOST'], '.'));
+    }
+    //显示域名
+    elseif ($domain === true) {
+        $domain = $_SERVER['HTTP_HOST'];
+        if (C('SUB_DOMAIN_MAP_DEPLOY')) {
+            // 开启子域名映射设置
+            //$domain = $domain == 'localhost' ? 'localhost' : 'www' . strstr($_SERVER['HTTP_HOST'], '.');
+            // URL映射TODO
+
+        }
+    }
+
+    // 解析参数
+    if (is_string($vars)) {
+        // aaa=1&bbb=2 转换成数组
+        parse_str($vars, $vars);
+    } elseif (!is_array($vars)) {
+        $vars = array();
+    }
+    if (isset($info['query'])) {
+        // 解析地址里面参数 合并到vars
+        parse_str($info['query'], $params);
+        $vars = array_merge($params, $vars);
+    }
+
+    //组装
+
+    if (isset($anchor)) {
+        $url .= '#' . $anchor;
+    }
+    if ($domain) {
+        $url = (is_ssl() ? 'https://' : 'http://') . $domain . $url;
+    }
+    var_dump($info, $url);
+    return $url;
 }
