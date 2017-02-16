@@ -757,14 +757,15 @@ function T($templateFile)
 function U($url = '', $vars = '', $suffix = true, $domain = false)
 {
     // 解析URL
-    $info = parse_url($url);
+    $info = parse_url($url) ?: $url;
+    //http://username:password@hostname/path?arg=value#anchor?arg2=value2
     // 'scheme' => string 'http' (length=4)
     // 'host' => string 'hostname' (length=8)
     // 'user' => string 'username' (length=8)
     // 'pass' => string 'password' (length=8)
     // 'path' => string '/path' (length=5)
-    // 'query' => string 'arg=value' (length=9)
-    // 'fragment' => string 'anchor' (length=6)
+    // 'query' => string 'arg2=value2' (length=11)
+    // 'fragment' => string 'anchor?arg2=value2' (length=18)
     $url = !empty($info['path']) ? $info['path'] : ACTION_NAME;
     if (isset($info['fragment'])) {
         // 解析锚点
@@ -789,11 +790,21 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
     //显示域名
     elseif ($domain === true) {
         $domain = $_SERVER['HTTP_HOST'];
+        // 开启子域名映射设置
         if (C('SUB_DOMAIN_MAP_DEPLOY')) {
-            // 开启子域名映射设置
-            //$domain = $domain == 'localhost' ? 'localhost' : 'www' . strstr($_SERVER['HTTP_HOST'], '.');
+            //域名初始化 二级域名
+            $domain = $domain == 'localhost' ? 'localhost' : 'www' . strstr($_SERVER['HTTP_HOST'], '.');
             // URL映射TODO
 
+            // '子域名'=>array('模块[/控制器]');
+            foreach (C('SUB_DOMAIN_MAP') as $key => $rule) {
+                $rule = is_array($rule) ? $rule[0] : $rule;
+                if (false === strpos($key, '*') && 0 === strpos($url, $rule)) {
+                    $domain = $key . strstr($domain, '.'); // 生成对应子域名
+                    $url    = substr_replace($url, '', 0, strlen($rule));
+                    break;
+                }
+            }
         }
     }
 
@@ -810,7 +821,58 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
         $vars = array_merge($params, $vars);
     }
 
-    //组装
+    // URL组装
+    $depr    = C('URL_PATHINFO_DEPR') ?: '/'; //PATHINFO URL分割符
+    $urlCase = C('URL_CASE_INSENSITIVE');
+    $_m      = C('VAR_MODULE'); //模型
+    $_c      = C('VAR_CONTROLLER'); //控制器
+    $_a      = C('VAR_ACTION'); //操作
+    if ($url) {
+        $info['path'] = str_replace(':', $depr, $info['path']);
+        //模块 控制 方法
+        if (empty($info['path'])) {
+            $path = [$_m => MODULE_NAME, $_c => CONTROLLER_NAME, $_a => ACTION_NAME];
+        } elseif (count($tplDirArr = explode($depr, $info['path'])) >= 1) {
+            if (count($tplDirArr) == 1) {
+                $path = [$_m => MODULE_NAME, $_c => CONTROLLER_NAME, $_a => $tplDirArr[0]];
+            }
+            if (count($tplDirArr) == 2) {
+                $path = [$_m => MODULE_NAME, $_c => $tplDirArr[0], $_a => $tplDirArr[1]];
+            }
+            if (count($tplDirArr) >= 3) {
+                $path = [$_m => $tplDirArr[0], $_c => $tplDirArr[1], $_a => $tplDirArr[2]];
+            }
+        }
+    }
+
+    //URL模式 0:动态url传参 模式;1:pathinfo 模式
+    if (C('URL_MODEL') == 0) {
+        //生成URL字符串
+        $url = '/' . SCRIPT_NAME . '?' . http_build_query($path);
+        if ($urlCase) {
+            $url = strtolower($url);
+        }
+        if (!empty($vars)) {
+            $vars = http_build_query($vars);
+            $url .= '&' . $vars;
+        }
+    }
+    if (C('URL_MODEL') == 1) {
+        //生成URL字符串
+        $url = '/' . $path[$_m] . $depr . $path[$_c] . $depr . $path[$_a];
+        if ($urlCase) {
+            $url = strtolower($url);
+        }
+        if (!empty($vars)) {
+            // 添加参数
+            foreach ($vars as $var => $val) {
+                if ('' !== trim($val)) {
+                    $url .= $depr . $var . $depr . urlencode($val);
+                }
+
+            }
+        }
+    }
 
     if (isset($anchor)) {
         $url .= '#' . $anchor;
@@ -818,6 +880,5 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
     if ($domain) {
         $url = (is_ssl() ? 'https://' : 'http://') . $domain . $url;
     }
-    var_dump($info, $url);
     return $url;
 }

@@ -18,7 +18,7 @@ if (MEMORY_LIMIT_ON) {
 }
 
 //版本
-const DAOGE_VERSION = '1.1.13';
+const DAOGE_VERSION = '1.1.15';
 
 // 类文件后缀
 const EXT = '.class.php';
@@ -56,6 +56,8 @@ define('IS_GET', (REQUEST_METHOD === 'get') ? true : false);
 define('IS_POST', (REQUEST_METHOD === 'post') ? true : false);
 define('IS_PUT', (REQUEST_METHOD === 'put') ? true : false);
 define('IS_DELETE', (REQUEST_METHOD === 'delete') ? true : false);
+//其他常量
+define('SCRIPT_NAME', trim($_SERVER['SCRIPT_NAME'], '/'));
 
 //加载应用核心类文件
 require_once LIB_PATH . 'Core.class.php';

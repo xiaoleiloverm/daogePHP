@@ -162,7 +162,7 @@ class Route
             else {
                 $SUB_DOMAIN_MAP = C('SUB_DOMAIN_MAP');
                 foreach ($SUB_DOMAIN_MAP as $key => $value) {
-                    if (strpos($_SERVER['HTTP_HOST'], strtolower($key)) !== false) {
+                    if (strpos($_SERVER['HTTP_HOST'], strtolower($key) . '.') !== false) {
                         $data['module'] = !empty($value) ? $value : C('DEFAULT_MODULE');
                         if (end($part) == $value) {
                             array_pop($part);

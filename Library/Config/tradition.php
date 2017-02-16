@@ -71,6 +71,9 @@ return [
     'URL_MODEL'             => 1, //如果你的环境不支持PATHINFO 请设置为0 (0:动态url传参 模式;1:pathinfo 模式)
     'URL_HTML_SUFFIX'       => 'action', //url后缀
     'URL_PATHINFO_DEPR'     => '/', //PATHINFO URL分割符
+    'VAR_MODULE'            => 'm', //模型
+    'VAR_CONTROLLER'        => 'c', //控制器
+    'VAR_ACTION'            => 'a', //操作
     //子域名映射设置
     'SUB_DOMAIN_MAP_DEPLOY' => true, //true开 false关
     'SUB_DOMAIN_MAP'        => [],
@@ -84,7 +87,6 @@ return [
         //'user/my'  => 'Home/User/index',//用户中心
         //'login'=>'Home/User/login',//登录界面
     ],
-    //PATHINFO URL分割符
 
     /* 默认设定 */
     'DEFAULT_M_NAME'        => 'Model', //模型层命名
