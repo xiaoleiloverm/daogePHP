@@ -71,7 +71,8 @@ class Core
     {
         //1.公共COMMON扩展函数
         is_file($path = APP_COMM_PATH . 'function.php') && include $path;
-        //2.项目扩展函数
+        //2.项目扩展函数 路由调度后按 MODULE_NAME 加载
+        var_dump(APP_PATH . MODULE_NAME . '/Common/function.php');
         is_file($path = APP_PATH . MODULE_NAME . '/Common/function.php') && include $path;
     }
 
@@ -84,10 +85,13 @@ class Core
         if (is_file(APP_CONFIG_PATH . 'config' . CONFIG_EXT)) {
             C(include APP_CONFIG_PATH . 'config' . CONFIG_EXT);
         }
-        //加载应用项目配置,可覆盖公共配置
-        if (is_file(APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT)) {
-            C(include APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT);
-        }
+
+        // //加载应用项目配置,可覆盖公共配置
+        // var_dump(APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT);
+        // if (is_file(APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT)) {
+        //     C(include APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT);
+        // }
+
         //加载扩展配置文件
         if ($extConf = C('LOAD_EXT_CONFIG')) {
             $extConf = explode(',', $extConf);
@@ -101,6 +105,18 @@ class Core
             foreach ($extFile as $value) {
                 is_file(APP_COMM_PATH . $value . '.php') && include APP_COMM_PATH . $value . '.php';
             }
+        }
+    }
+
+    /**
+     *加载应用项目配置 路由调度后按 MODULE_NAME 加载
+     */
+    public static function ModuleConifg()
+    {
+        //加载应用项目配置,可覆盖公共配置
+        var_dump(APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT);
+        if (is_file(APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT)) {
+            C(include APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT);
         }
     }
 
@@ -136,6 +152,10 @@ class Core
         define('ACTION_NAME', $makeUrl['action'] ?: C('DEFAULT_ACTION')); //方法名常量
         $GLOBALS['_urlParam'] = $makeUrl['param']; //url 参数
         //var_dump($makeUrl, $_SERVER);
+        //加载系统默认扩展函数
+        \Library\Core::extFunc();
+        //加载应用项目配置 路由调度后按 MODULE_NAME 加载
+        \Library\Core::ModuleConifg();
         // 默认路由
         $df_module     = C('DEFAULT_MODULE') ? C('DEFAULT_MODULE') : 'Default'; // 默认模块名
         $df_controller = C('DEFAULT_CONTROLLER') ? C('DEFAULT_CONTROLLER') : 'Index'; // 默认控制器
@@ -186,16 +206,8 @@ class Core
         //加载应用配置文件
         \Library\Core::appConfig();
 
-        //加载系统默认扩展函数
-        \Library\Core::extFunc();
-
-        //var_dump(C());
-
         //$log = new Log('info', 'local');
         //Log::record('debug', ['this is a {userName} info', 'framwork:{userName}'], ['extend' => ['function' => 'start', 'method' => 'public static'], 'replace' => ['{userName}' => 'daogePHP']]);
-
-        //路由调度
-        //\Library\Core::urlDispatch();
 
         //加载http C层
         \Library\Core::http_C();
