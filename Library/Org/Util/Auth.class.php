@@ -150,7 +150,7 @@ class Auth
         }
         $user_groups = M()->getAll("SELECT `uid`,`group_id`,`title`,`rules` FROM {$this->_config['AUTH_GROUP_ACCESS']} a INNER JOIN {$this->_config['AUTH_GROUP']} g on a.group_id=g.id  WHERE ( a.uid=:uid and g.status=:status )", ['uid' => $uid, 'status' => '1']);
         //SELECT `uid`,`group_id`,`title`,`rules` FROM ws_admin_auth_group_access a INNER JOIN ws_admin_auth_group g on a.group_id=g.id  WHERE ( a.uid='1' and g.status='1' )
-        var_dump($user_groups);
+        //var_dump($user_groups);
         $groups[$uid] = $user_groups ?: array();
         return $groups[$uid];
     }
