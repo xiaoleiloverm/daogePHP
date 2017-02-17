@@ -669,6 +669,25 @@ function require_cache($filename)
 }
 
 /**
+ * 区分大小写的文件存在判断
+ * @param string $filename 文件地址
+ * @return boolean
+ */
+function file_exists_case($filename)
+{
+    if (is_file($filename)) {
+        if (IS_WIN && APP_DEBUG) {
+            if (basename(realpath($filename)) != basename($filename)) {
+                return false;
+            }
+
+        }
+        return true;
+    }
+    return false;
+}
+
+/**
  * 去除代码中的空白和注释
  * @param string $content 代码内容
  * @return string
