@@ -170,7 +170,7 @@ class Route
                     }
                 }
             }
-            $data['module']     = $data['module'] ?: (C('DEFAULT_MODULE') ?: 'Home');
+            $data['module']     = $data['module'] ?: array_pop($part) ?: (C('DEFAULT_MODULE') ?: 'Home');
             $data['controller'] = $data['controller'] ?: array_pop($part);
             $data['action']     = $data['action'] ?: (array_pop($part) ?: (C('DEFAULT_ACTION') ?: 'index'));
             if ($suffix = C('URL_HTML_SUFFIX')) {
