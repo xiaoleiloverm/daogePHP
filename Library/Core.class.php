@@ -72,7 +72,6 @@ class Core
         //1.公共COMMON扩展函数
         is_file($path = APP_COMM_PATH . 'function.php') && include $path;
         //2.项目扩展函数 路由调度后按 MODULE_NAME 加载
-        var_dump(APP_PATH . MODULE_NAME . '/Common/function.php');
         is_file($path = APP_PATH . MODULE_NAME . '/Common/function.php') && include $path;
     }
 
@@ -114,7 +113,6 @@ class Core
     public static function ModuleConifg()
     {
         //加载应用项目配置,可覆盖公共配置
-        var_dump(APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT);
         if (is_file(APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT)) {
             C(include APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT);
         }
