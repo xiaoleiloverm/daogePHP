@@ -30,6 +30,16 @@ class Controller
         $this->view = new \Library\View\View();
     }
 
+    public function getViewObj()
+    {
+        return $this->view = new \Library\View\View();
+    }
+
+    public function setViewObj()
+    {
+        return $this->view = new \Library\View\View();
+    }
+
     /**
      *加载视图模版文件
      * @access public
@@ -42,7 +52,7 @@ class Controller
     public function display($templateFile = '', $charset = '', $contentType = '', $content = '')
     {
 
-        $this->view->display($templateFile, $charset, $contentType, $content);
+        $this->getViewObj()->display($templateFile, $charset, $contentType, $content);
     }
 
     /**
@@ -55,7 +65,7 @@ class Controller
      */
     private function render($content, $charset = '', $contentType = '')
     {
-        $this->view->render();
+        $this->getViewObj()->render();
     }
 
     /**
@@ -66,7 +76,7 @@ class Controller
      */
     public function fetch($templateFile = '')
     {
-        return $this->view->fetch($templateFile, $content, $prefix);
+        return $this->getViewObj()->fetch($templateFile, $content, $prefix);
     }
 
     /**
@@ -77,7 +87,7 @@ class Controller
      */
     public function assign($name, $value = '')
     {
-        $this->view->assign($name, $value);
+        $this->getViewObj()->assign($name, $value);
         return $this;
     }
 
