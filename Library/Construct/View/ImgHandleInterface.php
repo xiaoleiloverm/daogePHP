@@ -26,6 +26,12 @@ interface ImgHandleInterface
     public function createBg();
 
     /**
+     * 生成文字颜色
+     * @access public
+     */
+    public function createFontColor();
+
+    /**
      * 生成文字
      * @access public
      */
