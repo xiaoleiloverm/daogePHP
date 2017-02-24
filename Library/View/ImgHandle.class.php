@@ -86,7 +86,7 @@ class ImgHandle extends ImgHandleAbstract
     }
 
     /**
-     * 生成文字
+     * 绘制图片字符
      * @access public
      */
     public function createFont()
@@ -101,7 +101,7 @@ class ImgHandle extends ImgHandleAbstract
     }
 
     /**
-     * 生成干扰（线条、雪花）
+     * 绘制干扰（线条、雪花等）
      * @access public
      */
     public function createDisturb()
@@ -120,7 +120,7 @@ class ImgHandle extends ImgHandleAbstract
     }
 
     /**
-     * 获取验证码
+     * 获取验证码字符
      * @access public
      */
     public function getCode()

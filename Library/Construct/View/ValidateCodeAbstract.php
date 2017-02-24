@@ -27,6 +27,50 @@ abstract class ValidateCodeAbstract implements ValidateCodeInterface
     }
 
     /**
+     * 存储验证码
+     * @access public
+     * @param string key 验证码存储的key
+     * @return string
+     */
+    public function saveCode($key = 'Vcode')
+    {
+
+    }
+
+    /**
+     * 输出图片
+     * @access public
+     * @param string type png|jpeg 输出图片类型
+     * @return void
+     */
+    public function outPut($type = 'png')
+    {
+
+    }
+
+    /**
+     * 检查验证码
+     * @access public
+     * @param string code 验证码
+     * @param string key 验证码报错的key
+     * @return true|false
+     */
+    public function checkVcode($code, $key = 'Vcode')
+    {
+
+    }
+
+    /**
+     * 获取验证码
+     * @access public
+     * @return string
+     */
+    public function getCode()
+    {
+
+    }
+
+    /**
      * 获取图形资源句柄
      * @access public
      * @param object ImgHandleInterface 图形资源句柄对象

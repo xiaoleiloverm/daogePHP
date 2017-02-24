@@ -25,7 +25,6 @@ class ValidateCode extends ValidateCodeAbstract
      */
     public function __construct(ImgHandleAbstract $imgHandle)
     {
-        //var_dump($imgHandle);
         $this->getImgHandle($imgHandle);
     }
 
@@ -36,30 +35,82 @@ class ValidateCode extends ValidateCodeAbstract
      */
     public function createVcode()
     {
-        //TODO
+        // createBg 创建一个背景
+        // createCode 生成验证码字符
+        // createDisturb 绘制干扰
         // createFontColor 返回一个标识符，代表了由给定的 RGB 成分组成的颜色。
-        //red，green 和 blue 分别是所需要的颜色的红，绿，蓝成分。这些参数是 0 到 255 的整数或者十六进制的 0x00 到 0xFF
+        // createFont 绘制图片字符
         $this->imgHandle->createBg()->createCode()->createDisturb()->createFontColor()->createFont();
         return $this;
     }
 
-    //输出
-    public function outPut()
+    /**
+     * 输出图片
+     * @access public
+     * @param string type png|jpeg 输出图片类型
+     * @return void
+     */
+    public function outPut($type = 'png')
     {
-        //TODO
-        var_dump($this->imgHandle);exit;
-        header('Content-type:image/png');
+        if ($type == 'png') {
+            $suffix = $type;
+        } else if ($type == 'jpg' || $type == 'jpeg') {
+            $suffix = 'jpeg';
+        }
+        header('Content-type:image/' . $suffix);
         if ($this->imgHandle && is_object($this->imgHandle)) {
-            imagepng($this->imgHandle);
-            imagedestroy($this->imgHandle);
+            imagepng($this->imgHandle->imgHandle);
+            imagedestroy($this->imgHandle->imgHandle);
         }
     }
 
-    //对外生成
-    public function doimg()
+    /**
+     * 存储验证码
+     * @access public
+     * @param string key 验证码存储的key
+     * @return string
+     */
+    public function saveCode($key = 'Vcode')
     {
-        $this->createVcode(); //生成
-        $this->outPut(); //输出
+        //获取当前生成好的验证码
+        $code = $this->getCode();
+        //存储到session
+        session($key, $code);
+        return session($key);
+    }
+
+    /**
+     * 对外生成验证码图片
+     * @access public
+     * @param string type png|jpeg 输出图片类型
+     * @param string key  保存验证码的key
+     * @return void
+     */
+    public function doimg($type = 'png', $key = 'Vcode')
+    {
+        $this->createVcode(); //生成验证码
+        $this->saveCode($key); //保存验证码
+        $this->outPut($type); //输出图片
+    }
+
+    /**
+     * 检查验证码
+     * @access public
+     * @param string code 验证码
+     * @param string key 验证码报错的key
+     * @return true|false
+     */
+    public function checkVcode($code, $key = 'Vcode')
+    {
+        if (empty($code)) {
+            return false;
+        }
+        //当前验证码字符
+        $currentCode = $this->getCode();
+        if ($code && $code == $currentCode) {
+            return true;
+        }
+        return false;
     }
 
     //获取验证码
