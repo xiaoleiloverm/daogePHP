@@ -142,6 +142,10 @@ class Core
      */
     public static function http_C()
     {
+        // //非设置url后缀 不调度
+        // if (isset($_SERVER['REDIRECT_URL']) && strrpos($_SERVER['REDIRECT_URL'], '.' . C('URL_HTML_SUFFIX')) === false) {
+        //     return '';
+        // }
         //路由调度
         $makeUrl = self::urlDispatch();
         //控制器定义

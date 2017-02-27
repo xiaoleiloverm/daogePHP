@@ -360,6 +360,14 @@ function is_ssl()
 function session($name = '', $value = '')
 {
     $prefix = C('SESSION_PREFIX');
+    //参数全为null 取全部session
+    if (is_null($name) && is_null($value)) {
+        // 启动session
+        if (C('SESSION_AUTO_START')) {
+            session_start();
+        }
+        return $_SESSION;
+    }
     if (is_array($name)) {
         // session初始化 在session_start 之前调用
         if (isset($name['prefix'])) {
@@ -430,6 +438,10 @@ function session($name = '', $value = '')
         }
 
     } elseif ('' === $value) {
+        // 启动session
+        if (C('SESSION_AUTO_START')) {
+            session_start();
+        }
         if ('' === $name) {
             // 获取全部的session
             return $prefix ? $_SESSION[$prefix] : $_SESSION;

@@ -97,7 +97,7 @@ class ValidateCode extends ValidateCodeAbstract
      * 检查验证码
      * @access public
      * @param string code 验证码
-     * @param string key 验证码报错的key
+     * @param string key 验证码保存的key
      * @return true|false
      */
     public function checkVcode($code, $key = 'Vcode')
