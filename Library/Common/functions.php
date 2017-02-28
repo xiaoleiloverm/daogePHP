@@ -81,11 +81,37 @@ function C($key = null, $value = null, $default = null)
 
 /**
  * 数据库模型实例化函数
+ * @param  string  $modelName  模型名
+ * @param  string  $layer 模型层名
+ * @return obj
  *
  */
-function D()
+function D($modelName, $layer)
 {
-
+    $layer        = $layer ?: C('DEFAULT_M_NAME');
+    $defaultClass = "\\Library\\{$layer}\\Model";
+    if (empty($modelName)) {
+        return M(basename($modelName));
+    }
+    static $_model = [];
+    //存在对象 直接返回
+    if (isset($_model[$modelName . $layer])) {
+        return $_model;
+    }
+    if (strpos($modelName, '\\') !== false) {
+        $class = $modelName . $mode;
+    } else {
+        $class = '\\Library\\Common\\' . $modelName . $layer;
+    }
+    if (!class_exists($class)) {
+        $class = "\\Library\\Model\\" . $modelName . $layer;
+        if (!class_exists($class)) {
+            $class = "\\Library\\Model\\Model";
+            return M(basename($modelName));
+        }
+    }
+    $_model[$modelName . $layer] = new $class(basename($modelName));
+    return $_model[$modelName . $layer];
 }
 
 /**
@@ -94,11 +120,13 @@ function D()
  * @param string $tablePrefix 表前缀
  * @param mixed $pdo 数据库连接信息
  * @param mixed $connection 数据库连接信息
- * @return Think\Model
+ * @param mixed $layer 模型层名
+ * @return obj
  */
-function M($name = '', $tablePrefix = '', $pdo = null, $driver = 'mysql')
+function M($name = '', $tablePrefix = '', $pdo = null, $driver = 'mysql', $layer)
 {
-    static $_model = null;
+    $layer         = $layer ?: C('DEFAULT_M_NAME'); //默认Model
+    static $_model = array();
     //数据库
     $dns = C('DB_TYPE') ?: 'mysql';
     //主机
@@ -121,13 +149,13 @@ function M($name = '', $tablePrefix = '', $pdo = null, $driver = 'mysql')
     if (strpos($name, ':')) {
         list($class, $name) = explode(':', $name);
     } else {
-        $class = '\\Library\\Model\\Model';
+        $class = "\\Library\\Model\\Model";
     }
-    if (!isset($_model)) {
-        $_model = new $class($name, $tablePrefix, $pdo, C('DB_TYPE'));
+    if (!isset($_model[$name . '_' . $tablePrefix])) {
+        $_model[$name . '_' . $tablePrefix] = new $class($name, $tablePrefix, $pdo, C('DB_TYPE'));
     }
 
-    return $_model;
+    return $_model[$name . '_' . $tablePrefix];
 }
 
 /**
