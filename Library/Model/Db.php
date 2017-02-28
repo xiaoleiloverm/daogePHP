@@ -30,7 +30,7 @@ class Db
         if ($dbh instanceof \PDO) {
             return static::$dbh = $dbh;
         }
-        throw new RuntimeException('dbh does not PDO Object.');
+        throw new \RuntimeException('dbh does not PDO Object.');
     }
 
     /**
