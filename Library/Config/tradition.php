@@ -105,6 +105,7 @@ return [
     'DEFAULT_AJAX_RETURN'   => 'JSON', // 默认AJAX 数据返回格式,可选JSON XML ...
     'DEFAULT_JSONP_HANDLER' => 'jsonpReturn', // 默认JSONP格式返回的处理方法
     'DEFAULT_FILTER'        => 'htmlspecialchars', // 默认参数过滤方法 用于I函数...
+    'VAR_AUTO_STRING'       => true, //I函数强制转换为string类型
 
     /* 系统变量名称设置 */
     'VAR_JSONP_HANDLER'     => 'callback', //JSONP handler头
