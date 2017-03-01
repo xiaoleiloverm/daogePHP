@@ -67,6 +67,13 @@
 
     //日志
     //sealog TODO
-    //$handler = (object) ['path' => (C('LOG_PATH') ? C('LOG_PATH') : APP_LOG_PATH)];
+    $message = "[系统] test {$time}";
+    $handler = (object) ['path' => (C('LOG_PATH') ? C('LOG_PATH') : APP_LOG_PATH)];
+    $log     = new Log('info', 'local', $handler, 'Seaslog');
 
     //monolog
+    //记录日志
+    // $handler = new StreamHandler(APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
+    // $handler->setFormatter(new LineFormatter(null, null, true, true)); //格式化消息,格式化时间,允许消息内有换行,忽略空白的消息(去掉[])
+    // $log = new MonoLog('local', 'emergency', $handler);
+    // $log->record('', 'fatalError', $e);
