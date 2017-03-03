@@ -94,8 +94,10 @@
         seaslog.remote_host = 127.0.0.1                         ;接收ip 默认127.0.0.1 (当使用TCP或UDP时必填)
         seaslog.remote_port = 514                               ;接收端口 默认514 (当使用TCP或UDP时必填)
     */
-        //------- 调用 sealog -------//
-        //调用sealog
+        //------- 调用 seaslog -------//
+        //由于seaslog是php扩展实现的 调用的是系统默认时区
+        //如果日志记录的{dateTime}部分 时间不正确 可以设置php.ini 设置默认时区  如上海时区 date.timezone ="asia/shanghai"
+        //调用seaslog
         $message = "[系统] test {$time}";
         //初始化
         //hander方法 日志级别（默认值为构造方法初始化的值），消息
