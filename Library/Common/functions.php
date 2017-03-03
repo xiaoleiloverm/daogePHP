@@ -367,6 +367,24 @@ function I($name, $default = '', $filter = null, $datas = null)
 }
 
 /**
+ *参数过滤
+ *
+ * @param  string  $filter  过滤函数
+ * @param  array  $data 数据
+ * @return array 过滤的结果
+ */
+function array_map_recursive($filter, $data)
+{
+    $result = array();
+    foreach ($data as $key => $val) {
+        $result[$key] = is_array($val)
+        ? array_map_recursive($filter, $val)
+        : call_user_func($filter, $val);
+    }
+    return $result;
+}
+
+/**
  * 获取设置语言函数
  *
  * @param  array|string  $key  键名
