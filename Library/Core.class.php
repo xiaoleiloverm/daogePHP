@@ -263,11 +263,10 @@ class Core
                     break;
             }
             //记录日志
-            // $handler = new StreamHandler(APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
-            // $handler->setFormatter(new LineFormatter(null, null, true, true)); //格式化消息,格式化时间,允许消息内有换行,忽略空白的消息(去掉[])
-            // $log = new MonoLog('local', 'emergency', $handler);
-            // $log->record('', 'fatalError', $e);
-            Log::record('emergency', $e);
+            $handler = new \Monolog\Handler\StreamHandler(APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
+            $handler->setFormatter(new \Monolog\Formatter\LineFormatter(null, null, true, true)); //格式化消息,格式化时间,允许消息内有换行,忽略空白的消息(去掉[])
+            $log = new \Library\Controller\Log\Log('emergency', 'local', $handler);
+            $log->record('emergency', $e);
         }
     }
 

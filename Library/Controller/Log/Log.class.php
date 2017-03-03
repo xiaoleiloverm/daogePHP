@@ -22,13 +22,28 @@ class Log
 
     public function __construct($level = 'debug', $channel = 'local', LogConstruct $handler, $logType = null)
     {
+        $this->setLogHander($handler, $logType, $channel, $level);
+    }
+
+    /**
+     * 设置LogHandler[方法], 用来设置Log的处理类
+     *
+     * @param object $handler LOG处理对象
+     * @param string $logType 日志类型
+     * @param string $channel 频道/模块
+     * @param string $level 记录日志的等级
+     *
+     * @return void
+     */
+    public function setLogHander($handler, $logType, $channel, $level)
+    {
         if ($logType == '') {
             $logType = strtolower(C('LOG_TYPE')) ? strtolower(C('LOG_TYPE')) : 'monolog'; //记录日志类型
         } else {
             $logType = strtolower($logType);
         }
         if ($logType == 'monolog') {
-            $this->LogHandler = new MonoLog($channel);
+            //$this->LogHandler = new MonoLog($level, $channel);
             //PDO handler
             //$logger->pushHandler(new PDOHandler(new PDO('sqlite:logs.sqlite'));
             //默认设置
@@ -41,7 +56,7 @@ class Log
             if ($handler instanceof StreamHandler) {
                 $handler->setFormatter(new LineFormatter(null, null, true, true)); //格式化消息,格式化时间,允许消息内有换行,忽略空白的消息(去掉[])
             }
-            $this->LogHandler = new MonoLog($level, 'local', $handler);
+            $this->LogHandler = new MonoLog($level, $channel, $handler);
         } else if ($logType == 'seaslog') {
             //SeasLog 需要php_SeasLog 扩展支持
             if (!class_exists('SeasLog')) {
@@ -54,6 +69,17 @@ class Log
             $obj              = '\\Library\\Controller\\Log\\' . $logType;
             $this->LogHandler = new $obj($level, $channel, $handler);
         }
+    }
+
+    /**
+     * 获取LogHandler[方法], 用来调用LogHandler 的方法
+     * SeasLog 和 MonoLog 的$message,$context 参数有区别
+     *
+     * @return LogHandler
+     */
+    public function getLogHander()
+    {
+        return $this->LogHandler;
     }
 
     /**
@@ -74,18 +100,24 @@ class Log
     }
 
     /**
-     * 记录日志 通用日志记录方法
+     * 记录日志 通用日志记录[静态方法] TODO
      * SeasLog 和 MonoLog 的$message,$context 参数有区别
      * @param string $level 日志级别
      * @param string $level 通知消息
      * @param array $context ['extend'=>['扩展字符'],'replace'=>['{expample1}'=>'expample1']]
      * @param array $module 模块目录
+     * @param object $handler LOG处理对象（直接调用静态类初始化LogHandler时使用）
+     * @param string $logType 日志类型（直接调用静态类初始化LogHandler时使用）
      * @return void
      */
-    public static function record($level, $message, $context = '', $module = '')
+    public function record($level, $message, $context = '', $module = '', $handler = '', $logType = '')
     {
-        $_this           = (new self);
-        $level || $level = $_this->LogHandler->level;
+        //初始化日志处理对象，需要依赖 LogHandler 日志处理对象
+        if (is_null($this->LogHandler)) {
+            $this->setLogHander($handler, $logType);
+        }
+        //var_dump($this->LogHandler);exit;
+        $level || $level = $this->LogHandler->level;
         $level           = strtolower($level);
         $extend          = ''; //扩展字符
         $replace         = []; //替换规则
@@ -110,7 +142,8 @@ class Log
             $message = substr($tmp, 0, -1);
         }
         $extend && $message = $message . ' ' . $extend;
-        $_this->LogHandler->{$level}($message, [], $module);
+        //var_dump($level, $this->LogHandler);
+        $this->LogHandler->{$level}($message, [], $module);
     }
 
     public function __destruct()
