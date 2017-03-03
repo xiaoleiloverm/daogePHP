@@ -316,7 +316,7 @@ class SeasLog extends \SeasLog
      * @param array $module 模块目录
      * @return void
      */
-    public function record($level, $message, $context, $module = '')
+    public function record($level, $message, $context = [], $module = '')
     {
         $level || $level = $this->level;
         $level           = strtolower($level);

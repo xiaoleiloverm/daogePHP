@@ -18,7 +18,7 @@ use Monolog\Handler\StreamHandler;
 
 class Log
 {
-    protected $LogHandler = null;
+    public $LogHandler = null;
 
     public function __construct($level = 'debug', $channel = 'local', LogConstruct $handler, $logType = null)
     {

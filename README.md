@@ -95,16 +95,16 @@
         seaslog.remote_port = 514                               ;接收端口 默认514 (当使用TCP或UDP时必填)
     */
         //------- 调用 sealog -------//
+        //调用sealog
         $message = "[系统] test {$time}";
         //初始化
         //hander方法 日志级别（默认值为构造方法初始化的值），消息
         $handler = (object) ['path' => APP_LOG_PATH];
-        $log     = new Log('info', 'local', $handler, 'seaslog');
+        $log     = new \Library\Controller\Log\Log('info', 'local', $handler, 'seaslog');
         //1).调用固定方法 日志级别默认debug
-        $log->record('info', $message);exit;
-
+        $log->record('info', $message);
         //2)动态调用hander方法
-        $log->getLogHander()->record('', $message);exit;
+        $log->getLogHander()->record('info', $message); //也可以写成record('', $message) 第一参数可以不给 默认值是构造方法初始化的
 
         //------- 调用 monolog -------//
         $message = "[系统] test {$time}";

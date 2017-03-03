@@ -18,7 +18,7 @@ if (MEMORY_LIMIT_ON) {
 }
 
 //版本
-const DAOGE_VERSION = '1.1.33';
+const DAOGE_VERSION = '1.1.34';
 
 // 类文件后缀
 const EXT = '.class.php';
