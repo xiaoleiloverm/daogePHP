@@ -98,24 +98,37 @@ class ValidateCode extends ValidateCodeAbstract
      * @access public
      * @param string code 验证码
      * @param string key 验证码保存的key
+     * @param boole flag 是否区分大小写
      * @return true|false
      */
-    public function checkVcode($code, $key = 'Vcode')
+    public function checkVcode($code, $key = 'Vcode', $flag = true)
     {
         if (empty($code)) {
             return false;
         }
         //当前验证码字符
-        $currentCode = $this->getCode();
+        $currentCode          = $this->getSaveCode($key);
+        $flag && $currentCode = strtolower($currentCode);
         if ($code && $code == $currentCode) {
             return true;
         }
         return false;
     }
 
-    //获取验证码
+    //获取验证码(生成的验证码 未保存)
     public function getCode()
     {
         return $this->imgHandle->getCode();
+    }
+
+    /**
+     * 获取存储的验证码(保存的验证码,即生成的验证码需要保存供外部调用)
+     * @access public
+     * @param string key 验证码存储的key
+     * @return string
+     */
+    public function getSaveCode($key = 'Vcode')
+    {
+        return session($key);
     }
 }

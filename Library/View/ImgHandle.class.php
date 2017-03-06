@@ -125,6 +125,6 @@ class ImgHandle extends ImgHandleAbstract
      */
     public function getCode()
     {
-        return strtolower($this->code);
+        return $this->code;
     }
 }
