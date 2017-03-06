@@ -240,6 +240,7 @@ function I($name, $default = '', $filter = null, $datas = null)
             $input = &$_GET;
             break;
         case 'post':
+            parse_str(file_get_contents("php://input"), $_POST);
             $input = &$_POST;
             break;
         case 'put':
@@ -252,6 +253,9 @@ function I($name, $default = '', $filter = null, $datas = null)
         case 'param':
             switch ($_SERVER['REQUEST_METHOD']) {
                 case 'POST':
+                    //当Content-Type仅在取值为application/x-www-data-urlencoded和multipart/form-data两种情况下，PHP才会将http请求数据包中相应的数据填入全局变量$_POST
+                    //Content-Type:application/x-www-form-urlencoded; 情况下就得填充POST 否者$_POST会取不到值
+                    parse_str(file_get_contents("php://input"), $_POST);
                     $input = $_POST;
                     break;
                 case 'PUT':
