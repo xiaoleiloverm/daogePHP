@@ -3,6 +3,7 @@
 	/**
      *sql model example
      */
+    //查询
     //getOnce/fetchRow
     var_dump(M()->getOnce("SELECT username,id,password,email,last_logintime,last_loginip FROM tz_admin WHERE username = ?", ['admin'], null, true));
     // //fetchRowMany/getAll
@@ -17,19 +18,26 @@
     // //getOnce
     // M()->getOnce("SELECT condition,name,m,c,a,data FROM {$this->_config['AUTH_USER']} WHERE uid =:id", ['uid' => $uid])
 
-    //update
-    // $conds = [
-    //     'username' => 'admin',
-    //     'id'       => 1,
-    // ];
-    // $data = [
-    //     'email' => '502928809@qq.com.cn',
-    // ];
-    // $condsQuery = 'username = :username and id = :id';
-    // $res        = M()->update('tz_admin', $conds, $data, $condsQuery);
-    // var_dump($res);
+    //update 更新数据
+    例1 update 方法
+    $conds = [
+        'username' => 'admin',
+        'id'       => 1,
+    ];
+    $data = [
+        'email' => '502928809@qq.com.cn',
+    ];
+    //condsQuery 默认会采用and连接　当where有复杂的条件关系时可以使用该参数
+    $condsQuery = 'username = :username and id = :id';
+    $res        = M()->update('tz_admin', $conds, $data, $condsQuery);
+    例2 execute 方法
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $sql   = "UPDATE hb_admin SET last_loginip = '{$ip}'  WHERE username = :username";
+    $param = ['username' => 'admin'];
+    $res   = M()->execute($sql, $param);
 
-    // //insert
+
+    // //insert 增加数据
     // $data = array(
     //     'id'       => false,
     //     'username' => 'localhost',
@@ -58,6 +66,19 @@
     // //$condsQuery = 'id >= :id';//使用该句条件变为id>=32
     // $result = M()->delete('tz_admin', $conds, $condsQuery);
     // var_dump($result); // true || false
+
+    //executeSql （一般用于增删改） 执行一条无参数绑定的sql
+    M()->executeSql('use xxxDb');
+    //execute （一般用于增删改）执行一条参数绑定的sql (PDOStatement执行一条预处理语句) 返回true false
+    //例： login_count字段值加1
+    $sql   = 'UPDATE hb_admin SET login_count = login_count+1  WHERE username = :username';
+    $param = ['username' => 'admin'];
+    $res   = M()->execute($sql, $param);
+    if($res){
+        //成功
+    }else{
+        //失败
+    }
 
     /**
      *log example

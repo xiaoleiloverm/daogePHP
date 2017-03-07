@@ -47,7 +47,7 @@ class Mysql extends DbAbstract
      * PDOStatement执行一条预处理语句
      * @param  sql 需要预处理的sql
      * @param  params 预处理参数
-     * @return \PDOStatement
+     * @return bool
      */
     public function execute($sql, $params = [])
     {

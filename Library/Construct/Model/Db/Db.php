@@ -169,15 +169,15 @@ abstract class Db
      * 执行预处理过的语句。如果预处理过的语句含有参数标记，必须选择下面其中一种做法:调用 PDOStatement::bindParam() 绑定 PHP 变量到参数标记
      * @param  sql 需要预处理的sql
      * @param  params 预处理参数
-     * @return array
+     * @return bool
      */
     public function execute($sql, $params = [])
     {
-        $this->dbh = $this->dbh->prepare($sql); //预处理
+        $dbh = $this->dbh->prepare($sql); //预处理
         if (is_string($params)) {
             $params = explode(',', $params);
         }
-        return empty($params) ? $this->dbh->execute() : $this->dbh->execute($params);
+        return empty($params) ? $dbh->execute() : $dbh->execute($params);
     }
 
     /**
