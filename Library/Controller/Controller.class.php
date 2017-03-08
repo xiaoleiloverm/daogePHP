@@ -32,12 +32,12 @@ class Controller
 
     public function getViewObj()
     {
-        return $this->view = new \Library\View\View();
+        return $this->view = $this->view ?: new \Library\View\View();
     }
 
     public function setViewObj()
     {
-        return $this->view = new \Library\View\View();
+        return $this->view = $this->view ?: new \Library\View\View();
     }
 
     /**
