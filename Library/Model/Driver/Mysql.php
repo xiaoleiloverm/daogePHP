@@ -19,6 +19,11 @@ class Mysql extends DbAbstract
 
     public $lastStatement; //最后的结果集
 
+    // 数据库表达式
+    protected $exp = array('eq' => '=', 'neq' => '<>', 'gt' => '>', 'egt' => '>=', 'lt' => '<', 'elt' => '<=', 'notlike' => 'NOT LIKE', 'like' => 'LIKE', 'in' => 'IN', 'notin' => 'NOT IN', 'not in' => 'NOT IN', 'between' => 'BETWEEN', 'not between' => 'NOT BETWEEN', 'notbetween' => 'NOT BETWEEN');
+    // 查询表达式
+    protected $selectSql = 'SELECT%DISTINCT% %FIELD% FROM %TABLE%%FORCE%%JOIN%%WHERE%%GROUP%%HAVING%%ORDER%%LIMIT% %UNION%%LOCK%%COMMENT%';
+
     /**
      * 构造方法
      * @param  sql 需要预处理的sql
@@ -823,4 +828,86 @@ class Mysql extends DbAbstract
         return substr($key, 0, 1) !== '_';
     }
 
+    // /**
+    //  * 替换SQL语句中表达式
+    //  * @access public
+    //  * @param array $options 表达式
+    //  * @return string
+    //  */
+    // public function parseSql($sql, $options = array())
+    // {
+    //     $sql = str_replace(
+    //         array('%TABLE%', '%DISTINCT%', '%FIELD%', '%JOIN%', '%WHERE%', '%GROUP%', '%HAVING%', '%ORDER%', '%LIMIT%', '%UNION%', '%LOCK%', '%COMMENT%', '%FORCE%'),
+    //         array(
+    //             $this->parseTable($options['table']),
+    //             $this->parseDistinct(isset($options['distinct']) ? $options['distinct'] : false),
+    //             $this->parseField(!empty($options['field']) ? $options['field'] : '*'),
+    //             $this->parseJoin(!empty($options['join']) ? $options['join'] : ''),
+    //             $this->parseWhere(!empty($options['where']) ? $options['where'] : ''),
+    //             $this->parseGroup(!empty($options['group']) ? $options['group'] : ''),
+    //             $this->parseHaving(!empty($options['having']) ? $options['having'] : ''),
+    //             $this->parseOrder(!empty($options['order']) ? $options['order'] : ''),
+    //             $this->parseLimit(!empty($options['limit']) ? $options['limit'] : ''),
+    //             $this->parseUnion(!empty($options['union']) ? $options['union'] : ''),
+    //             $this->parseLock(isset($options['lock']) ? $options['lock'] : false),
+    //             $this->parseComment(!empty($options['comment']) ? $options['comment'] : ''),
+    //             $this->parseForce(!empty($options['force']) ? $options['force'] : ''),
+    //         ), $sql);
+    //     return $sql;
+    // }
+
+    /**
+     *表达式查询select TODO
+     *
+     * limit 用数组或者字符串,隔开；order和gourp 用字符串或数组均可，数组表示多个
+     * option = ['table'=>$table,'field'=>$field,''=>'inner'=>['tableName'=>'','alias'=>'',condsQuery=>''],'limit'=>[10,1],'order'=>$order,'group'=>$group]
+     */
+    public function select($option)
+    {
+        $sql = '';
+        if (is_string($option)) {
+            $sql = $option;
+        } else {
+            //sql语句构建库
+            $readBuilder = new \Library\Model\QueryBuilder\ReadQueryBuilder();
+            if ($where = $option['where']) {
+                $readBuilder->setConditions($where);
+            }
+            $option['table'] ? $readBuilder->setFrom($option['table']) : '';
+            $option['field'] ? $readBuilder->setColumns($option['field']) : '';
+            if ($inner = $option['inner']) {
+                if (isset($inner['tableName'])
+                    && isset($inner['alias'])
+                    && isset($inner['condsQuery'])) {
+                    $readBuilder->addInnerJoin($inner['tableName'], $inner['alias'], $inner['condsQuery']);
+                }
+
+            }
+            if ($left = $option['left']) {
+                if (isset($left['tableName'])
+                    && isset($left['alias'])
+                    && isset($left['condsQuery'])) {
+                    $readBuilder->addLeftJoin($left['tableName'], $left['alias'], $left['condsQuery']);
+                }
+
+            }
+            if ($limit = $option['limit']) {
+                if (!is_array($limit)) {
+                    $limit = explode(',', $limit);
+                }
+                $rows   = $limit[0] ?: 0;
+                $offset = $limit[1] ?: 0;
+                $readBuilder->setLimit($rows, $offset);
+            }
+            if ($order = $option['order']) {
+                $order = is_array($order) ?: explode(' ', $order);
+                $readBuilder->setSorting($order);
+            }
+            if ($group = $option['group']) {
+                $readBuilder->setGroup($group);
+            }
+            $sql = $readBuilder->renderQuery();
+        }
+        return $sql;
+    }
 }
