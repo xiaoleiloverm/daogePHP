@@ -861,6 +861,21 @@ class Mysql extends DbAbstract
     }
 
     /**
+     * 表达式查询统计条数
+     * @param string string|array $option 查询表达式
+     * @param array $conds 预处理占位符数组
+     *
+     * @return bool|int
+     * @throws \PDOException
+     */
+    public function count($option, $conds = [])
+    {
+        $sql = $this->buildSql($option)->getSql();
+        $this->prepareSelect($sql, $conds);
+        return $this->getRowCount() === false ? false : (int) $this->getRowCount();
+    }
+
+    /**
      * 获取表达式生成的sql语句
      * @access public
      *

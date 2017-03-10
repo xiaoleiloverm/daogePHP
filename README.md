@@ -168,6 +168,9 @@
     获取表达式查询的sql语句
     $sql = M()->getSql();
 
+    统计数据条数
+    $count = M()->count($options);
+
     /**
      *log example
      */
