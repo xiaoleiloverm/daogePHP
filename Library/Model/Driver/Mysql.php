@@ -19,6 +19,8 @@ class Mysql extends DbAbstract
 
     public $lastStatement; //最后的结果集
 
+    protected $sql = ''; //sql语句
+
     // 数据库表达式
     protected $exp = array('eq' => '=', 'neq' => '<>', 'gt' => '>', 'egt' => '>=', 'lt' => '<', 'elt' => '<=', 'notlike' => 'NOT LIKE', 'like' => 'LIKE', 'in' => 'IN', 'notin' => 'NOT IN', 'not in' => 'NOT IN', 'between' => 'BETWEEN', 'not between' => 'NOT BETWEEN', 'notbetween' => 'NOT BETWEEN');
     // 查询表达式
@@ -828,53 +830,95 @@ class Mysql extends DbAbstract
         return substr($key, 0, 1) !== '_';
     }
 
-    // /**
-    //  * 替换SQL语句中表达式
-    //  * @access public
-    //  * @param array $options 表达式
-    //  * @return string
-    //  */
-    // public function parseSql($sql, $options = array())
-    // {
-    //     $sql = str_replace(
-    //         array('%TABLE%', '%DISTINCT%', '%FIELD%', '%JOIN%', '%WHERE%', '%GROUP%', '%HAVING%', '%ORDER%', '%LIMIT%', '%UNION%', '%LOCK%', '%COMMENT%', '%FORCE%'),
-    //         array(
-    //             $this->parseTable($options['table']),
-    //             $this->parseDistinct(isset($options['distinct']) ? $options['distinct'] : false),
-    //             $this->parseField(!empty($options['field']) ? $options['field'] : '*'),
-    //             $this->parseJoin(!empty($options['join']) ? $options['join'] : ''),
-    //             $this->parseWhere(!empty($options['where']) ? $options['where'] : ''),
-    //             $this->parseGroup(!empty($options['group']) ? $options['group'] : ''),
-    //             $this->parseHaving(!empty($options['having']) ? $options['having'] : ''),
-    //             $this->parseOrder(!empty($options['order']) ? $options['order'] : ''),
-    //             $this->parseLimit(!empty($options['limit']) ? $options['limit'] : ''),
-    //             $this->parseUnion(!empty($options['union']) ? $options['union'] : ''),
-    //             $this->parseLock(isset($options['lock']) ? $options['lock'] : false),
-    //             $this->parseComment(!empty($options['comment']) ? $options['comment'] : ''),
-    //             $this->parseForce(!empty($options['force']) ? $options['force'] : ''),
-    //         ), $sql);
-    //     return $sql;
-    // }
+    /**
+     *表达式查询列表select
+     *
+     * @param string|array $option 查询表达式
+     * @param array $conds 绑定参数
+     * @param \PDOStatement $fetchMode 结果集类型 默认 \PDO::FETCH_ASSOC
+     * limit 用数组或者字符串,隔开；order和gourp 用字符串或数组均可，数组表示多个
+     * option = ['table'=>$table,'field'=>$field,''=>'inner'=>['tableName'=>'','alias'=>'','condsQuery'=>''],'limit'=>[10,1],'order'=>$order,'group'=>$group]
+     */
+    public function select($option, $conds = [], \PDOStatement $fetchMode = null)
+    {
+        $sql = $this->buildSql($option)->getSql();
+        $res = $this->getAll($sql, $conds, $fetchMode);
+        return $res;
+    }
 
     /**
-     *表达式查询select TODO
+     *表达式查询单条find
      *
-     * limit 用数组或者字符串,隔开；order和gourp 用字符串或数组均可，数组表示多个
-     * option = ['table'=>$table,'field'=>$field,''=>'inner'=>['tableName'=>'','alias'=>'',condsQuery=>''],'limit'=>[10,1],'order'=>$order,'group'=>$group]
+     * @param string|array $option 查询表达式
+     * @param array $conds 绑定参数
+     * @param \PDOStatement $fetchMode 结果集类型 默认 \PDO::FETCH_ASSOC
      */
-    public function select($option)
+    public function find($option, $conds = [], \PDOStatement $fetchMode = null)
     {
-        $sql = '';
+        $sql = $this->buildSql($option)->getSql();
+        $res = $this->getOnce($sql, $conds, $fetchMode);
+        return $res;
+    }
+
+    /**
+     * 获取表达式生成的sql语句
+     * @access public
+     *
+     * @return string
+     */
+    public function getSql()
+    {
+        return $this->sql;
+    }
+
+    /**
+     * 根据表达式生成sql语句
+     * @access public
+     * @param string|array $option 表达式
+     * @return string
+     */
+    public function buildSql($option)
+    {
+        $sql = $this->sql;
         if (is_string($option)) {
             $sql = $option;
         } else {
             //sql语句构建库
             $readBuilder = new \Library\Model\QueryBuilder\ReadQueryBuilder();
             if ($where = $option['where']) {
-                $readBuilder->setConditions($where);
+                $where    = is_array($where) ? $where : [$where];
+                $whereSql = '';
+                $index    = count($where) - 1;
+                foreach ($where as $key => $value) {
+                    $value = is_array($value) ? $value : [$value];
+                    if (isset($value[1]) && strtoupper($value[1]) === 'OR') {
+                        if ($index == $key) {
+                            $whereSql .= $value[0];
+                        } else {
+                            $whereSql .= $value[0] . ' OR ';
+                        }
+
+                    }
+                    if (isset($value[1]) && strtoupper($value[1]) === 'AND') {
+                        if ($index == $key) {
+                            $whereSql .= $value[0];
+                        } else {
+                            $whereSql .= $value[0] . ' AND ';
+                        }
+                    }
+                    if (!isset($value[1])) {
+                        if ($index == $key) {
+                            $whereSql .= $value[0];
+                        } else {
+                            $whereSql .= $value[0] . ' AND ';
+                        }
+                    }
+                }
+                $readBuilder->setCondsQuery($whereSql);
             }
             $option['table'] ? $readBuilder->setFrom($option['table']) : '';
             $option['field'] ? $readBuilder->setColumns($option['field']) : '';
+            //内连接
             if ($inner = $option['inner']) {
                 if (isset($inner['tableName'])
                     && isset($inner['alias'])
@@ -883,6 +927,7 @@ class Mysql extends DbAbstract
                 }
 
             }
+            //左连
             if ($left = $option['left']) {
                 if (isset($left['tableName'])
                     && isset($left['alias'])
@@ -891,6 +936,7 @@ class Mysql extends DbAbstract
                 }
 
             }
+            //偏移
             if ($limit = $option['limit']) {
                 if (!is_array($limit)) {
                     $limit = explode(',', $limit);
@@ -899,15 +945,19 @@ class Mysql extends DbAbstract
                 $offset = $limit[1] ?: 0;
                 $readBuilder->setLimit($rows, $offset);
             }
+            //排序
             if ($order = $option['order']) {
-                $order = is_array($order) ?: explode(' ', $order);
+                $order = is_array($order) ? $order : explode(',', $order);
                 $readBuilder->setSorting($order);
             }
+            //分组
             if ($group = $option['group']) {
+                $group = is_array($group) ? $group : explode(',', $group);
                 $readBuilder->setGroup($group);
             }
             $sql = $readBuilder->renderQuery();
         }
-        return $sql;
+        $this->sql = $sql;
+        return $this;
     }
 }

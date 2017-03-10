@@ -79,6 +79,94 @@
     }else{
         //失败
     }
+    
+    mysql select表达式查询：
+    table 数据表；
+    limit 偏移量；用数组 $rows条数,$offset偏移量(默认0) (如[10,1])或者字符串,隔开(如:10,1)；
+    order 排序；单个的话'order'=>'create_time DESC' 多个数组 如 'order' => ['create_time DESC', 'status DESC']
+    group 分组；gourp和order类似 用字符串或数组均可，数组或者,(英文半角逗号)隔开字符 表示多个
+    inner 内连接；'inner'=>['tableName'=>'','alias'=>'',condsQuery=>'']
+    left 左连接；同inner参数
+    where 条件；1.必须是一个sql表达式
+                2.可以为字符串
+                3.数组 多个表达式用and关系 也可以组织复杂的where关系 见下文例3
+    例1.简单的字符串where
+    $options = [
+        'table' => 'hb_admin',
+        'where' => 'status !=-1',
+        'order' => ['create_time DESC', 'status DESC'],
+    ];
+    $res = M()->select($options);
+    例2.组织复杂的where关系
+    $options = [
+            'table' => 'hb_admin',
+            'where' => [
+                ['status !=-1'],
+                ['create_time >0'],
+            ],
+            'order' => ['create_time DESC', 'status DESC'],
+        ];
+        $res = M()->select($options);
+    //SELECT * FROM hb_admin WHERE status !=-1 AND create_time >0 ORDER BY `create_time` DESC, `status` DESC
+    例3.组织复杂的where关系
+    $options = [
+            'table' => 'hb_admin',
+            'where' => [
+                ['status !=-1', 'OR'],
+                ['create_time >0'],
+            ],
+            'order' => ['create_time DESC', 'status DESC'],
+        ];
+        $res = M()->select($options);
+    //SELECT * FROM hb_admin WHERE status !=-1 OR create_time >0 ORDER BY `create_time` DESC, `status` DESC
+    
+    表达式查询单条find
+    $res = M()->find($options);
+
+    left连接查询
+    SELECT * FROM hb_members LEFT JOIN hb_members_info AS info ON info.uid = hb_members.uid WHERE status !=-1 AND create_time >0 GROUP BY hb_members.uid ORDER BY `create_time` DESC, `status` DESC LIMIT 0, 10
+    查询完整例子1：
+    $options = [
+        'table' => 'hb_members',
+        'left'  => [
+            'tableName'  => 'hb_members_info',
+            'alias'      => 'info',
+            'condsQuery' => 'info.uid = hb_members.uid',
+        ],
+        'where' => [
+            ['status !=-1'],
+            ['create_time >0'],
+        ],
+        'order' => ['create_time DESC', 'status DESC'],
+        'group' => ['hb_members.uid'],
+        'limit' => [10, 0], //等价'limit' => '10,0'
+    ];
+    $res = M()->select($options);
+    例子2：使用占位符
+    $options = [
+        'table' => 'hb_members',
+        'left'  => [
+            'tableName'  => 'hb_members_info',
+            'alias'      => 'info',
+            'condsQuery' => 'info.uid = hb_members.uid',
+        ],
+        'where' => [
+            ['status !=:status'],
+            ['create_time >:ctime'],
+        ],
+        'order' => ['create_time DESC', 'status DESC'],
+        'group' => ['hb_members.uid'],
+        'limit' => [10, 0], //等价'limit' => '10,0'
+    ];
+    //作用是替换占位符
+    $cond = [
+        'status' => -1,
+        'ctime'  => 0,
+    ];
+    $res = M()->select($options, $cond);
+
+    获取表达式查询的sql语句
+    $sql = M()->getSql();
 
     /**
      *log example
