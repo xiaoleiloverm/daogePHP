@@ -146,6 +146,7 @@ class Core
         // if (isset($_SERVER['REDIRECT_URL']) && strrpos($_SERVER['REDIRECT_URL'], '.' . C('URL_HTML_SUFFIX')) === false) {
         //     return '';
         // }
+        define('IS_AJAX', ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || !empty($_POST[C('VAR_AJAX_SUBMIT')]) || !empty($_GET[C('VAR_AJAX_SUBMIT')])) ? true : false);
         //路由调度
         $makeUrl = self::urlDispatch();
         //控制器定义
