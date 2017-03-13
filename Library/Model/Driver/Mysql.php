@@ -932,7 +932,12 @@ class Mysql extends DbAbstract
                 $readBuilder->setCondsQuery($whereSql);
             }
             $option['table'] ? $readBuilder->setFrom($option['table']) : '';
-            $option['field'] ? $readBuilder->setColumns($option['field']) : '';
+            if ($field = $option['field']) {
+                if (is_array($field)) {
+                    $field = join(',', array_values($field));
+                }
+                $option['field'] ? $readBuilder->setColumns($field) : '';
+            }
             //内连接
             if ($inner = $option['inner']) {
                 if (isset($inner['tableName'])
