@@ -981,8 +981,12 @@ function T($templateFile)
         if (count($tplDirArr) == 2) {
             $path = [MODULE_NAME, $tplDirArr[0], $tplDirArr[1]];
         }
-        if (count($tplDirArr) >= 3) {
+        if (count($tplDirArr) == 3) {
             $path = [$tplDirArr[0], $tplDirArr[1], $tplDirArr[2]];
+        }
+        //相对 或者绝对完整路径
+        if (count($tplDirArr) >= 3) {
+            return $fileDir;
         }
     }
     $fileDir = APP_PATH . $path[0] . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . (C('DEFAULT_THEME') ? C('DEFAULT_THEME') . DIRECTORY_SEPARATOR : '') . $path[1] . DIRECTORY_SEPARATOR . $path[2] . C('TMPL_TEMPLATE_SUFFIX');

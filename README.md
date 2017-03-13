@@ -1,5 +1,12 @@
 #daogePHP
 
+    控制器
+    传值：
+    $this->assign('waitSecond', 1);
+    加载模版
+    例1：$this->display();
+    例2：$this->display('admin/index');
+
 	/**
      *sql model example
      */
@@ -38,13 +45,13 @@
 
 
     // //insert 增加数据
-    // $data = array(
-    //     'id'       => false,
-    //     'username' => 'localhost',
-    //     'email'    => 'localhost',
-    // );
-    // $id = M()->insert('tz_admin', $data);
-    // var_dump($id); // 14 || bool
+    $data = array(
+        'id'       => false,
+        'username' => 'localhost',
+        'email'    => 'localhost',
+    );
+    $id = M()->insert('tz_admin', $data);
+    var_dump($id); // 14 || bool
 
     //replace
     // $data = [

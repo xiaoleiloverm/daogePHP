@@ -116,4 +116,18 @@ class View
         }
     }
 
+    /**
+     * 取得模板变量的值
+     * @access public
+     * @param string $name
+     * @return mixed
+     */
+    public function get($name = '')
+    {
+        if ($name === '') {
+            return $this->tplVar;
+        }
+        return isset($this->tplVar[$name]) ? $this->tplVar[$name] : false;
+    }
+
 }
