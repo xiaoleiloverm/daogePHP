@@ -77,10 +77,9 @@
     //$condsQuery = 'id >= :id';//使用该句条件变为id>=32
     $result = M()->delete('tz_admin', $conds, $condsQuery);
     var_dump($result); // true || false
-
-    //executeSql （一般用于增删改） 执行一条无参数绑定的sql
+## executeSql （一般用于增删改） 执行一条无参数绑定的sql
     M()->executeSql('use xxxDb');
-    //execute （一般用于增删改）执行一条参数绑定的sql (PDOStatement执行一条预处理语句) 返回true false
+## execute （一般用于增删改）执行一条参数绑定的sql (PDOStatement执行一条预处理语句) 返回true false
     //例： login_count字段值加1
     $sql   = 'UPDATE hb_admin SET login_count = login_count+1  WHERE username = :username';
     $param = ['username' => 'admin'];

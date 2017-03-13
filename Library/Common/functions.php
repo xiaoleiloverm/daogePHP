@@ -238,6 +238,7 @@ function I($name, $default = '', $filter = null, $datas = null)
     switch (strtolower($method)) {
         case 'get':
             $input = &$_GET;
+            $input = array_merge($input, $GLOBALS['_urlParam']);
             break;
         case 'post':
             parse_str(file_get_contents("php://input"), $_POST);
@@ -252,6 +253,9 @@ function I($name, $default = '', $filter = null, $datas = null)
         //自动判断
         case 'param':
             switch ($_SERVER['REQUEST_METHOD']) {
+                case 'GET':
+                    $input = array_merge((array) $_GET, $GLOBALS['_urlParam']);
+                    break;
                 case 'POST':
                     //当Content-Type仅在取值为application/x-www-data-urlencoded和multipart/form-data两种情况下，PHP才会将http请求数据包中相应的数据填入全局变量$_POST
                     //Content-Type:application/x-www-form-urlencoded; 情况下就得填充POST 否者$_POST会取不到值
@@ -970,8 +974,8 @@ function strip_whitespace($content)
 function T($templateFile)
 {
     //模版路径
-    $path         = [];
-    $templateFile = str_replace(':', '/', $templateFile);
+    $path = [];
+    //$templateFile = str_replace(':', '/', $templateFile);
     if (empty($templateFile)) {
         $path = [MODULE_NAME, CONTROLLER_NAME, ACTION_NAME];
     } elseif (count($tplDirArr = explode('/', $templateFile)) >= 1) {
@@ -986,7 +990,7 @@ function T($templateFile)
         }
         //相对 或者绝对完整路径
         if (count($tplDirArr) >= 3) {
-            return $fileDir;
+            return $templateFile;
         }
     }
     $fileDir = APP_PATH . $path[0] . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . (C('DEFAULT_THEME') ? C('DEFAULT_THEME') . DIRECTORY_SEPARATOR : '') . $path[1] . DIRECTORY_SEPARATOR . $path[2] . C('TMPL_TEMPLATE_SUFFIX');
