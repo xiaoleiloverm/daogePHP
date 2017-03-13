@@ -1,5 +1,6 @@
 #daogePHP
 
+#控制器操作
     控制器
     传值：
     $this->assign('waitSecond', 1);
@@ -7,25 +8,27 @@
     例1：$this->display();
     例2：$this->display('admin/index');
 
+#sql操作
 	/**
      *sql model example
      */
-    //查询
-    //getOnce/fetchRow
-    var_dump(M()->getOnce("SELECT username,id,password,email,last_logintime,last_loginip FROM tz_admin WHERE username = ?", ['admin'], null, true));
-    // //fetchRowMany/getAll
-    //exp1. var_dump(M()->getAll("SELECT *FROM tz_admin WHERE username = ?", ['admin'], 0));
-    //exp2.M()->getAll("SELECT condition,name,m,c,a,data FROM {$this->_config['AUTH_RULE']} WHERE id IN (:ids) and type =:type and status =:status", ['ids' => $ids, 'type' => $type, 'status' => 1]);
-    //exp3 join select sql
-    //M()->getAll("SELECT `uid`,`group_id`,`title`,`rules` FROM {$this->_config['AUTH_GROUP_ACCESS']} a INNER JOIN {$this->_config['AUTH_GROUP']} g on a.group_id=g.id  WHERE ( a.uid=:uid and g.status=:status )", ['uid' => $uid, 'status' => '1']);
-    // //fetchColumn
-    // var_dump(M()->fetchColumn("SELECT *FROM tz_admin WHERE username = ?", ['admin'], 0));
-    // //fetchColumnMany
-    // var_dump(M()->fetchColumnMany("SELECT *FROM tz_admin WHERE username = ?", ['admin']));
-    // //getOnce
-    // M()->getOnce("SELECT condition,name,m,c,a,data FROM {$this->_config['AUTH_USER']} WHERE uid =:id", ['uid' => $uid])
+##查询 getOnce/fetchRow
+### getOnce
+    M()->getOnce("SELECT username,id,password,email,last_logintime,last_loginip FROM tz_admin WHERE username = ?", ['admin'], null, true);
+	M()->getOnce("SELECT condition,name,m,c,a,data FROM {$this->_config['AUTH_USER']} WHERE uid =:id", ['uid' => $uid]);
+### fetchRowMany/getAll
+#### exp1.
+	M()->getAll("SELECT *FROM tz_admin WHERE username = ?", ['admin'], 0);
+#### exp2.
+	M()->getAll("SELECT condition,name,m,c,a,data FROM {$this->_config['AUTH_RULE']} WHERE id IN (:ids) and type =:type and status =:status", ['ids' => $ids, 'type' => $type, 'status' => 1]);
+#### exp3 join select sql
+    M()->getAll("SELECT `uid`,`group_id`,`title`,`rules` FROM {$this->_config['AUTH_GROUP_ACCESS']} a INNER JOIN {$this->_config['AUTH_GROUP']} g on a.group_id=g.id  WHERE ( a.uid=:uid and g.status=:status )", ['uid' => $uid, 'status' => '1']);
+#### fetchColumn
+    var_dump(M()->fetchColumn("SELECT *FROM tz_admin WHERE username = ?", ['admin'], 0));
+#### fetchColumnMany
+    var_dump(M()->fetchColumnMany("SELECT *FROM tz_admin WHERE username = ?", ['admin']));
 
-    //update 更新数据
+## update 更新数据
     例1 update 方法
     $conds = [
         'username' => 'admin',
@@ -44,7 +47,7 @@
     $res   = M()->execute($sql, $param);
 
 
-    // //insert 增加数据
+## insert 增加数据
     $data = array(
         'id'       => false,
         'username' => 'localhost',
@@ -53,26 +56,27 @@
     $id = M()->insert('tz_admin', $data);
     var_dump($id); // 14 || bool
 
-    //replace
-    // $data = [
-    //     'id'       => false,
-    //     'username' => 'localhost',
-    //     'email'    => 'localhost',
-    // ];
-    // $id = M()->replace('tz_admin', $data);
-    // var_dump($id); // array || bool
+## replace 替换
+	$data = [
+        'id'       => false,
+        'username' => 'localhost',
+        'email'    => 'localhost',
+    ];
+    $id = M()->replace('tz_admin', $data);
+    var_dump($id); // array || bool
 
-    // //delete IN
-    // $conds      = ['ids' => ['15', '16', '17', '18']];
-    // $condsQuery = 'id IN (:ids)';
-    // $result     = M()->delete('tz_admin', $conds, $condsQuery);
-    // var_dump($result); // true || false
+## delete 删除
+	//使用 IN 删除多个
+    $conds      = ['ids' => ['15', '16', '17', '18']];
+    $condsQuery = 'id IN (:ids)';
+    $result     = M()->delete('tz_admin', $conds, $condsQuery);
+   	var_dump($result); // true || false
 
-    // //delete =或者>=
-    // $conds = ['id' => 32]; //id=32
-    // //$condsQuery = 'id >= :id';//使用该句条件变为id>=32
-    // $result = M()->delete('tz_admin', $conds, $condsQuery);
-    // var_dump($result); // true || false
+    //delete =或者>=
+    $conds = ['id' => 32]; //id=32
+    //$condsQuery = 'id >= :id';//使用该句条件变为id>=32
+    $result = M()->delete('tz_admin', $conds, $condsQuery);
+    var_dump($result); // true || false
 
     //executeSql （一般用于增删改） 执行一条无参数绑定的sql
     M()->executeSql('use xxxDb');
@@ -87,7 +91,8 @@
         //失败
     }
     
-    mysql select表达式查询：
+## mysql表达式查询 
+### select表达式查询多条：
     table 数据表；
     limit 偏移量；用数组 $rows条数,$offset偏移量(默认0) (如[10,1])或者字符串,隔开(如:10,1)；
     order 排序；单个的话'order'=>'create_time DESC' 多个数组 如 'order' => ['create_time DESC', 'status DESC']
@@ -127,7 +132,7 @@
         $res = M()->select($options);
     //SELECT * FROM hb_admin WHERE status !=-1 OR create_time >0 ORDER BY `create_time` DESC, `status` DESC
     
-    表达式查询单条find
+### 表达式查询单条find
     $res = M()->find($options);
 
     left连接查询
@@ -172,10 +177,10 @@
     ];
     $res = M()->select($options, $cond);
 
-    获取表达式查询的sql语句
+### 获取表达式查询的sql语句
     $sql = M()->getSql();
 
-    统计数据条数
+### 统计数据条数
     $count = M()->count($options);
 
     /**
@@ -184,17 +189,17 @@
     //$log = new Log('info', 'local');
     //Log::record('debug', ['this is a {userName} info', 'framwork:{userName}'], ['extend' => ['function' => 'start', 'method' => 'public static'], 'replace' => ['{userName}' => 'daogePHP']]);
 
-    //日志
+# 日志
     
-    //快捷调用 根据配置使用
-        //Library\Controller\Log\Log::record('info', $message);
+## 快捷调用 根据配置使用
+    Library\Controller\Log\Log::record('info', $message);
 
-    //直接调用sealog
+## 直接调用 seaslog
     //sealog格式统一为： {type} | {pid} | {timeStamp} |{dateTime} | {logInfo} 如
     //1. ERRO | 7670 | 1393171368.875 | 2014:02:24 00:02:48 | test error 3 
     //2. INFO | 7670 | 1393171372.344 | 2014:02:24 00:02:52 | this is a info
     //sealog是php的扩展 配置 php.ini
-    /*
+    
     [seaslog]
         ; configuration for php SeasLog module
         extension = php_seaslog.dll
@@ -212,7 +217,7 @@
         seaslog.appender = 1                                    ;日志存储介质 1File 2TCP 3UDP (默认为1)
         seaslog.remote_host = 127.0.0.1                         ;接收ip 默认127.0.0.1 (当使用TCP或UDP时必填)
         seaslog.remote_port = 514                               ;接收端口 默认514 (当使用TCP或UDP时必填)
-    */
+    
         //------- 调用 seaslog -------//
         //由于seaslog是php扩展实现的 调用的是系统默认时区
         //如果日志记录的{dateTime}部分 时间不正确 可以设置php.ini 设置默认时区  如上海时区 date.timezone ="asia/shanghai"
@@ -234,7 +239,7 @@
         $log = new \Library\Controller\Log\Log('info', 'local', $handler, 'monolog');
         $log->record('info', $message);
 
-    //monolog
+## 直接调用 monolog
     //记录日志
     // $handler = new StreamHandler(APP_LOG_PATH . 'app_' . date('Y-m-d', time()) . '.log');
     // $handler->setFormatter(new LineFormatter(null, null, true, true)); //格式化消息,格式化时间,允许消息内有换行,忽略空白的消息(去掉[])
