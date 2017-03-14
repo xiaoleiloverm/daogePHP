@@ -632,6 +632,20 @@ class Mysql extends DbAbstract
     }
 
     /**
+     * 插入单条数据 insert别名
+     * @param string $tableName 表名
+     * @param array $data 数据
+     * @param bool $insertIgnore 是否忽略存在数据 false:不忽略(默认),true:忽略(忽略后可以防止数据重复插入)
+     *
+     * @return int|bool
+     * @throws \PDOException
+     */
+    public function add($tableName, array $data, $insertIgnore = false)
+    {
+        return $this->insert($tableName, $data, $insertIgnore);
+    }
+
+    /**
      * 插入多条数据
      * @param string $tableName 表名
      * @param array $data 数据

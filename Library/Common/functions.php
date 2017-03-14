@@ -59,7 +59,7 @@ function C($key = null, $value = null, $default = null)
     }
     //赋值
     else if (is_string($key)) {
-        if (!strrpos('.', $key)) {
+        if (!strrpos($key, '.')) {
             $key = strtoupper($key);
             //读取
             if ($value === null) {
