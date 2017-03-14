@@ -618,7 +618,7 @@ class Mysql extends DbAbstract
      */
     public function insert($tableName, array $data, $insertIgnore = false)
     {
-        if (isset($data[0])) {
+        if (empty($data)) {
             throw new \PDOException("数据格式不正确. 请使用 'Mysql::insertMany()' 插入");
         }
 
@@ -656,7 +656,7 @@ class Mysql extends DbAbstract
      */
     public function insertMany($tableName, array $data, $insertIgnore = false)
     {
-        if (!isset($data[0])) {
+        if (empty($data)) {
             throw new \PDOException("数据格式不正确. 请使用 'Mysql::insert()' 插入");
         }
 
@@ -672,9 +672,8 @@ class Mysql extends DbAbstract
             $placeholder['param_names'][]  = ':' . $columnName;
         }
 
-        $query = str_replace(':COLUMN_NAMES', join(', ', $placeholder['column_names']), $query);
-        $query = str_replace(':PARAM_NAMES', join(', ', $placeholder['param_names']), $query);
-
+        $query    = str_replace(':COLUMN_NAMES', join(', ', $placeholder['column_names']), $query);
+        $query    = str_replace(':PARAM_NAMES', join(', ', $placeholder['param_names']), $query);
         $response = $this->prepareInsertReplace($query, $data);
 
         if (empty($response)) {
@@ -694,7 +693,7 @@ class Mysql extends DbAbstract
      */
     public function replace($tableName, array $data)
     {
-        if (isset($data[0])) {
+        if (empty($data)) {
             throw new \PDOException("数据格式不正确. 请使用 'Mysql::replaceMany()' 插入");
         }
 
@@ -711,7 +710,7 @@ class Mysql extends DbAbstract
      */
     public function replaceMany($tableName, array $data)
     {
-        if (!isset($data[0])) {
+        if (empty($data)) {
             throw new \PDOException("数据格式不正确. 请使用 'Mysql::replace()' 插入");
         }
 
@@ -751,7 +750,7 @@ class Mysql extends DbAbstract
      */
     public function update($tableName, array $conds, array $data, $condsQuery = null)
     {
-        if (isset($data[0])) {
+        if (empty($data)) {
             throw new \PDOException("数据格式不正确");
         }
 

@@ -69,6 +69,7 @@ function C($key = null, $value = null, $default = null)
         } else {
             $key    = explode('.', $key);
             $key[0] = strtoupper($key[0]);
+            $key[1] = strtoupper($key[1]);
             //读取
             if ($value === null) {
                 return isset($_config[$key[0]][$key[1]]) ? $_config[$key[0]][$key[1]] : $default;
