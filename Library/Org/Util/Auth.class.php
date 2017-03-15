@@ -189,7 +189,7 @@ class Auth
             'status' => 1,
         );
         //读取用户组所有权限规则 ////增加m,c,a,data
-        $rules = M()->getAll("SELECT condition,name,m,c,a,data FROM {$this->_config['AUTH_RULE']} WHERE id IN (:ids) and type =:type and status =:status", ['ids' => $ids, 'type' => $type, 'status' => 1]);
+        $rules = M()->getAll("SELECT `condition`,`name`,`m`,`c`,`a`,`data` FROM {$this->_config['AUTH_RULE']} WHERE id IN (:ids) and type =:type and status =:status", ['ids' => $ids, 'type' => $type, 'status' => 1]);
 
         //循环规则，判断结果。
         $authList = array(); //
