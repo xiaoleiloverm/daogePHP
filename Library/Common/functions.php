@@ -238,6 +238,7 @@ function I($name, $default = '', $filter = null, $datas = null)
     }
     switch (strtolower($method)) {
         case 'get':
+            parse_str(file_get_contents("php://input"), $_GET);
             $input = &$_GET;
             $input = array_merge($input, $GLOBALS['_urlParam']);
             break;
