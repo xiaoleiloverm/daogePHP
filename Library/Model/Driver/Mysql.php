@@ -349,6 +349,21 @@ class Mysql extends DbAbstract
      */
     protected function prepareUpdate($query, array $conds, array $data)
     {
+        //获取完整sql语句
+        $sql    = $query;
+        $condsK = array_keys($conds);
+        $dataK  = array_keys($data);
+        foreach ($condsK as &$value) {
+            $value = ':' . $value;
+        }
+        foreach ($dataK as &$value) {
+            $value = ':' . $value;
+        }
+        //var_dump($conds, $data, $condsK, $dataK);
+        $sql       = str_replace($condsK, array_values($conds), $sql);
+        $sql       = str_replace($dataK, array_values($data), $sql);
+        $this->sql = $sql;
+
         // 清除 最后的 statement
         $this->clearLastStatement();
 
@@ -824,9 +839,10 @@ class Mysql extends DbAbstract
                 $query = str_replace(':CONDS', $condsQuery, $query);
             }
         }
-        //无条件
+        //无条件数组 字符串条件
         else {
-            $query = str_replace(' WHERE :CONDS', '', $query);
+            //$query = str_replace(' WHERE :CONDS', '', $query);
+            $query = str_replace(':CONDS', $condsQuery, $query);
         }
 
         return $query;
