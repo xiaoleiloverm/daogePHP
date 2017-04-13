@@ -129,7 +129,7 @@ function M($name = '', $tablePrefix = '', $pdo = null, $driver = 'mysql', $layer
     $layer         = $layer ?: C('DEFAULT_M_NAME'); //默认Model
     static $_model = array();
     //数据库
-    $dns = C('DB_TYPE') ?: 'mysql';
+    $dns = C('DB_TYPE') ?: 'Mysql';
     //主机
     $dns .= ':host=' . C('DB_HOST');
     //端口
@@ -153,7 +153,7 @@ function M($name = '', $tablePrefix = '', $pdo = null, $driver = 'mysql', $layer
         $class = "\\Library\\Model\\Model";
     }
     if (!isset($_model[$name . '_' . $tablePrefix])) {
-        $_model[$name . '_' . $tablePrefix] = new $class($name, $tablePrefix, $pdo, C('DB_TYPE'));
+        $_model[$name . '_' . $tablePrefix] = new $class($name, $tablePrefix, $pdo, ucfirst(C('DB_TYPE')));
     }
 
     return $_model[$name . '_' . $tablePrefix];
