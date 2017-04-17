@@ -129,7 +129,7 @@ function M($name = '', $tablePrefix = '', $pdo = null, $driver = 'mysql', $layer
     $layer         = $layer ?: C('DEFAULT_M_NAME'); //默认Model
     static $_model = array();
     //数据库
-    $dns = C('DB_TYPE') ?: 'Mysql';
+    $dns = C('DB_TYPE') ?: 'mysql';
     //主机
     $dns .= ':host=' . C('DB_HOST');
     //端口
