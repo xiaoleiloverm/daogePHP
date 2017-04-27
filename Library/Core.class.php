@@ -116,14 +116,14 @@ class Core
         if (is_file(APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT)) {
             C(include APP_PATH . MODULE_NAME . '/Config/config' . CONFIG_EXT);
         }
-        //加载项目扩展配置文件
+        //加载项目模块扩展配置文件
         if ($extConf = C('LOAD_EXT_CONFIG')) {
             $extConf = explode(',', $extConf);
             foreach ($extConf as $value) {
                 is_file(APP_PATH . MODULE_NAME . '/Config/' . $value . CONFIG_EXT) && C(include APP_PATH . MODULE_NAME . '/Config/' . $value . CONFIG_EXT);
             }
         }
-        //加载项目扩展函数
+        //加载项目模块扩展函数
         if ($extFile = C('LOAD_EXT_FILE')) {
             $extFile = explode(',', $extFile);
             foreach ($extFile as $value) {
