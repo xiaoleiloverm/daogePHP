@@ -121,6 +121,7 @@ class Route
      */
     private static function getParamByPathinfo(array $part = [])
     {
+        //$_SERVER['REDIRECT_URL'] 部分环境下会出现 http://xxx 地址
         empty($part) && $part = isset($_SERVER['REQUEST_URI']) ? explode('/', trim(strip_tags($_SERVER['REQUEST_URI']), '/')) : [];
         $data                 = array(
             'module'     => '',
