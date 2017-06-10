@@ -121,7 +121,7 @@ class Route
      */
     private static function getParamByPathinfo(array $part = [])
     {
-        empty($part) && $part = isset($_SERVER['REDIRECT_URL']) ? explode('/', trim(strip_tags($_SERVER['REDIRECT_URL']), '/')) : [];
+        empty($part) && $part = isset($_SERVER['REQUEST_URI']) ? explode('/', trim(strip_tags($_SERVER['REQUEST_URI']), '/')) : [];
         $data                 = array(
             'module'     => '',
             'controller' => '',
