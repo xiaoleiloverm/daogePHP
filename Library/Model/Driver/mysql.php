@@ -268,13 +268,14 @@ class Mysql extends DbAbstract
 
         // 绑定指定参数
         $pdoStatement = $this->setParams($pdoStatement, $conds);
+        //$pdoStatement->closeCursor(); //关闭游标，使语句能再次被执行
 
         // 执行预处理
         $pdoStatement->execute();
 
         //当另外语句执行exec(本框架executeSql方法) 不关闭会报错
         //Cannot execute queries while other unbuffered queries are active. Consider using PDOStatement::fetchAll()...
-        $pdoStatement->closeCursor(); //关闭游标，使语句能再次被执行
+        //$pdoStatement->closeCursor(); //关闭游标，使语句能再次被执行
 
         // 检查错误 00000为sql预处理成功
         if ($pdoStatement->errorCode() !== '00000') {
@@ -454,7 +455,7 @@ class Mysql extends DbAbstract
     public function executeSql($query)
     {
         $dbh = $this->getDbh();
-        $res = $dbh->exec($query);
+        $res = $dbh->query($query);
         if ($res !== false) {
             return true;
         }
@@ -514,7 +515,8 @@ class Mysql extends DbAbstract
         while ($response = $pdoStatement->fetch($fetchMode)) {
             $responsesMany[] = $response;
         }
-
+        //$response = $pdoStatement->fetchAll($fetchMode);
+        //$pdoStatement->closeCursor(); //关闭游标，使语句能再次被执行
         if (empty($responsesMany)) {
             return null;
         }
