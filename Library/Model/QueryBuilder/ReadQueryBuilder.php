@@ -242,7 +242,7 @@ class ReadQueryBuilder
      */
     public function addSorting($field, $direction)
     {
-        $field           = strpos($field, '.') !== false ? $field : '`' . $field . '`';
+        //$field           = strpos($field, '.') !== false ? $field : '`' . $field . '`';
         $this->sorting[] = $field . ' ' . $direction;
 
         return $this;
