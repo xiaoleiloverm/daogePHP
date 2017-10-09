@@ -178,7 +178,7 @@ class Route
                 $suffix         = preg_replace('/\W/', '', $suffix);
                 $data['action'] = preg_replace("/\.{$suffix}/", '', $data['action']); //替换url后缀
             }
-            //$data['action']     = preg_replace('/(\.htm|\.html|\.php|\.jsp|\.aspx?|\.action|\.daoge)/', '', $data['action']);
+            $data['action'] = preg_replace('/(\.htm|\.html|\.php|\.jsp|\.aspx?|\.action|\.daoge|\?.*)/', '', $data['action']);
             ksort($part); //恢复顺序
             $part = array_values($part);
             $tmp  = array();
