@@ -730,6 +730,9 @@ function session($name = '', $value = '')
             }
         }
     } else {
+        if (C('SESSION_AUTO_START')) {
+            session_start();
+        }
         // 设置session
         if (strpos($name, '.')) {
             list($name1, $name2) = explode('.', $name);

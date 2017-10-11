@@ -1,4 +1,5 @@
 <?php
+namespace Library\Org\Util;
 
 /**
  * 权限认证类
