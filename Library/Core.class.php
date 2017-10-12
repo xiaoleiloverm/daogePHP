@@ -181,6 +181,10 @@ class Core
         if (C('SESSION_AUTO_START')) {
             session_start();
         }
+        //开启post get put预定义数组直接操作
+        parse_str(file_get_contents("php://input"), $_POST);
+        parse_str(file_get_contents("php://input"), $_GET);
+        parse_str(file_get_contents('php://input'), $_PUT);
         //根据路由加载控制器
         $layer  = C('DEFAULT_C_NAME');
         $class  = '\\' . MODULE_NAME . '\\' . $layer . '\\' . CONTROLLER_NAME . C('CONTROLLER_SUFFIX');
