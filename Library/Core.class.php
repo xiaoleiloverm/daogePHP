@@ -177,6 +177,10 @@ class Core
         $df_module     = C('DEFAULT_MODULE') ? C('DEFAULT_MODULE') : 'Default'; // 默认模块名
         $df_controller = C('DEFAULT_CONTROLLER') ? C('DEFAULT_CONTROLLER') : 'Index'; // 默认控制器
         $df_action     = C('DEFAULT_ACTION') ? C('DEFAULT_ACTION') : 'index'; // 默认方法
+        //自动开启session
+        if (C('SESSION_AUTO_START')) {
+            session_start();
+        }
         //根据路由加载控制器
         $layer  = C('DEFAULT_C_NAME');
         $class  = '\\' . MODULE_NAME . '\\' . $layer . '\\' . CONTROLLER_NAME . C('CONTROLLER_SUFFIX');
