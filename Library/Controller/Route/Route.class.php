@@ -123,6 +123,7 @@ class Route
     {
         //$_SERVER['REDIRECT_URL'] 部分环境下会出现 http://xxx 地址
         empty($part) && $part = isset($_SERVER['REQUEST_URI']) ? explode('/', trim(strip_tags($_SERVER['REQUEST_URI']), '/')) : [];
+        $part                 = preg_replace('/(\.htm|\.html|\.php|\.jsp|\.aspx?|\.action|\.daoge|\?.*)/', '', $part);
         $data                 = array(
             'module'     => '',
             'controller' => '',

@@ -1116,6 +1116,13 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
     if (C('URL_MODEL') == 1) {
         //生成URL字符串
         $url = '/' . $path[$_m] . $depr . $path[$_c] . $depr . $path[$_a];
+        //URL映射 自动生成替换后的URL
+        $DOMAIN_URL_MAP = C('DOMAIN_URL_MAP');
+        if (!empty($DOMAIN_URL_MAP)) {
+            $search  = array_values($DOMAIN_URL_MAP);
+            $replace = array_keys($DOMAIN_URL_MAP);
+            $url     = strtolower(str_replace($search, $replace, $url));
+        }
         if ($urlCase) {
             $url = strtolower($url);
         }
