@@ -185,6 +185,18 @@ class Core
         parse_str(file_get_contents("php://input"), $_POST);
         parse_str(file_get_contents("php://input"), $_GET);
         parse_str(file_get_contents('php://input'), $_PUT);
+        switch ($_SERVER['REQUEST_METHOD']) {
+            case 'GET':
+                $_GET = $makeUrl['param'];
+                break;
+            case 'POST':
+                $_POST = $makeUrl['param'];
+                break;
+            case 'HEAD':
+                break;
+            case 'PUT':
+                break;
+        }
         //根据路由加载控制器
         $layer  = C('DEFAULT_C_NAME');
         $class  = '\\' . MODULE_NAME . '\\' . $layer . '\\' . CONTROLLER_NAME . C('CONTROLLER_SUFFIX');
