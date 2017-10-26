@@ -45,7 +45,10 @@
     $sql   = "UPDATE hb_admin SET last_loginip = '{$ip}'  WHERE username = :username";
     $param = ['username' => 'admin'];
     $res   = M()->execute($sql, $param);
-
+    
+    字段+n操作
+    $sql  = "UPDATE hb_jobs SET click =click+1 WHERE id = {$info['id']}"; //点击量+1
+    $row  = M()->executeSql($sql);
 
 ## insert 增加数据
     $data = array(
