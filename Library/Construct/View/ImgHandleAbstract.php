@@ -212,4 +212,98 @@ abstract class ImgHandleAbstract implements ImgHandleInterface
     {
 
     }
+
+    /**
+     * 取得图像信息
+     * @static
+     * @access public
+     * @param string $image 图像文件名
+     * @return mixed
+     */
+
+    public function getImageInfo($img)
+    {
+
+    }
+
+    /**
+     * 为图片添加水印
+     * @static public
+     * @param string $source 原文件名
+     * @param string $water  水印图片
+     * @param string $$savename  添加水印后的图片名
+     * @param string $alpha  水印的透明度
+     * @return void
+     */
+    public public function water($source, $water, $savename=null, $alpha=80) {
+
+    }
+
+
+    /**
+     * 输出图片
+     * @static public
+     * @return void
+     */
+     public function showImg($imgFile, $text='', $x='10', $y='10', $alpha='50') {
+
+     }
+
+     /**
+     * 生成缩略图
+     * @static
+     * @access public
+     * @param string $image  原图
+     * @param string $type 图像格式
+     * @param string $thumbname 缩略图文件名
+     * @param string $maxWidth  宽度
+     * @param string $maxHeight  高度
+     * @param string $position 缩略图保存目录
+     * @param boolean $interlace 启用隔行扫描
+     * @return void
+     */
+    public static function thumb($image, $thumbname, $type='', $maxWidth=200, $maxHeight=50, $interlace=true) {
+
+    }
+
+    /**
+     * 生成特定尺寸缩略图 解决原版缩略图不能满足特定尺寸的问题 PS：会裁掉图片不符合缩略图比例的部分
+     * @static
+     * @access public
+     * @param string $image  原图
+     * @param string $type 图像格式
+     * @param string $thumbname 缩略图文件名
+     * @param string $maxWidth  宽度
+     * @param string $maxHeight  高度
+     * @param boolean $interlace 启用隔行扫描
+     * @return void
+     */
+    public function thumb2($image, $thumbname, $type='', $maxWidth=200, $maxHeight=50, $interlace=true) {
+
+    }
+
+    /**
+     * 把图像转换成字符显示
+     * @static
+     * @access public
+     * @param string $image  要显示的图像
+     * @param string $type  图像类型，默认自动获取
+     * @return string
+     */
+    public function showASCIIImg($image, $string='', $type='') {
+
+    }
+
+    /**
+     * 生成UPC-A条形码
+     * @static
+     * @param string $type 图像格式
+     * @param string $type 图像格式
+     * @param string $lw  单元宽度
+     * @param string $hi   条码高度
+     * @return string
+     */
+    public function UPCA($code, $type='png', $lw=2, $hi=100) {
+        
+    }
 }
