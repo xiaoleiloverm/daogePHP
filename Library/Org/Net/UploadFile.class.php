@@ -10,6 +10,8 @@
 // +----------------------------------------------------------------------
 namespace Library\Org\Net;
 
+use \Library\View\ImgHandle;
+
 /**
  * 文件上传类
  * @category   ORG
@@ -126,7 +128,7 @@ class UploadFile
                 $thumbPath   = $this->thumbPath ? $this->thumbPath : dirname($filename) . '/';
                 $thumbExt    = $this->thumbExt ? $this->thumbExt : $file['extension']; //自定义缩略图扩展名
                 // 生成图像缩略图
-                import($this->imageClassPath);
+                //import($this->imageClassPath);
                 for ($i = 0, $len = count($thumbWidth); $i < $len; $i++) {
                     if (!empty($thumbFile[$i])) {
                         $thumbname = $thumbFile[$i];
@@ -136,9 +138,9 @@ class UploadFile
                         $thumbname = $prefix . basename($filename, '.' . $file['extension']) . $suffix;
                     }
                     if (1 == $this->thumbType) {
-                        Image::thumb2($filename, $thumbPath . $thumbname . '.' . $thumbExt, '', $thumbWidth[$i], $thumbHeight[$i], true);
+                        ImgHandle::thumb2($filename, $thumbPath . $thumbname . '.' . $thumbExt, '', $thumbWidth[$i], $thumbHeight[$i], true);
                     } else {
-                        Image::thumb($filename, $thumbPath . $thumbname . '.' . $thumbExt, '', $thumbWidth[$i], $thumbHeight[$i], true);
+                        ImgHandle::thumb($filename, $thumbPath . $thumbname . '.' . $thumbExt, '', $thumbWidth[$i], $thumbHeight[$i], true);
                     }
 
                 }
