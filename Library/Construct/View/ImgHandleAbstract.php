@@ -235,23 +235,24 @@ abstract class ImgHandleAbstract implements ImgHandleInterface
      * @param string $alpha  水印的透明度
      * @return void
      */
-    public public function water($source, $water, $savename=null, $alpha=80) {
+    public function water($source, $water, $savename = null, $alpha = 80)
+    {
 
     }
-
 
     /**
      * 输出图片
      * @static public
      * @return void
      */
-     public function showImg($imgFile, $text='', $x='10', $y='10', $alpha='50') {
+    public function showImg($imgFile, $text = '', $x = '10', $y = '10', $alpha = '50')
+    {
 
-     }
+    }
 
-     /**
+    /**
      * 生成缩略图
-     * @static
+     * @public
      * @access public
      * @param string $image  原图
      * @param string $type 图像格式
@@ -262,13 +263,14 @@ abstract class ImgHandleAbstract implements ImgHandleInterface
      * @param boolean $interlace 启用隔行扫描
      * @return void
      */
-    public static function thumb($image, $thumbname, $type='', $maxWidth=200, $maxHeight=50, $interlace=true) {
+    public function thumb($image, $thumbname, $type = '', $maxWidth = 200, $maxHeight = 50, $interlace = true)
+    {
 
     }
 
     /**
      * 生成特定尺寸缩略图 解决原版缩略图不能满足特定尺寸的问题 PS：会裁掉图片不符合缩略图比例的部分
-     * @static
+     * @public
      * @access public
      * @param string $image  原图
      * @param string $type 图像格式
@@ -278,7 +280,8 @@ abstract class ImgHandleAbstract implements ImgHandleInterface
      * @param boolean $interlace 启用隔行扫描
      * @return void
      */
-    public function thumb2($image, $thumbname, $type='', $maxWidth=200, $maxHeight=50, $interlace=true) {
+    public function thumb2($image, $thumbname, $type = '', $maxWidth = 200, $maxHeight = 50, $interlace = true)
+    {
 
     }
 
@@ -290,7 +293,8 @@ abstract class ImgHandleAbstract implements ImgHandleInterface
      * @param string $type  图像类型，默认自动获取
      * @return string
      */
-    public function showASCIIImg($image, $string='', $type='') {
+    public function showASCIIImg($image, $string = '', $type = '')
+    {
 
     }
 
@@ -303,7 +307,8 @@ abstract class ImgHandleAbstract implements ImgHandleInterface
      * @param string $hi   条码高度
      * @return string
      */
-    public function UPCA($code, $type='png', $lw=2, $hi=100) {
-        
+    public function UPCA($code, $type = 'png', $lw = 2, $hi = 100)
+    {
+
     }
 }
