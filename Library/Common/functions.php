@@ -1123,6 +1123,38 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
             $replace = array_keys($DOMAIN_URL_MAP);
             $url     = strtolower(str_replace($search, $replace, $url));
         }
+        //子域名映射替换
+        $SUB_DOMAIN_MAP_DEPLOY = C('SUB_DOMAIN_MAP_DEPLOY'); //开关
+        $SUB_DOMAIN_MAP        = C('SUB_DOMAIN_MAP'); //子域名映射配置
+        if ($SUB_DOMAIN_MAP_DEPLOY && !empty($SUB_DOMAIN_MAP)) {
+            $search  = array_values($SUB_DOMAIN_MAP);
+            $replace = array_keys($SUB_DOMAIN_MAP);
+            $url     = strtolower(str_replace($search, $replace, $url));
+        }
+        if (!empty($SUB_DOMAIN_MAP)) {
+            //var_dump($SUB_DOMAIN_MAP);
+            //子域名映射匹配当前模块 自动生成子域名url
+            foreach ($SUB_DOMAIN_MAP as $key => $value) {
+                if (strtolower(MODULE_NAME) == strtolower($value)) {
+                    $childDomain = strtolower($key);
+                    $domain      = $_SERVER['HTTP_HOST'];
+                    $domainArr   = explode('.', $domain);
+                    //缺省的顶级域名
+                    if (count($domainArr) < 2) {
+                        $domain = $childDomain . '.' . $domain;
+                    }
+                    //子域名
+                    else {
+                        $domainArr[0] = $childDomain; //替换成对应子域名
+                        $domain       = implode('.', $domainArr);
+                        //去掉多余的分组url
+                        $i   = 1; //只替换一次
+                        $url = str_replace(strtolower(MODULE_NAME) . '/', '', strtolower($url), $i);
+                    }
+                    //var_dump($url);
+                }
+            }
+        }
         if ($urlCase) {
             $url = strtolower($url);
         }
@@ -1143,6 +1175,7 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
     if ($domain) {
         $url = (is_ssl() ? 'https://' : 'http://') . $domain . $url;
     }
+    //var_dump($url);
     return $url;
 }
 
