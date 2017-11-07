@@ -1038,7 +1038,6 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
         // 解析域名
         list($url, $host) = explode('@', $info['path'], 2);
     }
-
     // 解析子域名
     if (isset($host)) {
         $domain = $host . (strpos($host, '.') ? '' : strstr($_SERVER['HTTP_HOST'], '.'));
@@ -1132,10 +1131,11 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
             $url     = strtolower(str_replace($search, $replace, $url));
         }
         if (!empty($SUB_DOMAIN_MAP)) {
-            //var_dump($SUB_DOMAIN_MAP);
+            //var_dump($SUB_DOMAIN_MAP, $url, $path);
             //子域名映射匹配当前模块 自动生成子域名url
             foreach ($SUB_DOMAIN_MAP as $key => $value) {
-                if (strtolower(MODULE_NAME) == strtolower($value)) {
+                //U方法参数(模块名/控制器/方法)模块名=模块名=映射名
+                if ($path[$_m] == MODULE_NAME && strtolower(MODULE_NAME) == strtolower($value)) {
                     $childDomain = strtolower($key);
                     $domain      = $_SERVER['HTTP_HOST'];
                     $domainArr   = explode('.', $domain);
