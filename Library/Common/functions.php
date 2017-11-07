@@ -1120,7 +1120,7 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
         if (!empty($DOMAIN_URL_MAP)) {
             $search  = array_values($DOMAIN_URL_MAP);
             $replace = array_keys($DOMAIN_URL_MAP);
-            $url     = strtolower(str_replace($search, $replace, $url));
+            $url     = strtolower(str_ireplace($search, $replace, $url));
         }
         //子域名映射替换
         $SUB_DOMAIN_MAP_DEPLOY = C('SUB_DOMAIN_MAP_DEPLOY'); //开关
