@@ -1126,11 +1126,6 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
         $SUB_DOMAIN_MAP_DEPLOY = C('SUB_DOMAIN_MAP_DEPLOY'); //开关
         $SUB_DOMAIN_MAP        = C('SUB_DOMAIN_MAP'); //子域名映射配置
         if ($SUB_DOMAIN_MAP_DEPLOY && !empty($SUB_DOMAIN_MAP)) {
-            $search  = array_values($SUB_DOMAIN_MAP);
-            $replace = array_keys($SUB_DOMAIN_MAP);
-            $url     = strtolower(str_replace($search, $replace, $url));
-        }
-        if (!empty($SUB_DOMAIN_MAP)) {
             //var_dump($SUB_DOMAIN_MAP, $url, $path);
             //子域名映射匹配当前模块 自动生成子域名url
             foreach ($SUB_DOMAIN_MAP as $key => $value) {
