@@ -1120,7 +1120,16 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
         if (!empty($DOMAIN_URL_MAP)) {
             $search  = array_values($DOMAIN_URL_MAP);
             $replace = array_keys($DOMAIN_URL_MAP);
-            $url     = strtolower(str_ireplace($search, $replace, $url));
+            foreach ($search as $key => $value) {
+                //preg_replace($value, $replace[$key], $url);
+                //只替换全部匹配的 避免替换部分匹配的路由 导致生成的url错误
+                //home/bang/zypx会被替换成zypx home/bang/zypx_test不会被替换
+                if (($str = strtolower(str_ireplace($value, $replace[$key], $url))) == '/' . strtolower($replace[$key])) {
+                    $url = $str;
+                }
+            }
+            // var_dump($search, $replace, $url);
+            //$url = strtolower(str_ireplace($search, $replace, $url));
         }
         //子域名映射替换
         $SUB_DOMAIN_MAP_DEPLOY = C('SUB_DOMAIN_MAP_DEPLOY'); //开关
@@ -1144,7 +1153,7 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
                         $domain       = implode('.', $domainArr);
                         //去掉多余的分组url
                         $i   = 1; //只替换一次
-                        $url = str_replace(strtolower(MODULE_NAME) . '/', '', strtolower($url), $i);
+                        $url = str_ireplace(strtolower(MODULE_NAME) . '/', '', strtolower($url), $i);
                     }
                     //var_dump($url);
                 }
