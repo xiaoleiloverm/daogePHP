@@ -144,7 +144,10 @@ class Route
                         $data['module']     = $value[0] ?: (C('DEFAULT_MODULE') ?: 'Home');
                         $data['controller'] = $value[1] ?: (C('DEFAULT_CONTROLLER') ?: 'Index');
                         $data['action']     = $value[2] ?: (C('DEFAULT_ACTION') ?: 'index');
-                    } else if (strpos($partStr, $key) !== false) {
+                    }
+                    //自定义路由匹配替换必须是域名后面第一个位置
+                    //如定义了login=>home/public/login/映射 www.domain.com/login/p/...则是符合自定义路由 如www.domain.com/home/public/login则不会被替换
+                    else if (strpos($partStr, $key) === 0) {
                         $partStr            = str_replace($key, '', $partStr);
                         $data['module']     = $value[0] ?: (C('DEFAULT_MODULE') ?: 'Home');
                         $data['controller'] = $value[1] ?: (C('DEFAULT_CONTROLLER') ?: 'Index');
