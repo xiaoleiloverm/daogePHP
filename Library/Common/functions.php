@@ -1230,3 +1230,29 @@ function get_client_ip($type = 0, $adv = false)
     $ip   = $long ? array($ip, $long) : array('0.0.0.0', 0);
     return $ip[$type];
 }
+
+/**
+ * 远程调用控制器的操作方法 URL 参数格式 [资源://][模块/]控制器/操作
+ * @param string $url 调用地址
+ * @param string|array $vars 调用参数 支持字符串和数组
+ * @return mixed
+ */
+function R($url, $vars = array())
+{
+    $urlArr     = explode('/', $url);
+    $module     = array_shift($urlArr) ?: C('MODULE_NAME');
+    $controller = (array_shift($urlArr) ?: C('CONTROLLER_NAME')) . C('DEFAULT_C_NAME');
+    $action     = array_shift($urlArr) ?: C('ACTION_NAME');
+    $className  = "\\{$module}\\Controller\\{$controller}";
+    //var_dump($url, $module, $controller, $action, $className, $vars);exit;
+    $class = A($className);
+    if ($class) {
+        if (is_string($vars)) {
+            parse_str($vars, $vars);
+        }
+        $vars = array_merge($vars, $urlArr);
+        return call_user_func_array(array(&$class, $action . C('ACTION_SUFFIX')), $vars);
+    } else {
+        return false;
+    }
+}
