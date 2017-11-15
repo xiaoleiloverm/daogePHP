@@ -1251,7 +1251,7 @@ function R($url, $vars = array())
             parse_str($vars, $vars);
         }
         $vars = array_merge($vars, $urlArr);
-        return call_user_func_array(array(&$class, $action . C('ACTION_SUFFIX')), $vars);
+        return call_user_func_array(array($class, $action . C('ACTION_SUFFIX')), $vars); //这种写法导致$this->assign传参方法会失效 问题TODO
     } else {
         return false;
     }
