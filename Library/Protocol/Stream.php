@@ -37,6 +37,13 @@ class Stream extends StreamAbstract
         $file  = trim($file, '/');
         if (is_file($file)) {
             $this->string = file_get_contents($file);
+            // try {
+            //     //file_get_contents('file_path or url');
+            //     $this->string = file_get_contents($file);
+            // } catch (Exception $e) {
+            //     var_dump('错误');
+            //     var_dump($e);exit;
+            // }
         } else {
             $this->string = $file;
         }

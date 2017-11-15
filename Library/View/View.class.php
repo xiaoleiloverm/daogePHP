@@ -96,6 +96,15 @@ class View
         // 解析php:方法2 TODO
         //注册自定义流,别名 stream_wrapper_register
         stream_register_wrapper("var", "\\Library\\Protocol\\Stream");
+        //错误位置提示TODO
+        // try {
+        //     //file_get_contents('file_path or url');
+        //     readfile("var://$tpl");
+        //     var_dump($tpl);
+        // } catch (Exception $e) {
+        //     var_dump('错误');
+        //     var_dump($e);exit;
+        // }
         include "var://$tpl";
         //var_dump($tpl);
         return $tpl;
