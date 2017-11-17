@@ -23,10 +23,13 @@ class Core
         // 注册AUTOLOAD方法
         spl_autoload_register('\Library\Core::autoload');
         //定义PHP程序执行完成后发生的错误
-        register_shutdown_function('\Library\Core::fatalError');
+        //1、当程序由于 exit 和未处理的异常、错误结束时，不会触发该函数。
+        //2、可以多次调用该函数注册多个退出函数，执行顺序与注册顺序一致。
+        //register_shutdown_function('\Library\Core::fatalError');
+        register_shutdown_function(['\Library\Core', 'fatalError']);
         // 设置自定义的错误处理：函数会捕获用户自定义的和非致命类错误
         set_error_handler('\Library\Core::customError'); //过程中用户自定义错误trigger_error触发
-        // 捕获未处理的异常
+        //设置一个用户定义的异常处理函数。  捕获未处理的异常
         set_exception_handler('\Library\Core::customException');
         // 加载composer 依赖
         if (file_exists(VENDOR_PATH . 'autoload.php')) {
@@ -286,6 +289,7 @@ class Core
     public static function fatalError()
     {
         //获取最后发生的错误,php>5.2
+        //var_dump(error_get_last());exit;
         if ($e = error_get_last()) {
             switch ($e['type']) {
                 case E_ERROR:
@@ -372,9 +376,15 @@ class Core
      * @param int $errline 错误行数
      * @return void
      */
-    public static function customError($errno, $errstr, $errfile, $errline)
+    public static function customError($errno, $errstr, $errfile, $errline, $callback = '')
     {
+        //var_dump($errno, $errstr, $errfile, $errline);
         //throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+        //回调是否存在
+        if ($callback && is_object($callback)) {
+            //存在回调则调用回调
+            return $callback;
+        }
         switch ($errno) {
             case E_ERROR: //1 致命的运行时错误
             case E_PARSE: //4 编译时语法解析错误。解析错误仅仅由分析器产生。
@@ -404,7 +414,7 @@ class Core
         $e['code']    = $exception->getCode(); //异常代码
         $e['file']    = $exception->getFile(); //获取发生异常的程序文件名称
         $e['line']    = $exception->getLine(); //获取发生异常的代码在文件中的行号
-
+        //var_dump($e);exit;
         //记录日志
         //error_log($msg);
         // 发送404信息
