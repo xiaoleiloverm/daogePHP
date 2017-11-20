@@ -89,6 +89,8 @@ class View
         // Hook::listen('view_parse',$params);
         $view_parse = new \Library\View\Template\Template();
         $tpl        = $view_parse->fetch($params['file'], $params['var']);
+        //检查代码
+        $this->checkCode($tpl);
         //加载
         //$tpl = include $fileDir;
         // //解析php:方法1 TODO
@@ -96,92 +98,36 @@ class View
         // 解析php:方法2 TODO
         //注册自定义流,别名 stream_wrapper_register
         stream_register_wrapper("var", "\\Library\\Protocol\\Stream");
-        //错误位置提示TODO
-        // try {
-        //     //file_get_contents('file_path or url');
-        //     readfile("var://$tpl");
-        //     var_dump($tpl);
-        // } catch (Exception $e) {
-        //     var_dump('错误');
-        //     var_dump($e);exit;
-        // }
-        //$res  = file("var://$tpl");
-        // $test = readfile("php://filter/resource=var://$tpl");
-        // echo $test;
-        //include "var://$tpl"; //能正常解析 但无法方便定位错误位置
+        include "var://$tpl"; //能正常解析 但无法方便定位错误位置
 
-        //错误检测
-        /*$check_code = "return true; ?>";
-        $tpl        = $check_code . $tpl . "<?php ";*/
-        //\Library\Core::setErrorHandler('\Library\Core::customError');
-        //restore_error_handler();
-        // 设置自定义的错误处理：函数会捕获用户自定义的和非致命类错误
-        //set_error_handler('\Library\View\View::fatalError'); //过程中用户自定义错误trigger_error触发
-        //test
-
-        $str = '<?php if (!defined(DAOGE_PATH)) exit();?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="renderer" content="webkit">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0">
-    <title><?php echo ($_headtitle); ?></title>
- ';
+        //代码错误检查 example
+        /*$str = '<title><?php echo ($_headtitle); ?></title><?php if($a):?>aaaa<?php endif;?>';
         register_shutdown_function('\Library\View\View::fatalError', $str);
         $check_code = "return true; ?>";
         $str        = $check_code . $str . "<?php ";
         @eval($str);
-        $str = '<div class="grzx_head" id="large-header">
-        ';
-        register_shutdown_function('\Library\View\View::fatalError', $str);
-        $check_code = "return true; ?>";
-        $str        = $check_code . $str . "<?php ";
-        @eval($str);
-
-        //<div class="grzx_head" id="large-header">
-        $res = file("var://$tpl");
+         */
+        //错误位置提示TODO example
+        /*$res = file("var://$tpl");
         foreach ($res as $key => &$value) {
-            $value      = $lineStr      = str_replace(PHP_EOL, '', $value);
-            $check_code = "return true; ?>";
-            $lineStr    = $check_code . $lineStr . "<?php ";
-            var_dump($lineStr);
-            //定义PHP程序执行完成后发生的错误
-            register_shutdown_function('\Library\View\View::fatalError', $value);
+        $value      = $lineStr      = str_replace(PHP_EOL, '', $value);
+        $check_code = "return true; ?>";
+        $lineStr    = $check_code . $lineStr . "<?php ";
+        eval($value);
+        //定义PHP程序执行完成后发生的错误
+        register_shutdown_function('\Library\View\View::fatalError', $value);
 
-            if (!@eval($lineStr)) {
-                $error_message = "file: " . realpath($file_name) . " have syntax error";
-                //var_dump($error_message);
-                return false;
-            }
+        if (!@eval($lineStr)) {
+        $error_message = "file: " . realpath($file_name) . " have syntax error";
+        //var_dump($error_message);
+        return false;
+        }
         }
         //var_dump($res, "var://$tpl", $tpl, $test);
-        //$this->include_text($tpl); //解析html中的php endif的问题TODO
+         */
+
+        //$this->include_text($tpl); //eval解析html中的php endif有问题TODO
         return $tpl;
-        /*if (!function_exists('php_check_syntax')) {
-    function php_check_syntax($file_name, &$error_message = null)
-    {
-    $file_content = file_get_contents($file_name);
-
-    $check_code   = "return true; ?>";
-    $file_content = $check_code . $file_content . "<?php ";
-
-    if (!@eval($file_content)) {
-    $error_message = "file: " . realpath($file_name) . " have syntax error";
-    return false;
-    }
-
-    return true;
-    }
-    }
-
-    if (!php_check_syntax("file.php", $msg)) {
-    echo $msg;
-    } else {
-    echo "Woohoo, OK!";
-    }
-     */
     }
 
     //致命错误捕获
@@ -189,7 +135,7 @@ class View
     {
         $trace = debug_backtrace();
         if ($e = error_get_last()) {
-            var_dump($e, $trace);
+            //var_dump($e, $trace);
             //$e example
             // array (size=4)
             //   'type' => int 4
@@ -204,8 +150,7 @@ class View
                 case E_USER_ERROR:
                     ob_end_clean();
                     //self::halt($e);
-                    echo "模版语法有误;错误：{$e['message']};错误位置：";
-                    var_dump($parm);
+                    echo "<br>模版语法有误;错误：{$e['message']};";
                     break;
             }
         }
@@ -214,6 +159,7 @@ class View
     //执行一段代码
     public function include_text($text)
     {
+        $codeStr = '';
         while (substr_count($text, '<?php') > 0) {
             //loop while there's code in $text
             list($html, $text) = explode('<?php', $text, 2); //split at first open php tag
@@ -221,13 +167,39 @@ class View
             list($code, $text) = explode('?>', $text, 2); //split at closing tag
             try {
                 eval($code); //exec code (between tags)
+            } catch (Exception $e) {
+                var_dump($e);
+            }
+
+        }
+        //echo $text; //echo whatever is left
+    }
+
+    //查错
+    public function checkCode($text)
+    {
+        $codeStr = '';
+        while (substr_count($text, '<?php') > 0) {
+            //loop while there's code in $text
+            list($html, $text) = explode('<?php', $text, 2); //split at first open php tag
+            //echo $html; //echo text before tag
+            list($code, $text) = explode('?>', $text, 2); //split at closing tag
+            try {
+                //eval($code); //exec code (between tags)
+                $codeStr .= $code;
                 //echo $code;
             } catch (Exception $e) {
                 var_dump($e);
             }
 
         }
-        echo $text; //echo whatever is left
+        $check_code = "return true;";
+        $codeStr    = $check_code . $codeStr . ';';
+        //定义PHP程序执行完成后发生的错误
+        register_shutdown_function('\Library\View\View::fatalError');
+        //检查错误
+        @eval($codeStr);
+        //echo $text; //echo whatever is left
     }
 
     /**
