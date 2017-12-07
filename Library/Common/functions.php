@@ -1139,7 +1139,9 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
             //子域名映射匹配当前模块 自动生成子域名url
             foreach ($SUB_DOMAIN_MAP as $key => $value) {
                 //U方法参数(模块名/控制器/方法)模块名=模块名=映射名
-                if ($path[$_m] == MODULE_NAME && strtolower(MODULE_NAME) == strtolower($value)) {
+                //var_dump($path[$_m], MODULE_NAME . '|' . $value);
+                //if ($path[$_m] == MODULE_NAME && strtolower(MODULE_NAME) == strtolower($value)) {
+                if (strtolower($path[$_m]) == strtolower($value)) {
                     $childDomain = strtolower($key);
                     $domain      = $_SERVER['HTTP_HOST'];
                     $domainArr   = explode('.', $domain);
@@ -1151,9 +1153,10 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
                     else {
                         $domainArr[0] = $childDomain; //替换成对应子域名
                         $domain       = implode('.', $domainArr);
+                        //var_dump($url, ucfirst($path[$_m]));
                         //去掉多余的分组url
                         $i   = 1; //只替换一次
-                        $url = str_ireplace(strtolower(MODULE_NAME) . '/', '', strtolower($url), $i);
+                        $url = str_ireplace(ucfirst($path[$_m]) . '/', '', strtolower($url), $i);
                     }
                     //var_dump($url);
                 }
