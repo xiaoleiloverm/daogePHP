@@ -185,21 +185,25 @@ class Core
             session_start();
         }
         //开启post get put预定义数组直接操作
-        parse_str(file_get_contents("php://input"), $_POST);
-        parse_str(file_get_contents("php://input"), $_GET);
-        parse_str(file_get_contents('php://input'), $_PUT);
-        switch ($_SERVER['REQUEST_METHOD']) {
-            case 'GET':
-                $_GET = $makeUrl['param'];
-                break;
-            case 'POST':
-                $_POST = $makeUrl['param'];
-                break;
-            case 'HEAD':
-                break;
-            case 'PUT':
-                break;
-        }
+        //parse_str(file_get_contents("php://input"), $_POST);
+        //parse_str(file_get_contents("php://input"), $_GET);
+        //parse_str(file_get_contents('php://input'), $_PUT);
+        // switch ($_SERVER['REQUEST_METHOD']) {
+        //     case 'GET':
+        //         $_GET = $makeUrl['param'];
+        //         break;
+        //     case 'POST':
+        //         //处理请求url中带get参数的情况TODO
+
+        //         $_POST = $makeUrl['param'];
+        //         break;
+        //     case 'HEAD':
+        //         break;
+        //     case 'PUT':
+        //         break;
+        // }
+        $_GET['test'] = 2;
+        //var_dump($_SERVER, $_GET, $_SERVER['REQUEST_METHOD'], $makeUrl);
         //根据路由加载控制器
         $layer  = C('DEFAULT_C_NAME');
         $class  = '\\' . MODULE_NAME . '\\' . $layer . '\\' . CONTROLLER_NAME . C('CONTROLLER_SUFFIX');
@@ -209,6 +213,7 @@ class Core
             // 非法操作
             throw new \ReflectionException();
         }
+        //var_dump($_GET, $_POST);
         //执行控制器方法
         $exe->$action();
     }

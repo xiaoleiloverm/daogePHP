@@ -238,12 +238,12 @@ function I($name, $default = '', $filter = null, $datas = null)
     }
     switch (strtolower($method)) {
         case 'get':
-            parse_str(file_get_contents("php://input"), $_GET);
+            //parse_str(file_get_contents("php://input"), $_GET);
             $input = &$_GET;
-            $input = array_merge($input, $GLOBALS['_urlParam']);
+            //$input = array_merge($input, $GLOBALS['_urlParam']);
             break;
         case 'post':
-            parse_str(file_get_contents("php://input"), $_POST);
+            //parse_str(file_get_contents("php://input"), $_POST);
             $input = &$_POST;
             break;
         case 'put':
@@ -256,7 +256,8 @@ function I($name, $default = '', $filter = null, $datas = null)
         case 'param':
             switch ($_SERVER['REQUEST_METHOD']) {
                 case 'GET':
-                    $input = array_merge((array) $_GET, $GLOBALS['_urlParam']);
+                    //$input = array_merge((array) $_GET, $GLOBALS['_urlParam']);
+                    $input = $_GET;
                     break;
                 case 'POST':
                     //当Content-Type仅在取值为application/x-www-data-urlencoded和multipart/form-data两种情况下，PHP才会将http请求数据包中相应的数据填入全局变量$_POST

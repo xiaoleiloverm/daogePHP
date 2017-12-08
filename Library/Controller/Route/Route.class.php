@@ -99,13 +99,17 @@ class Route
             switch ($_SERVER['REQUEST_METHOD']) {
                 case 'GET':
                     unset($_GET[self::$var_controller], $_GET[self::$var_action], $_GET[self::$var_module]);
-                    $data['param'] = array_merge($part, $_GET);
-                    unset($_GET);
+                    //$data['param'] = array_merge($part, $_GET);
+                    $data['param']['_get'] = array_merge($part, $_GET);
+                    $_GET                  = $data['param']['_get'];
+                    //unset($_GET);
                     break;
                 case 'POST':
                     unset($_POST[self::$var_controller], $_POST[self::$var_action], $_GET[self::$var_module]);
-                    $data['param'] = array_merge($part, $_POST);
-                    unset($_POST);
+                    //$data['param'] = array_merge($part, $_POST);
+                    $data['param']['_get']  = array_merge($part, $_GET);
+                    $data['param']['_post'] = $_POST; //array_merge($tmp, $_POST)时 POST GET 都混在param参数中
+                    //unset($_POST);
                     break;
                 case 'HEAD':
                     break;
@@ -196,19 +200,22 @@ class Route
             switch ($_SERVER['REQUEST_METHOD']) {
                 case 'GET':
                     unset($_GET[self::$var_controller], $_GET[self::$var_action]);
-                    $data['param'] = array_merge($tmp, $_GET);
-                    unset($_GET);
+                    $data['param']['_get'] = array_merge($tmp, $_GET);
+                    $_GET                  = $data['param']['_get'];
+                    //unset($_GET);
                     break;
                 case 'POST':
                     unset($_POST[self::$var_controller], $_POST[self::$var_action]);
-                    $data['param'] = array_merge($tmp, $_POST);
-                    unset($_POST);
+                    $data['param']['_get']  = array_merge($tmp, $_GET);
+                    $data['param']['_post'] = $_POST; //array_merge($tmp, $_POST)时 POST GET 都混在param参数中
+                    //unset($_POST);
                     break;
                 case 'HEAD':
                     break;
                 case 'PUT':
                     break;
             }
+            //var_dump($_GET, $_POST);
         }
         return $data;
     }
