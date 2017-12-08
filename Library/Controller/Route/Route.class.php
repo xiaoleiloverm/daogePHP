@@ -207,6 +207,7 @@ class Route
                 case 'POST':
                     unset($_POST[self::$var_controller], $_POST[self::$var_action]);
                     $data['param']['_get']  = array_merge($tmp, $_GET);
+                    $_GET                   = $data['param']['_get'];
                     $data['param']['_post'] = $_POST; //array_merge($tmp, $_POST)时 POST GET 都混在param参数中
                     //unset($_POST);
                     break;
