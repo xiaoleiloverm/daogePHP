@@ -176,6 +176,10 @@ class Controller
     protected function redirect($url, $params = array(), $delay = 0, $msg = '')
     {
         $url = U($url, $params);
+        //Index/index 会生成为'//';redirect中已处理
+        // if ($url == '//') {
+        //     $url = '/';
+        // }
         redirect($url, $delay, $msg);
     }
 

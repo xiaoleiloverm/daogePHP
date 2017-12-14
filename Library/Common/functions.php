@@ -475,6 +475,10 @@ function L($key = null, $value = null)
 function redirect($url, $time = 0, $msg = '')
 {
     $url = str_replace(["\r", "\n"], '', $url);
+    //$url 传入//字符串会出现页面找不到问题
+    if ($url == '//') {
+        $url = '/';
+    }
     if ($msg == '') {
         $msg = L('_SYS_REDIRECT_MSG_');
     }
