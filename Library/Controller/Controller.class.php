@@ -175,7 +175,7 @@ class Controller
      */
     protected function redirect($url, $params = array(), $delay = 0, $msg = '')
     {
-        //$url = U($url, $params);//U function TODO
+        $url = U($url, $params);
         redirect($url, $delay, $msg);
     }
 
