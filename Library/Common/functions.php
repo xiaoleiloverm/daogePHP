@@ -1120,6 +1120,7 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
     if (C('URL_MODEL') == 1) {
         //生成URL字符串
         $url = '/' . $path[$_m] . $depr . $path[$_c] . $depr . $path[$_a];
+        //var_dump($url);
         //URL映射 自动生成替换后的URL
         $DOMAIN_URL_MAP = C('DOMAIN_URL_MAP');
         if (!empty($DOMAIN_URL_MAP)) {
@@ -1132,10 +1133,15 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
                 if (($str = strtolower(str_ireplace($value, $replace[$key], $url))) == '/' . strtolower($replace[$key])) {
                     $url = $str;
                 }
+                //U('index/index')生成//
+                if ($url == '//') {
+                    $url = '/Home/Index/index';
+                }
             }
             // var_dump($search, $replace, $url);
             //$url = strtolower(str_ireplace($search, $replace, $url));
         }
+        //var_dump($url);
         //子域名映射替换
         $SUB_DOMAIN_MAP_DEPLOY = C('SUB_DOMAIN_MAP_DEPLOY'); //开关
         $SUB_DOMAIN_MAP        = C('SUB_DOMAIN_MAP'); //子域名映射配置
