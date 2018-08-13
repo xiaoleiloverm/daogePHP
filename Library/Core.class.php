@@ -202,7 +202,7 @@ class Core
         //     case 'PUT':
         //         break;
         // }
-        $_GET['test'] = 2;
+        //$_GET['test'] = 2;
         //var_dump($_SERVER, $_GET, $_SERVER['REQUEST_METHOD'], $makeUrl);
         //根据路由加载控制器
         $layer  = C('DEFAULT_C_NAME');
