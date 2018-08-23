@@ -6,6 +6,13 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit0f5d0eb39830408418e02ec7fa321641
 {
+    public static $files = array (
+        '23a734c96aaa09a62ea05a63edf5c9e3' => __DIR__ . '/..' . '/zsxsoft/php-useragent/useragent.class.php',
+        '7809bc348feba2e050a7bb7b01a7dd4b' => __DIR__ . '/..' . '/zsxsoft/php-useragent/lib/useragent_detect_browser.php',
+        '7e6b8ebd95372cd70bb996e274ce3557' => __DIR__ . '/..' . '/zsxsoft/php-useragent/lib/useragent_detect_device.php',
+        '3046c8dd955609a20c0a979ca7f4cc09' => __DIR__ . '/..' . '/zsxsoft/php-useragent/lib/useragent_detect_os.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
@@ -15,6 +22,7 @@ class ComposerStaticInit0f5d0eb39830408418e02ec7fa321641
         'P' => 
         array (
             'Predis\\' => 7,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'M' => 
         array (
@@ -43,6 +51,10 @@ class ComposerStaticInit0f5d0eb39830408418e02ec7fa321641
         'Predis\\' => 
         array (
             0 => __DIR__ . '/..' . '/predis/predis/src',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'Monolog\\' => 
         array (

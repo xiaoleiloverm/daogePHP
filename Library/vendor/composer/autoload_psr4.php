@@ -9,6 +9,7 @@ return array(
     'Simplon\\Mysql\\' => array($vendorDir . '/simplon/mysql/src'),
     'Seld\\CliPrompt\\' => array($vendorDir . '/seld/cli-prompt/src'),
     'Predis\\' => array($vendorDir . '/predis/predis/src'),
+    'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'League\\CLImate\\' => array($vendorDir . '/league/climate/src'),
     'Desarrolla2\\Test\\Cache\\' => array($vendorDir . '/desarrolla2/cache/test'),
