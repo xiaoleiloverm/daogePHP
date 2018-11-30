@@ -99,17 +99,25 @@ function D($modelName, $layer)
     if (isset($_model[$modelName . $layer])) {
         return $_model;
     }
-    if (strpos($modelName, '\\') !== false) {
-        $class = $modelName . $mode;
-    } else {
-        $class = '\\Library\\Common\\' . $modelName . $layer;
-    }
+    // if (strpos($modelName, '\\') !== false) {
+    //     $class = $modelName . $layer;
+    // } else {
+    //     $class = '\\Library\\Common\\' . $modelName . $layer;
+    // }
     if (!class_exists($class)) {
-        $class = "\\Library\\Model\\" . $modelName . $layer;
+        //$class = "\\Library\\Model\\" . $modelName . $layer;
+        //加载common下面模块
+        $class = "\\Common\\{$layer}\\" . $modelName . $layer;
         if (!class_exists($class)) {
-            $class = "\\Library\\Model\\Model";
-            return M(basename($modelName));
+            //没找到common公共的 则找对应模块下面的model
+            $class = "\\" . MODULE_NAME . "\\{$layer}\\" . $modelName . $layer;
+            if (!class_exists($class)) {
+                $class = "\\Library\\Model\\Model";
+                return M(basename($modelName));
+            }
+
         }
+        //var_dump($class);
     }
     $_model[$modelName . $layer] = new $class(basename($modelName));
     return $_model[$modelName . $layer];
