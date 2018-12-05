@@ -132,7 +132,7 @@ function D($modelName, $layer)
  * @param mixed $layer 模型层名
  * @return obj
  */
-function M($name = '', $tablePrefix = '', $pdo = null, $driver = 'mysql', $layer)
+function M($name = '', $tablePrefix = null, $pdo = null, $driver = 'mysql', $layer)
 {
     $layer         = $layer ?: C('DEFAULT_M_NAME'); //默认Model
     static $_model = array();
@@ -160,11 +160,11 @@ function M($name = '', $tablePrefix = '', $pdo = null, $driver = 'mysql', $layer
     } else {
         $class = "\\Library\\Model\\Model";
     }
-    if (!isset($_model[$name . '_' . $tablePrefix])) {
-        $_model[$name . '_' . $tablePrefix] = new $class($name, $tablePrefix, $pdo, ucfirst(C('DB_TYPE')));
+    if (!isset($_model[$tablePrefix . $name])) {
+        $_model[$tablePrefix . $name] = new $class($name, $tablePrefix, $pdo, ucfirst(C('DB_TYPE')));
     }
 
-    return $_model[$name . '_' . $tablePrefix];
+    return $_model[$tablePrefix . $name];
 }
 
 /**

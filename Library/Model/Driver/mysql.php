@@ -17,6 +17,8 @@ class Mysql extends DbAbstract
 {
     public $dbh; //连接对象
 
+    public $tableName; //操作的表名 构造方法中设置(如M('tableName'))或者在查询条件中设置
+
     public $lastStatement; //最后的结果集
 
     protected $sql = ''; //sql语句
@@ -28,14 +30,16 @@ class Mysql extends DbAbstract
 
     /**
      * 构造方法
-     * @param  sql 需要预处理的sql
+     * @param  $dbh       初始化连接实例
+     * @param  $tableName 操作的数据表 不指定取查询参数中的table键 优先选择该参数
      * @param  $fetchMode 结果集类型
      * @return \PDOStatement
      */
-    public function __construct($dbh, $fetchMode = \PDO::FETCH_ASSOC)
+    public function __construct($dbh, $tableName, $fetchMode = \PDO::FETCH_ASSOC)
     {
         $this->setDbh($dbh);
         $this->setFetchMode($fetchMode);
+        $tableName && $this->setTableName($tableName);
     }
 
     // 设置连接实例 需要继承才能调用
@@ -48,6 +52,18 @@ class Mysql extends DbAbstract
     public function getDbh()
     {
         return $this->dbh;
+    }
+
+    //设置表名
+    protected function setTableName($tableName)
+    {
+        $this->tableName = $tableName ?: null;
+    }
+
+    //获取表名
+    public function getTableName()
+    {
+        return $this->tableName;
     }
 
     /**
@@ -966,7 +982,7 @@ class Mysql extends DbAbstract
                 }
                 $readBuilder->setCondsQuery($whereSql);
             }
-            $option['table'] ? $readBuilder->setFrom($option['table']) : '';
+            $option['table'] ? $readBuilder->setFrom($option['table']) : $readBuilder->setFrom($this->tableName);
             if ($field = $option['field']) {
                 if (is_array($field)) {
                     $field = join(',', array_values($field));

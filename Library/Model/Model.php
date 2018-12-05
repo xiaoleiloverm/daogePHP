@@ -18,7 +18,7 @@ class Model
 
     public $driver; //数据库驱动
 
-    public $table; //数据表
+    public $tableName; //数据表（完整名带前缀）
 
     public $tablePrefix = ''; //数据表前缀
 
@@ -26,7 +26,7 @@ class Model
      * 架构函数
      * 取得数据库驱动的实例对象
      * @access public
-     * @param string $table 模型名称
+     * @param string $table 模型名称 一般命名为数据表名去除统一前缀
      * @param string $tablePrefix 表前缀
      * @param object $pdo 数据库连接pdo对象
      * @param string $driverName 数据库驱动名
@@ -39,12 +39,12 @@ class Model
             //调用中间层
             try
             {
-                $tablePrefix = !is_null($tablePrefix) ? ($this->tablePrefix = $tablePrefix) : C('DB_PREFIX');
-                $this->table = $tablePrefix . $table;
+                $tablePrefix     = !is_null($tablePrefix) ? ($this->tablePrefix = $tablePrefix) : C('DB_PREFIX');
+                $this->tableName = $tablePrefix . $table;
                 //设置驱动连接数据库实例
                 $class        = '\\Library\\Model\\Driver\\' . Db::getDriverOption($driverName);
                 $this->dbConn = Db::setDbh($pdo);
-                $this->driver = Db::setDriver(new $class(Db::getDbh()));
+                $this->driver = Db::setDriver(new $class(Db::getDbh(), $this->tableName));
             } catch (\PDOException $e) {
                 throw new \PDOException($e->getMessage(), $e->getCode());
             }
