@@ -104,6 +104,7 @@ function D($modelName, $layer)
     // } else {
     //     $class = '\\Library\\Common\\' . $modelName . $layer;
     // }
+    $class = $modelName . $layer;
     if (!class_exists($class)) {
         //$class = "\\Library\\Model\\" . $modelName . $layer;
         //加载common下面模块
@@ -119,8 +120,8 @@ function D($modelName, $layer)
         }
         //var_dump($class);
     }
-    $_model[$modelName . $layer] = new $class(basename($modelName));
-    return $_model[$modelName . $layer];
+    $_model[$class] = new $class(basename($modelName));
+    return $_model[$class];
 }
 
 /**
