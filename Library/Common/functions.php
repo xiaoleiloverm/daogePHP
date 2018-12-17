@@ -44,14 +44,14 @@ function C($key = null, $value = null, $default = null)
     }
     //批量设置
     else if (is_array($key)) {
-        //多维数组递归替换键为大写
+        //多维数组递归
         $array_change_key_case_recursive = function ($key) use (&$array_change_key_case_recursive) {
             return array_map(function ($item) use (&$array_change_key_case_recursive) {
                 if (is_array($item)) {
                     $item = $array_change_key_case_recursive($item);
                 }
                 return $item;
-            }, array_change_key_case($key, CASE_UPPER));
+            }, $key);
         };
         $key     = $array_change_key_case_recursive($key);
         $_config = array_merge($_config, $key);
