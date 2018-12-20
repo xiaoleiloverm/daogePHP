@@ -29,6 +29,17 @@
     var_dump(M()->fetchColumnMany("SELECT *FROM tz_admin WHERE username = ?", ['admin']));
 
 ## update 更新数据
+    M()->update('tablename', $conds, $data, $condsQuery);
+    tablename为表名
+	$conds为条件数组 格式：['name1'=>'value1','name2'=>'value2',...]
+    $data为更新的数据 格式 ['字段名1'=>'数据1','字段名2'=>'数据2',...]
+    $condsQuery 如果不传入该参数则$conds条件默认用AND拼接
+    最后SQL会被拼接成 UPDATE tablename set 字段名1=数据1 WHERE name1 = value1 AND name2 = value2
+    如果传入规则语句 如 'cond1 != :name1 OR cond2 = :name2'
+    则$conds数组的键name1的值value1会被 :name1（占位符） 替换 name2的值value2会被 ：name2 替换
+    最后SQL会被拼接成 UPDATE tablename set 字段名1=数据1 WHERE cond1 !=value1 OR cond2 =value2
+    
+   
     例1 update 方法
     $conds = [
         'username' => 'admin',
@@ -50,16 +61,30 @@
     $sql  = "UPDATE hb_jobs SET click =click+1 WHERE id = {$info['id']}"; //点击量+1
     $row  = M()->executeSql($sql);
 
-## insert 增加数据
+	IN条件更新操作
+	$conds      = ['ids' => ['15', '16', '17', '18']];
+    $condsQuery = 'id IN (:ids)';
+    $res        = M()->update('tz_admin', $conds, $data, $condsQuery);
+    
+
+## add 或 insert 增加数据
     $data = array(
         'id'       => false,
         'username' => 'localhost',
         'email'    => 'localhost',
     );
+    //方法1
+    $id = M()->add('tz_admin', $data);
+    //方法2    
     $id = M()->insert('tz_admin', $data);
     var_dump($id); // 14 || bool
 
-## replace 替换
+## replace 替换增加
+    INSERT语句的一个变种；
+    详细了解mysql replace和add区别:
+    INSERT语句 带有values子句的insert语句，用于数据的增加
+    replace是INSERT语句的一个变种；当添加新行时：1.如果主键值重复，那么就覆盖表中已有的行 2.如果没有主键值重复，则插入该行
+    
 	$data = [
         'id'       => false,
         'username' => 'localhost',
