@@ -23,6 +23,9 @@ class Mysql extends DbAbstract
 
     protected $sql = ''; //sql语句
 
+    // 事务指令数
+    protected $transNums = 0;
+
     // 数据库表达式
     protected $exp = array('eq' => '=', 'neq' => '<>', 'gt' => '>', 'egt' => '>=', 'lt' => '<', 'elt' => '<=', 'notlike' => 'NOT LIKE', 'like' => 'LIKE', 'in' => 'IN', 'notin' => 'NOT IN', 'not in' => 'NOT IN', 'between' => 'BETWEEN', 'not between' => 'NOT BETWEEN', 'notbetween' => 'NOT BETWEEN');
     // 查询表达式
@@ -115,6 +118,65 @@ class Mysql extends DbAbstract
     {
         $this->lastStatement = null;
         return $this;
+    }
+
+    /**
+     * 启动一个事务-别名
+     * @return bool/null
+     */
+    public function startTrans()
+    {
+        if ($this->transNums == 0) {
+            //关闭 PDO 的自动提交
+            $this->getDbh()->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
+            $this->transNums++;
+            //开启一个事务
+            return $this->getDbh()->beginTransaction();
+        }
+        return null; //已开启
+    }
+
+    /**
+     * 启动一个事务
+     * @return bool/null
+     */
+    public function beginTransaction()
+    {
+        if ($this->transNums == 0) {
+            //关闭 PDO 的自动提交
+            $this->getDbh()->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
+            //开启一个事务
+            return $this->getDbh()->beginTransaction();
+        }
+        return null; //已开启
+    }
+
+    /**
+     * 回滚
+     * @return bool
+     */
+    public function rollback()
+    {
+        if ($this->transNums > 0) {
+            //指令数置零
+            $this->transTimes = 0;
+            return $this->getDbh()->rollback();
+        }
+        return null; //没开启事务
+    }
+
+    /**
+     * 提交一个事务
+     * @return bool
+     */
+    public function commit()
+    {
+        if ($this->transNums > 0) {
+            //指令数置零
+            $this->transNums = 0;
+            return $this->getDbh()->commit();
+        }
+        return null; //没开启事务
     }
 
     /**

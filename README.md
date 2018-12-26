@@ -37,7 +37,7 @@
     最后SQL会被拼接成 UPDATE tablename set 字段名1=数据1 WHERE name1 = value1 AND name2 = value2
     如果传入规则语句 如 'cond1 != :name1 OR cond2 = :name2'
     则$conds数组的键name1的值value1会被 :name1（占位符） 替换 name2的值value2会被 ：name2 替换
-    最后SQL会被拼接成 UPDATE tablename set 字段名1=数据1 WHERE cond1 !=value1 OR cond2 =value2
+    最后SQL会被拼接成 UPDATE tablename set 字段名1=数据1 WHERE cond1 != value1 OR cond2 =value2
     
    
     例1 update 方法

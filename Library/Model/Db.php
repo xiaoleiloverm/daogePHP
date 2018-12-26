@@ -148,9 +148,9 @@ class Db
      * 回滚
      * @return bool
      */
-    public static function rollBack()
+    public static function rollback()
     {
-        return static::$driver->rollBack();
+        return static::$driver->rollback();
     }
 
     /**
