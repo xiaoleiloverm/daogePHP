@@ -146,7 +146,7 @@ class Mysql extends DbAbstract
             //关闭 PDO 的自动提交
             $this->getDbh()->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
             //开启一个事务
-            return $this->getDbh()->beginTransaction();
+            return $this->getDbh()->beginTransaction(); //beginTransaction 会让这个事务状态为 active
         }
         return null; //已开启
     }
@@ -160,6 +160,7 @@ class Mysql extends DbAbstract
         if ($this->transNums > 0) {
             //指令数置零
             $this->transTimes = 0;
+            //commit 或 rollback 会让事务变成 inactive 俩者不能同时存在一个逻辑里 否者会报错 There is no active transaction
             return $this->getDbh()->rollback();
         }
         return null; //没开启事务
@@ -174,6 +175,7 @@ class Mysql extends DbAbstract
         if ($this->transNums > 0) {
             //指令数置零
             $this->transNums = 0;
+            //commit 或 rollback 会让事务变成 inactive 俩者不能同时存在一个逻辑里 否者会报错 There is no active transaction
             return $this->getDbh()->commit();
         }
         return null; //没开启事务
