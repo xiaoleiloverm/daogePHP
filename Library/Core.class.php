@@ -322,17 +322,17 @@ class Core
     public static function halt($error)
     {
         $e = [];
+        if (!is_array($error)) {
+            //自定义输出参数
+            $trace        = debug_backtrace();
+            $e['message'] = $error;
+            $e['file']    = $trace[0]['file'];
+            $e['line']    = $trace[0]['line'];
+        } else {
+            $e = $error;
+        }
         //调试模式或者cli命令行模式下输出错误
         if (APP_DEBUG || IS_CLI) {
-            if (!is_array($error)) {
-                //自定义输出参数
-                $trace        = debug_backtrace();
-                $e['message'] = $error;
-                $e['file']    = $trace[0]['file'];
-                $e['line']    = $trace[0]['line'];
-            } else {
-                $e = $error;
-            }
             if (!isset($e['trace'])) {
                 $e['trace'] = '';
                 //缓存区控制
@@ -363,11 +363,12 @@ class Core
             if (!C('ERROR_PAGE')) {
                 redirect(C('ERROR_PAGE'));
             } else {
-                $message      = is_array($error) ? $error['message'] : $error;
-                $e['message'] = C('SHOW_ERROR_MESSAGE') ? $message : C('ERROR_MESSAGE');
+                $e['message'] = C('SHOW_ERROR_MESSAGE') ? $e['message'] : C('ERROR_MESSAGE');
             }
-            //输出错误信息
-            exit($e['message']);
+            $exceptionFile = C('TMPL_EXCEPTION_FILE') ?: LIB_PATH . 'View/Template/Tpl/system_exception.tpl';
+            //输出错误信息 模版
+            //exit($e['message']);
+            include $exceptionFile;
         }
 
     }
