@@ -67,14 +67,40 @@ function C($key = null, $value = null, $default = null)
             }
             $_config[$key] = $value;
         } else {
-            $key = explode('.', $key);
+            $key   = explode('.', $key);
+            $depth = count($key);
+            //最多取到多维数组第4层 其他的可以取出后再去数组中的值
             // $key[0] = strtoupper($key[0]);
             // $key[1] = strtoupper($key[1]);
+            //return isset($_config[$key[0]][$key[1]]) ? $_config[$key[0]][$key[1]] : $default;
             //读取
             if ($value === null) {
-                return isset($_config[$key[0]][$key[1]]) ? $_config[$key[0]][$key[1]] : $default;
+                // $var = '_config';
+                // for ($i = 0; $i < $depth; $i++) {
+                //     $var .= '[' . "'" . $key[$i] . "'" . ']';
+                // }
+                // //var_dump($var, $_config[regex][mobile], ${$var});
+                //return isset($$var) ? $$var : $default;
+                if ($depth == 2) {
+                    return isset($_config[$key[0]][$key[1]]) ? $_config[$key[0]][$key[1]] : $default;
+                } else if ($depth == 3) {
+                    return isset($_config[$key[0]][$key[1]][$key[2]]) ? $_config[$key[0]][$key[1]][$key[2]] : $default;
+                }
+                //depth>4
+                else {
+                    return isset($_config[$key[0]][$key[1]][$key[2]][$key[3]]) ? $_config[$key[0]][$key[1]][$key[2]][$key[3]] : $default;
+                }
             }
-            $_config[$key[0]][$key[1]] = $value;
+            //$_config[$key[0]][$key[1]] = $value;
+            if ($depth == 2) {
+                $_config[$key[0]][$key[1]] = $value;
+            } else if ($depth == 3) {
+                $_config[$key[0]][$key[1]][$key[2]] = $value;
+            }
+            //depth>4
+            else {
+                return $_config[$key[0]][$key[1]][$key[2]][$key[3]] = $value;
+            }
         }
     }
     return null;
