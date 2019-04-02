@@ -478,7 +478,7 @@ class Mysql extends DbAbstract
         if ($this->getRowCount() === 0) {
             return null;
         }
-        return true;
+        return $this->getRowCount();
 
     }
 
