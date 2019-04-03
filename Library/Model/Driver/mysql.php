@@ -429,7 +429,7 @@ class Mysql extends DbAbstract
      * @param array $conds 条件数组
      * @param array $data 数据数组
      *
-     * @return null|bool
+     * @return boll|int 失败:false 成功:影响记录的行数
      * @throws PDOException
      */
     protected function prepareUpdate($query, array $conds, array $data)
@@ -476,9 +476,9 @@ class Mysql extends DbAbstract
         }
 
         if ($this->getRowCount() === 0) {
-            return null;
+            return false;
         }
-        return $this->getRowCount();
+        return $this->getRowCount(); //返回影响记录的行数
 
     }
 
@@ -487,7 +487,7 @@ class Mysql extends DbAbstract
      * @param string $query 查询语句
      * @param array $conds 条件数组
      *
-     * @return null|bool
+     * @return boll|int 失败:false 成功:影响记录的行数
      * @throws PDOException
      */
     protected function prepareDelete($query, array $conds)
@@ -519,9 +519,9 @@ class Mysql extends DbAbstract
         }
 
         if ($this->getRowCount() === 0) {
-            return null;
+            return false;
         }
-        return true;
+        return $this->getRowCount(); //返回影响记录的行数
 
     }
 
@@ -890,11 +890,12 @@ class Mysql extends DbAbstract
         $query    = $this->buildCondsQuery('DELETE FROM ' . $tableName . ' WHERE :CONDS', $conds, $condsQuery);
         $response = $this->prepareDelete($query, $conds);
 
-        if ($response === true) {
-            return true;
-        }
+        // if ($response === true) {
+        //     return true;
+        // }
 
-        return false;
+        // return false;
+        return $response;
     }
 
     /**
