@@ -462,7 +462,7 @@ class Mysql extends DbAbstract
         $pdoStatement = $this->setParams($pdoStatement, $data);
 
         // 执行预处理
-        $pdoStatement->execute();
+        $res = $pdoStatement->execute(); //成功时返回 TRUE， 或者在失败时返回 FALSE。
 
         // 检查错误 00000为sql预处理成功
         if ($pdoStatement->errorCode() !== '00000') {
@@ -474,11 +474,12 @@ class Mysql extends DbAbstract
             $errorInfo = json_encode($error);
             throw new \PDOException($errorInfo);
         }
-
-        if ($this->getRowCount() === 0) {
-            return false;
+        //$res = $this->getRowCount();//getRowCount只针对查询
+        $rowCount = $pdoStatement->rowCount(); //返回受上一个 SQL 语句影响的行数
+        if ($res === false) {
+            return false; //sql执行失败
         }
-        return $this->getRowCount(); //返回影响记录的行数
+        return $rowCount; //执行成功 返回影响记录的行数 注意有返回0的情况
 
     }
 
@@ -505,7 +506,7 @@ class Mysql extends DbAbstract
         $pdoStatement = $this->setParams($pdoStatement, $conds);
 
         // 执行预处理
-        $pdoStatement->execute();
+        $res = $pdoStatement->execute();
 
         // 检查错误 00000为sql预处理成功
         if ($pdoStatement->errorCode() !== '00000') {
@@ -518,10 +519,12 @@ class Mysql extends DbAbstract
             throw new \PDOException($errorInfo);
         }
 
-        if ($this->getRowCount() === 0) {
-            return false;
+        //$res = $this->getRowCount();//getRowCount只针对查询
+        $rowCount = $pdoStatement->rowCount(); //返回受上一个 SQL 语句影响的行数
+        if ($res === false) {
+            return false; //sql执行失败
         }
-        return $this->getRowCount(); //返回影响记录的行数
+        return $rowCount; //执行成功 返回影响记录的行数 注意有返回0的情况
 
     }
 
